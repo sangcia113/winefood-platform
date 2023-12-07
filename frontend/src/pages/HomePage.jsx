@@ -12,7 +12,7 @@ import {
 import TextArea from 'antd/es/input/TextArea';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { URL } from '../configs/hostConfig';
+import { URL } from '../configs/urlConfig';
 import dayjs from 'dayjs';
 const { Content } = Layout;
 const { Text } = Typography;

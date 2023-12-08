@@ -98,7 +98,7 @@ const HomePage = () => {
         <Content
             style={{
                 padding: 20,
-                backgroundImage: `url(${require('../assets/images/skr1.jpg')})`,
+                backgroundImage: `url(${require('../assets/images/bg11.jpg')})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
             }}
@@ -238,6 +238,7 @@ const HomePage = () => {
                     >
                         <DatePicker
                             allowClear={false}
+                            changeOnBlur={true}
                             format={'DD/MM/YYYY HH:mm'}
                             placeholder="Chọn ngày bắt đầu..."
                             showTime={{ defaultValue: dayjs('07:30', 'HH:mm') }}
@@ -265,6 +266,7 @@ const HomePage = () => {
                     >
                         <DatePicker
                             allowClear={false}
+                            changeOnBlur={true}
                             format={'DD/MM/YYYY HH:mm'}
                             placeholder="Chọn ngày kết thúc..."
                             showTime={{ defaultValue: dayjs('16:30', 'HH:mm') }}

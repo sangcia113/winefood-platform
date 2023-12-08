@@ -1,4 +1,4 @@
-import { Image, Layout, Menu, Typography } from 'antd';
+import { Layout, Menu, Typography } from 'antd';
 import React from 'react';
 import {
     BookFill,
@@ -10,13 +10,10 @@ import {
     PersonHeart,
     Search,
 } from 'react-bootstrap-icons';
-import { Link } from 'react-router-dom';
 
 const { Text } = Typography;
 
 const { Sider } = Layout;
-
-const imgSrc = require('../../assets/images/logo.png');
 
 const items = [
     { key: '1', label: 'Trang chủ', icon: <HouseFill size={20} /> },
@@ -51,9 +48,6 @@ const items = [
 
 const SiderComponent = ({ defaultOpenKeys, defaultSelectedKeys, handleMenuClick }) => (
     <Sider breakpoint="xxl" collapsible collapsedWidth="0" theme="light" width="270">
-        <Link to="/">
-            <Image alt="Logo WineFood" preview={false} src={imgSrc} width={230} />
-        </Link>
         <Menu
             defaultOpenKeys={defaultOpenKeys}
             defaultSelectedKeys={defaultSelectedKeys}

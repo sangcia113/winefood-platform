@@ -1,4 +1,6 @@
 const leaveListService = require('../services/leaveListService');
+const { handleSendZaloNotificationV3 } = require('../utils/handleZaloAPI');
+const errorService = require('../services/errorService');
 
 // Xử lý yêu cầu thêm mới dữ liệu.
 const createLeaveListHandler = async (req, res) => {
@@ -21,7 +23,7 @@ const createLeaveListHandler = async (req, res) => {
             reason
         );
 
-        res.json({ message: 'Thêm dữ liệu thành công!' });
+        await handleSendZaloNotificationV3('8851502365121811999', 'TEST');
     } catch (err) {
         console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
 

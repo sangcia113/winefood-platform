@@ -12,7 +12,7 @@ const createLeaveType = async (code, nameVN, nameEN) => {
 // Đọc trong cơ sở dữ liệu.
 const readLeaveType = async () => {
     // Truy vấn SQL để đọc
-    const sql = `SELECT * FROM leave_type ORDER BY id DESC`;
+    const sql = `SELECT * FROM leave_type ORDER BY id ASC`;
 
     // Thực hiện truy vấn SQL và trả về kết quả
     const [results] = await db.query(sql);

@@ -15,15 +15,14 @@ const App = () => {
                 theme={{
                     token: {
                         colorBgLayout: '#fff',
-                        controlHeight: 32,
-                        fontFamily: 'Verdana, Geneva, Tahoma, sans-serif',
-                        fontSize: 16,
+                        controlHeight: 36,
+                        fontSize: 18,
                     },
-                    components: { Layout: { bodyBg: '#f0f2f5' } },
+                    // components: { Layout: { bodyBg: '#f0f2f5' } },
                 }}
             >
                 <Layout style={{ minHeight: '100vh' }}>
-                    {/* <HeaderComponent /> */}
+                    <HeaderComponent />
                     <Layout>
                         <SiderComponent />
                         <Routes>

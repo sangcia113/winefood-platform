@@ -10,26 +10,30 @@ const FooterComponent = () => (
         <Row>
             <Col xs={24}>
                 <Space>
-                    <Text strong style={{ fontSize: 14 }}>
+                    <Text strong style={{ fontSize: 16 }}>
                         Design by ©{' '}
                     </Text>
                     <Link
                         strong
                         href="https://zalo.me/0972868740"
                         target="_blank"
-                        style={{ fontSize: 14 }}
+                        style={{ fontSize: 16 }}
                     >
                         PHAM THANH SANG <SuitHeartFill color="red" />
                     </Link>
                 </Space>
             </Col>
             <Col xs={24}>
-                <Space>
-                    <Text strong style={{ fontSize: 14 }}>
-                        Copyright © WineFood 2023.
-                    </Text>
-                    <Text style={{ fontSize: 14 }}> All rights reserved. </Text>
-                </Space>
+                <Row>
+                    <Col xs={24}>
+                        <Text strong style={{ fontSize: 16 }}>
+                            Copyright © WineFood 2023
+                        </Text>
+                    </Col>
+                </Row>
+                <Col xs={24}>
+                    <Text style={{ fontSize: 16 }}> All rights reserved. </Text>
+                </Col>
             </Col>
         </Row>
     </Footer>

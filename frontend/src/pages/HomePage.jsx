@@ -2,10 +2,11 @@ import {
     Button,
     Card,
     DatePicker,
-    Flex,
     Form,
     InputNumber,
     Layout,
+    Modal,
+    Row,
     Select,
     Typography,
 } from 'antd';
@@ -16,30 +17,99 @@ import { URL } from '../configs/urlConfig';
 import dayjs from 'dayjs';
 const { Content } = Layout;
 const { Text } = Typography;
-const options = [];
 const HomePage = () => {
     console.log('Run Home...');
 
+    const [department, setDepartment] = useState([]);
     const [user, setUser] = useState([]);
-    const [typeOfLeave, setTypeOfLeave] = useState([]);
+    const [leaveType, setLeaveType] = useState([]);
 
     const [form] = Form.useForm();
 
     useEffect(() => {
-        handleGetName();
+        handleGetDepartment();
+        handleGetUser();
+        handleGetLeaveType();
     }, []);
 
-    const handleGetName = async () => {
+    const handleGetDepartment = async () => {
+        const response = await axios.get(`${URL}/api/department`);
+        setDepartment(response.data);
+    };
+
+    const handleGetUser = async () => {
         const response = await axios.get(`${URL}/api/user`);
-        // response.map(item => item.departmentId);
+        setUser(response.data);
+    };
+
+    const handleGetLeaveType = async () => {
+        const response = await axios.get(`${URL}/api/leave-type`);
+        setLeaveType(response.data);
+    };
+
+    const handleInsertData = async values => {
+        const response = await axios.post(`${URL}/api/leave-list`, values);
         console.log(response);
     };
 
-    const onFinish = values => console.log(values);
+    const onFinish = values => {
+        const { fromDate, toDate } = values;
+        if (fromDate < toDate) {
+            if (
+                dayjs(fromDate).hour() >= 7 &&
+                dayjs(fromDate).minute() >= 30 &&
+                dayjs(toDate).hour() <= 16 &&
+                dayjs(toDate).minute() <= 30
+            ) {
+                handleInsertData({
+                    ...values,
+                    fromDate: dayjs(fromDate).format('YYYY-MM-DD HH:mm'),
+                    toDate: dayjs(toDate).format('YYYY-MM-DD HH:mm'),
+                });
+            } else {
+                Modal.warning({
+                    centered: true,
+                    content: (
+                        <Text>
+                            Giờ bắt đầu & kết thúc phải nằm trong khoảng từ <b>07:30</b> đến{' '}
+                            <b>16:30</b>!<br></br>
+                            Giờ bắt đầu của bạn là: <b>{dayjs(fromDate).format('HH:mm')}</b>
+                            <br></br>
+                            Giờ kết thúc của bạn là: <b>{dayjs(toDate).format('HH:mm')}</b>
+                        </Text>
+                    ),
+                    title: 'Cảnh báo',
+                });
+            }
+        } else {
+            Modal.warning({
+                centered: true,
+                content: (
+                    <Text>
+                        Ngày/ giờ kết thúc phải <b>lớn hơn</b> ngày/ giờ bắt đầu!
+                    </Text>
+                ),
+                title: 'Cảnh báo',
+            });
+        }
+    };
 
     return (
-        <Content style={{ padding: 20 }}>
-            <Card bordered={false} style={{ paddingLeft: 40 }}>
+        <Content
+            style={{
+                padding: 20,
+                backgroundImage: `url(${require('../assets/images/skr1.jpg')})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+            }}
+        >
+            <Card
+                bordered={false}
+                style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                    backdropFilter: 'blur(2px)',
+                }}
+            >
                 <Form
                     form={form}
                     labelAlign={'left'}
@@ -64,7 +134,7 @@ const HomePage = () => {
                                 <small className="text-muted">(EMPLOYEE'S NAME)</small>
                             </Text>
                         }
-                        name="name"
+                        name="userId"
                         rules={[
                             {
                                 required: true,
@@ -74,10 +144,22 @@ const HomePage = () => {
                     >
                         <Select
                             placeholder="Chọn tên trong danh sách..."
-                            options={options}
                             size={'large'}
                             style={{ width: '100%' }}
-                        />
+                        >
+                            {department.map(d => (
+                                <Select.OptGroup key={d.id} label={d.name}>
+                                    {user.map(
+                                        u =>
+                                            u.departmentId === d.id && (
+                                                <Select.Option key={u.id} value={u.id}>
+                                                    {u.name}
+                                                </Select.Option>
+                                            )
+                                    )}
+                                </Select.OptGroup>
+                            ))}
+                        </Select>
                     </Form.Item>
 
                     <Form.Item
@@ -88,7 +170,7 @@ const HomePage = () => {
                                 <small className="text-muted">(TYPES OF LEAVES)</small>
                             </Text>
                         }
-                        name="type"
+                        name="leaveTypeId"
                         rules={[
                             {
                                 required: true,
@@ -98,11 +180,16 @@ const HomePage = () => {
                         style={{ marginTop: 50 }}
                     >
                         <Select
-                            options={options}
                             placeholder="Chọn loại phép trong danh sách..."
                             size={'large'}
                             style={{ width: '100%' }}
-                        />
+                        >
+                            {leaveType.map(item => (
+                                <Select.Option key={item.id} value={item.id}>
+                                    {item.nameVN}
+                                </Select.Option>
+                            ))}
+                        </Select>
                     </Form.Item>
 
                     <Form.Item
@@ -113,7 +200,7 @@ const HomePage = () => {
                                 <small className="text-muted">(DAY REQUESTED FOR LEAVE)</small>
                             </Text>
                         }
-                        name="number"
+                        name="leaveDay"
                         rules={[
                             {
                                 required: true,
@@ -140,7 +227,7 @@ const HomePage = () => {
                                 <small className="text-muted">(FROM)</small>
                             </Text>
                         }
-                        name="from"
+                        name="fromDate"
                         rules={[
                             {
                                 required: true,
@@ -153,7 +240,7 @@ const HomePage = () => {
                             allowClear={false}
                             format={'DD/MM/YYYY HH:mm'}
                             placeholder="Chọn ngày bắt đầu..."
-                            showTime
+                            showTime={{ defaultValue: dayjs('07:30', 'HH:mm') }}
                             size={'large'}
                             style={{ width: '100%' }}
                         />
@@ -167,7 +254,7 @@ const HomePage = () => {
                                 <small className="text-muted">(TO)</small>
                             </Text>
                         }
-                        name="to"
+                        name="toDate"
                         rules={[
                             {
                                 required: true,
@@ -180,7 +267,7 @@ const HomePage = () => {
                             allowClear={false}
                             format={'DD/MM/YYYY HH:mm'}
                             placeholder="Chọn ngày kết thúc..."
-                            showTime
+                            showTime={{ defaultValue: dayjs('16:30', 'HH:mm') }}
                             size={'large'}
                             style={{ width: '100%' }}
                         />
@@ -213,16 +300,16 @@ const HomePage = () => {
                     </Form.Item>
                 </Form>
             </Card>
-            <Flex>
+            <Row>
                 <Button
                     size={'large'}
                     type={'primary'}
                     onClick={() => form.submit()}
-                    style={{ margin: 'auto', marginTop: 20 }}
+                    style={{ margin: 'auto', marginTop: 30 }}
                 >
                     Gửi Phép
                 </Button>
-            </Flex>
+            </Row>
         </Content>
     );
 };

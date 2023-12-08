@@ -12,7 +12,7 @@ const createDepartment = async (code, name) => {
 // Đọc trong cơ sở dữ liệu.
 const readDepartment = async () => {
     // Truy vấn SQL để đọc
-    const sql = `SELECT * FROM department ORDER BY id DESC`;
+    const sql = `SELECT * FROM department ORDER BY id ASC`;
 
     // Thực hiện truy vấn SQL và trả về kết quả
     const [results] = await db.query(sql);

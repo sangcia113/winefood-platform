@@ -33,7 +33,7 @@ const createUser = async (
 // Đọc trong cơ sở dữ liệu.
 const readUser = async () => {
     // Truy vấn SQL để đọc
-    const sql = `SELECT * FROM user ORDER BY id DESC`;
+    const sql = `SELECT * FROM user WHERE id NOT IN (1) ORDER BY id ASC`;
 
     // Thực hiện truy vấn SQL và trả về kết quả
     const [results] = await db.query(sql);

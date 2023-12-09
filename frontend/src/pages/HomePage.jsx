@@ -8,6 +8,7 @@ import {
     Modal,
     Row,
     Select,
+    Spin,
     Typography,
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
@@ -23,6 +24,7 @@ const HomePage = () => {
     const [department, setDepartment] = useState([]);
     const [user, setUser] = useState([]);
     const [leaveType, setLeaveType] = useState([]);
+    const [spinning, setSpinning] = useState(false);
 
     const [form] = Form.useForm();
 
@@ -48,8 +50,29 @@ const HomePage = () => {
     };
 
     const handleInsertData = async values => {
-        const response = await axios.post(`${URL}/api/leave-list`, values);
-        console.log(response);
+        try {
+            setSpinning(true);
+            const response = await axios.post(`${URL}/api/leave-list`, values);
+            const { error, message } = response.data;
+            if (error === 0) {
+                Modal.success({
+                    centered: true,
+                    content: (
+                        <Text>
+                            Đã gửi yêu cầu lên <b>MANAGER</b>
+                            <br></br>
+                            <b>TEST</b> qua <b>Zalo</b>
+                        </Text>
+                    ),
+                    title: 'THÀNH CÔNG',
+                });
+            }
+            console.log(error);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setSpinning(false);
+        }
     };
 
     const onFinish = values => {
@@ -78,7 +101,7 @@ const HomePage = () => {
                             Giờ kết thúc của bạn là: <b>{dayjs(toDate).format('HH:mm')}</b>
                         </Text>
                     ),
-                    title: 'Cảnh báo',
+                    title: 'CẢNH BÁO',
                 });
             }
         } else {
@@ -89,7 +112,7 @@ const HomePage = () => {
                         Ngày/ giờ kết thúc phải <b>lớn hơn</b> ngày/ giờ bắt đầu!
                     </Text>
                 ),
-                title: 'Cảnh báo',
+                title: 'CẢNH BÁO',
             });
         }
     };
@@ -103,11 +126,12 @@ const HomePage = () => {
                 backgroundPosition: 'center',
             }}
         >
+            <Spin fullscreen size={'large'} spinning={spinning} tip="Vui lòng đợi..." />
             <Card
                 bordered={false}
                 style={{
                     backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                    backdropFilter: 'blur(2px)',
+                    backdropFilter: 'blur(4px)',
                 }}
             >
                 <Form

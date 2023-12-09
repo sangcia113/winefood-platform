@@ -46,5 +46,16 @@ const readLeaveList = async () => {
     return results;
 };
 
+// Đọc trong cơ sở dữ liệu.
+const readLeaveListIsExist = async (userID, bookLeaveDay, bookFromDate, bookToDate) => {
+    // Truy vấn SQL để đọc
+    const sql = `SELECT * FROM leave_list WHERE userId = ? AND bookLeaveDay = ? AND bookFromDate = ? AND bookToDate = ? AND deleted = 0 AND deleteRequest = 0`;
+
+    // Thực hiện truy vấn SQL và trả về kết quả
+    const [results] = await db.query(sql, [userID, bookLeaveDay, bookFromDate, bookToDate]);
+
+    return results;
+};
+
 // Xuất các hàm để sử dụng trong module khác
-module.exports = { createLeaveList, readLeaveList };
+module.exports = { createLeaveList, readLeaveList, readLeaveListIsExist };

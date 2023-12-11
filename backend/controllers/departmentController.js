@@ -1,4 +1,9 @@
-const departmentService = require('../services/departmentService');
+const {
+    createDepartment,
+    readDepartment,
+    updateDepartment,
+    deleteDepartment,
+} = require('../services/departmentService');
 
 // Xử lý yêu cầu thêm mới dữ liệu.
 const createDepartmentHandler = async (req, res) => {
@@ -12,7 +17,7 @@ const createDepartmentHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để thêm mới vào cơ sở dữ liệu
-        await departmentService.createDepartment(code, name);
+        await createDepartment(code, name);
 
         res.json({ message: 'Thêm dữ liệu thành công!' });
     } catch (err) {
@@ -26,7 +31,7 @@ const createDepartmentHandler = async (req, res) => {
 const readDepartmentHandler = async (req, res) => {
     try {
         // Gọi hàm service để đọc dữ liệu
-        const results = await departmentService.readDepartment();
+        const results = await readDepartment();
 
         res.json(results);
     } catch (err) {
@@ -51,7 +56,7 @@ const updateDepartmentHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-        await departmentService.updateDepartment(code, name, id);
+        await updateDepartment(code, name, id);
 
         res.json({ message: 'Cập nhật dữ liệu thành công!' });
     } catch (err) {
@@ -73,7 +78,7 @@ const deleteDepartmentHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để xoá dữ liệu
-        await departmentService.deleteDepartment(id);
+        await deleteDepartment(id);
 
         res.json({ message: 'Xoá dữ liệu thành công!' });
     } catch (err) {

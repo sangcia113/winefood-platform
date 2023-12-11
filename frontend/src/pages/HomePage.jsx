@@ -52,22 +52,57 @@ const HomePage = () => {
     const handleInsertData = async values => {
         try {
             setSpinning(true);
+
             const response = await axios.post(`${URL}/api/leave-list`, values);
-            const { error, message } = response.data;
-            if (error === 0) {
-                Modal.success({
-                    centered: true,
-                    content: (
-                        <Text>
-                            Đã gửi yêu cầu lên <b>MANAGER</b>
-                            <br></br>
-                            <b>TEST</b> qua <b>Zalo</b>
-                        </Text>
-                    ),
-                    title: 'THÀNH CÔNG',
-                });
-            }
-            console.log(error);
+
+            console.log(response);
+
+            const response1 = await axios.post(`${URL}/api/zalo-api/send-message`, {
+                user_id: '8851502365121811999',
+                text: 'TESTttttttttt',
+            });
+
+            console.log(response1);
+
+            // const { error, message } = response.data;
+
+            // if (error === 0) {
+            //     Modal.success({
+            //         centered: true,
+            //         content: (
+            //             <Text>
+            //                 Đã gửi yêu cầu lên <b>MANAGER</b>
+            //                 <br></br>
+            //                 <b>TEST</b> qua <b>Zalo</b>
+            //             </Text>
+            //         ),
+            //         title: 'THÀNH CÔNG',
+            //     });
+            // } else if (error === 1000) {
+            // } else if (error === -230) {
+            //     Modal.error({
+            //         centered: true,
+            //         content: (
+            //             <Text>
+            //                 Gửi thông báo qua <b>Zalo</b> thất bại!<br></br>
+            //                 Do bạn đã không tương tác với Wine Food trong 7 ngày qua!<br></br>
+            //                 Tuy nhiên dữ liệu <b>đã được lưu vào hệ thống</b>, bạn có thể an tâm!
+            //             </Text>
+            //         ),
+            //         title: 'THẤT BẠI',
+            //     });
+            // } else {
+            //     Modal.error({
+            //         centered: true,
+            //         content: (
+            //             <Text>
+            //                 Gửi thông báo qua <b>Zalo</b> thất bại!<br></br>
+            //                 Tuy nhiên dữ liệu <b>đã được lưu vào hệ thống</b>, bạn có thể an tâm!
+            //             </Text>
+            //         ),
+            //         title: 'THẤT BẠI',
+            //     });
+            // }
         } catch (error) {
             console.log(error);
         } finally {
@@ -135,6 +170,7 @@ const HomePage = () => {
                 }}
             >
                 <Form
+                    colon={false}
                     form={form}
                     labelAlign={'left'}
                     labelCol={{
@@ -155,7 +191,7 @@ const HomePage = () => {
                             <Text>
                                 <Text strong>HỌ VÀ TÊN</Text>
                                 <br />
-                                <small className="text-muted">(EMPLOYEE'S NAME)</small>
+                                <small className="text-muted">EMPLOYEE'S NAME</small>
                             </Text>
                         }
                         name="userId"
@@ -191,7 +227,7 @@ const HomePage = () => {
                             <Text>
                                 <Text strong>LOẠI PHÉP</Text>
                                 <br />
-                                <small className="text-muted">(TYPES OF LEAVES)</small>
+                                <small className="text-muted">TYPES OF LEAVES</small>
                             </Text>
                         }
                         name="leaveTypeId"
@@ -221,7 +257,7 @@ const HomePage = () => {
                             <Text>
                                 <Text strong>SỐ NGÀY XIN NGHỈ</Text>
                                 <br />
-                                <small className="text-muted">(DAY REQUESTED FOR LEAVE)</small>
+                                <small className="text-muted">DAY REQUESTED FOR LEAVE</small>
                             </Text>
                         }
                         name="leaveDay"
@@ -248,7 +284,7 @@ const HomePage = () => {
                             <Text>
                                 <Text strong>TỪ</Text>
                                 <br />
-                                <small className="text-muted">(FROM)</small>
+                                <small className="text-muted">FROM</small>
                             </Text>
                         }
                         name="fromDate"
@@ -276,7 +312,7 @@ const HomePage = () => {
                             <Text>
                                 <Text strong>ĐẾN</Text>
                                 <br />
-                                <small className="text-muted">(TO)</small>
+                                <small className="text-muted">TO</small>
                             </Text>
                         }
                         name="toDate"
@@ -304,7 +340,7 @@ const HomePage = () => {
                             <Text>
                                 <Text strong>LÝ DO</Text>
                                 <br />
-                                <small className="text-muted">(REASON)</small>
+                                <small className="text-muted">REASON</small>
                             </Text>
                         }
                         name="reason"

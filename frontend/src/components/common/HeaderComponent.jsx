@@ -1,4 +1,4 @@
-import { Alert, Col, Flex, Image, Row, Typography } from 'antd';
+import { Alert, Col, Image, Row, Typography } from 'antd';
 
 import React from 'react';
 
@@ -19,7 +19,6 @@ const HeaderComponent = () => (
                 message={
                     <Marquee gradient={false} pauseOnHover>
                         <Text style={{ color: '#007bff' }}>
-                            {' '}
                             Nhằm cải thiện{' '}
                             <b>
                                 <i>Phần mềm nghỉ phép</i>

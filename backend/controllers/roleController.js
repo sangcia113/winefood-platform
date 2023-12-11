@@ -1,4 +1,4 @@
-const roleService = require('../services/roleService');
+const { createRole, readRole, updateRole, deleteRole } = require('../services/roleService');
 
 // Xử lý yêu cầu thêm mới dữ liệu.
 const createRoleHandler = async (req, res) => {
@@ -12,7 +12,7 @@ const createRoleHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để thêm mới vào cơ sở dữ liệu
-        await roleService.createRole(code, name);
+        await createRole(code, name);
 
         res.json({ message: 'Thêm dữ liệu thành công!' });
     } catch (err) {
@@ -26,7 +26,7 @@ const createRoleHandler = async (req, res) => {
 const readRoleHandler = async (req, res) => {
     try {
         // Gọi hàm service để đọc dữ liệu
-        const results = await roleService.readRole();
+        const results = await readRole();
 
         res.json(results);
     } catch (err) {
@@ -51,7 +51,7 @@ const updateRoleHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-        await roleService.updateRole(code, name, id);
+        await updateRole(code, name, id);
 
         res.json({ message: 'Cập nhật dữ liệu thành công!' });
     } catch (err) {
@@ -73,7 +73,7 @@ const deleteRoleHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để xoá dữ liệu
-        await roleService.deleteRole(id);
+        await deleteRole(id);
 
         res.json({ message: 'Xoá dữ liệu thành công!' });
     } catch (err) {

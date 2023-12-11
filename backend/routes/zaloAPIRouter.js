@@ -2,23 +2,15 @@ const router = require('express').Router();
 
 // Import các hàm xử lý yêu cầu từ controller
 const {
-    createZaloAPIHandler,
     readZaloAPIHandler,
-    updateZaloAPIHandler,
-    deleteZaloAPIHandler,
+    sendMessageZaloAPIHandler,
 } = require('../controllers/zaloAPIController');
-
-// End point POST
-router.post('/', createZaloAPIHandler);
 
 // End point GET
 router.get('/', readZaloAPIHandler);
 
-// End point PUT
-router.put('/:id', updateZaloAPIHandler);
-
-// End point DELETE
-router.delete('/:id', deleteZaloAPIHandler);
+// End point SEND MESSAGE
+router.post('/send-message', sendMessageZaloAPIHandler);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

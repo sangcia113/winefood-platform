@@ -1,4 +1,4 @@
-const userService = require('../services/userService');
+const { createUser, readUser, updateUser, deleteUser } = require('../services/userService');
 
 // Xử lý yêu cầu thêm mới dữ liệu.
 const createUserHandler = async (req, res) => {
@@ -25,7 +25,7 @@ const createUserHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để thêm mới vào cơ sở dữ liệu
-        await userService.createUser(
+        await createUser(
             code,
             name,
             birthday,
@@ -49,7 +49,7 @@ const createUserHandler = async (req, res) => {
 const readUserHandler = async (req, res) => {
     try {
         // Gọi hàm service để đọc dữ liệu
-        const results = await userService.readUser();
+        const results = await readUser();
 
         res.json(results);
     } catch (err) {
@@ -88,7 +88,7 @@ const updateUserHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-        await userService.updateUser(
+        await updateUser(
             code,
             name,
             birthday,
@@ -121,7 +121,7 @@ const deleteUserHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để xoá dữ liệu
-        await userService.deleteUser(id);
+        await deleteUser(id);
 
         res.json({ message: 'Xoá dữ liệu thành công!' });
     } catch (err) {

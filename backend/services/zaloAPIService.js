@@ -14,10 +14,10 @@ const readZaloAPI = async () => {
 // Cập nhật trong cơ sở dữ liệu.
 const updateZaloAPI = async (accessToken, refreshToken) => {
     // Truy vấn SQL để cập nhật
-    const sql = `UPDATE api SET accessToken = ?, refreshToken = ?`;
+    const sql = `UPDATE api SET accessToken = ?, refreshToken = ?, createdDate = ?`;
 
     // Thực hiện truy vấn SQL với các giá trị tham số
-    await db.query(sql, [accessToken, refreshToken]);
+    await db.query(sql, [accessToken, refreshToken, new Date()]);
 };
 
 // Xuất các hàm để sử dụng trong module khác

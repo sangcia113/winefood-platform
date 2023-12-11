@@ -3,6 +3,35 @@ const qs = require('qs');
 const { updateZaloAPI, readZaloAPI } = require('../services/zaloAPIService');
 const { createError } = require('../services/errorService');
 
+const handleGetAccessToken = async () => {
+    try {
+        const infoAPI = await readZaloAPI();
+
+        const { refreshToken, secretKey, appId } = infoAPI[0];
+
+        let data = qs.stringify({
+            refresh_token: refreshToken,
+            app_id: appId,
+            grant_type: 'refresh_token',
+        });
+
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'https://oauth.zaloapp.com/v4/oa/access_token',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                secret_key: secretKey,
+            },
+            data,
+        };
+
+        return await axios.request(config);
+    } catch (error) {
+        return { error: -902, message: 'Get Access Token is failed!' };
+    }
+};
+
 const handleSendZaloNotificationV3Failure = async error => {
     if (error === -216) {
         try {
@@ -12,18 +41,12 @@ const handleSendZaloNotificationV3Failure = async error => {
 
             await updateZaloAPI(access_token, refresh_token);
 
-            const responseSendLast = await sendNotificationZaloV3('8851502365121811999', 'TEST');
-
-            const { error, message } = responseSendLast;
-
-            return { error, message };
-        } catch (updateError) {
-            console.error('Lỗi cập nhật Zalo API:', updateError);
-
-            return { error: updateError.code, message: updateError.message };
+            return { error: 1000, message: 'Success' };
+        } catch (error) {
+            return { error: -901, message: 'Update Zalo API is failed!' };
         }
     } else {
-        return { error };
+        return { error, message: 'More error' };
     }
 };
 
@@ -58,43 +81,14 @@ const handleSendZaloNotificationV3 = async (user_id, text) => {
         const { error, message } = response.data;
 
         if (error === 0) {
-            return { error, message };
+            return response.data;
         } else {
-            await createError(user_id, error, message);
+            createError(user_id, error, message);
 
-            await handleSendZaloNotificationV3Failure(error);
+            return await handleSendZaloNotificationV3Failure(error);
         }
     } catch (error) {
-        console.log('Error: ', error);
-    }
-};
-
-const handleGetAccessToken = async () => {
-    try {
-        const infoAPI = await readZaloAPI();
-
-        const { refreshToken, secretKey, appId } = infoAPI[0];
-
-        let data = qs.stringify({
-            refresh_token: refreshToken,
-            app_id: appId,
-            grant_type: 'refresh_token',
-        });
-
-        let config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: 'https://oauth.zaloapp.com/v4/oa/access_token',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                secret_key: secretKey,
-            },
-            data,
-        };
-
-        return await axios.request(config);
-    } catch (error) {
-        console.log('Error: ', error);
+        return { error: -900, message: 'Send Zalo notification V3 failed!' };
     }
 };
 

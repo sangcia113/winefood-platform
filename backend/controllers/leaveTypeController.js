@@ -1,4 +1,9 @@
-const leaveTypeService = require('../services/leaveTypeService');
+const {
+    createLeaveType,
+    readLeaveType,
+    updateLeaveType,
+    deleteLeaveType,
+} = require('../services/leaveTypeService');
 
 // Xử lý yêu cầu thêm mới dữ liệu.
 const createLeaveTypeHandler = async (req, res) => {
@@ -12,7 +17,7 @@ const createLeaveTypeHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để thêm mới vào cơ sở dữ liệu
-        await leaveTypeService.createLeaveType(code, nameVN, nameEN);
+        await createLeaveType(code, nameVN, nameEN);
 
         res.json({ message: 'Thêm dữ liệu thành công!' });
     } catch (err) {
@@ -26,7 +31,7 @@ const createLeaveTypeHandler = async (req, res) => {
 const readLeaveTypeHandler = async (req, res) => {
     try {
         // Gọi hàm service để đọc dữ liệu
-        const results = await leaveTypeService.readLeaveType();
+        const results = await readLeaveType();
 
         res.json(results);
     } catch (err) {
@@ -51,7 +56,7 @@ const updateLeaveTypeHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-        await leaveTypeService.updateLeaveType(code, nameVN, nameEN, id);
+        await updateLeaveType(code, nameVN, nameEN, id);
 
         res.json({ message: 'Cập nhật dữ liệu thành công!' });
     } catch (err) {
@@ -73,7 +78,7 @@ const deleteLeaveTypeHandler = async (req, res) => {
 
     try {
         // Gọi hàm service để xoá dữ liệu
-        await leaveTypeService.deleteLeaveType(id);
+        await deleteLeaveType(id);
 
         res.json({ message: 'Xoá dữ liệu thành công!' });
     } catch (err) {

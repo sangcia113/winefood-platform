@@ -23,13 +23,18 @@ const zaloAPIRouter = require('./zaloAPIRouter');
  * Mọi route trong 'userRouter' sẽ được thêm tiền tố '/user'.
  * Ví dụ: /user/, /user/:id, /user/update, ...
  */
-router.use('/user', userRouter);
-router.use('/role', roleRouter);
-router.use('/department', departmentRouter);
-router.use('/leave-type', leaveTypeRouter);
-router.use('/leave-list', leaveListRouter);
 
-router.use('/zalo-api', zaloAPIRouter);
+router.use('/leave/user', userRouter);
+
+router.use('/leave/role', roleRouter);
+
+router.use('/leave/department', departmentRouter);
+
+router.use('/leave/type', leaveTypeRouter);
+
+router.use('/leave/list', leaveListRouter);
+
+router.use('/zalo', zaloAPIRouter);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

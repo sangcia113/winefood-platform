@@ -2,19 +2,17 @@ const router = require('express').Router();
 
 // Import các hàm xử lý yêu cầu từ controller
 const {
-    createLeaveListHandler,
     readLeaveListHandler,
-    readLeaveListIsExistedHandler,
+    createLeaveListHandler,
 } = require('../controllers/leaveListController');
 
+const { checkleaveListExistedMiddleWare } = require('../middleWares/leaveListMiddleWare');
+
 // End point POST
-router.post('/', createLeaveListHandler);
+router.post('/', checkleaveListExistedMiddleWare, createLeaveListHandler);
 
 // End point GET
 router.get('/', readLeaveListHandler);
-
-// End point GET
-router.get('/check-existed', readLeaveListIsExistedHandler);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

@@ -33,10 +33,36 @@ const createUser = async (
 // Đọc trong cơ sở dữ liệu.
 const readUser = async () => {
     // Truy vấn SQL để đọc
-    const sql = `SELECT * FROM user WHERE id NOT IN (1) ORDER BY id ASC`;
+    const sql = `SELECT * FROM user WHERE roleId != 1 ORDER BY id ASC`;
 
     // Thực hiện truy vấn SQL và trả về kết quả
     const [results] = await db.query(sql);
+
+    return results;
+};
+
+const readSuperiorById = async id => {
+    // Truy vấn SQL để đọc
+    const sql = `SELECT
+                    z.userId,
+                    NAME
+                FROM
+                    USER AS u
+                LEFT JOIN zalo_api_user AS z
+                ON
+                    z.numberPhone = u.numberPhone
+                WHERE
+                    u.id =(
+                    SELECT
+                        superiorId
+                    FROM
+                        user
+                    WHERE
+                        id = 5
+                )`;
+
+    // Thực hiện truy vấn SQL và trả về kết quả
+    const [results] = await db.query(sql, [id]);
 
     return results;
 };
@@ -82,4 +108,4 @@ const deleteUser = async id => {
 };
 
 // Xuất các hàm để sử dụng trong module khác
-module.exports = { createUser, readUser, updateUser, deleteUser };
+module.exports = { createUser, readUser, readSuperiorById, updateUser, deleteUser };

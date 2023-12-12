@@ -35,74 +35,93 @@ const HomePage = () => {
     }, []);
 
     const handleGetDepartment = async () => {
-        const response = await axios.get(`${URL}/api/department`);
-        setDepartment(response.data);
+        try {
+            const response = await axios.get(`${URL}/api/leave/department`);
+            setDepartment(response.data);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleGetUser = async () => {
-        const response = await axios.get(`${URL}/api/user`);
-        setUser(response.data);
+        try {
+            const response = await axios.get(`${URL}/api/leave/user`);
+            setUser(response.data);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleGetLeaveType = async () => {
-        const response = await axios.get(`${URL}/api/leave-type`);
-        setLeaveType(response.data);
+        try {
+            const response = await axios.get(`${URL}/api/leave/type`);
+            setLeaveType(response.data);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleInsertData = async values => {
         try {
             setSpinning(true);
 
-            const response = await axios.post(`${URL}/api/leave-list`, values);
+            const response = await axios.post(`${URL}/api/leave/list`, values);
 
             console.log(response);
 
-            const response1 = await axios.post(`${URL}/api/zalo-api/send-message`, {
-                user_id: '8851502365121811999',
-                text: 'TESTttttttttt',
-            });
+            const { error } = response.data;
 
-            console.log(response1);
-
-            // const { error, message } = response.data;
-
-            // if (error === 0) {
-            //     Modal.success({
-            //         centered: true,
-            //         content: (
-            //             <Text>
-            //                 Đã gửi yêu cầu lên <b>MANAGER</b>
-            //                 <br></br>
-            //                 <b>TEST</b> qua <b>Zalo</b>
-            //             </Text>
-            //         ),
-            //         title: 'THÀNH CÔNG',
-            //     });
-            // } else if (error === 1000) {
-            // } else if (error === -230) {
-            //     Modal.error({
-            //         centered: true,
-            //         content: (
-            //             <Text>
-            //                 Gửi thông báo qua <b>Zalo</b> thất bại!<br></br>
-            //                 Do bạn đã không tương tác với Wine Food trong 7 ngày qua!<br></br>
-            //                 Tuy nhiên dữ liệu <b>đã được lưu vào hệ thống</b>, bạn có thể an tâm!
-            //             </Text>
-            //         ),
-            //         title: 'THẤT BẠI',
-            //     });
-            // } else {
-            //     Modal.error({
-            //         centered: true,
-            //         content: (
-            //             <Text>
-            //                 Gửi thông báo qua <b>Zalo</b> thất bại!<br></br>
-            //                 Tuy nhiên dữ liệu <b>đã được lưu vào hệ thống</b>, bạn có thể an tâm!
-            //             </Text>
-            //         ),
-            //         title: 'THẤT BẠI',
-            //     });
-            // }
+            if (error === 0) {
+                Modal.success({
+                    centered: true,
+                    content: (
+                        <Text>
+                            Đã gửi yêu cầu lên <b>MANAGER</b>
+                            <br></br>
+                            <b>TEST</b> qua <b>Zalo</b>
+                        </Text>
+                    ),
+                    title: 'THÀNH CÔNG',
+                });
+            } else if (error === -904) {
+                Modal.error({
+                    centered: true,
+                    content: (
+                        <Text>
+                            Đơn xin nghỉ phép của bạn đã <b>tồn tại trong hệ thống!</b>
+                            <br></br>
+                            Vui lòng liên hệ cấp trên để được phê duyệt!
+                        </Text>
+                    ),
+                    title: 'THẤT BẠI',
+                });
+            } else if (error === -230) {
+                Modal.error({
+                    centered: true,
+                    content: (
+                        <Text>
+                            Gửi thông báo qua Zalo <b>thất bại!</b>
+                            <br></br>
+                            Do người dùng đã không <b>tương tác</b> với WineFood trong vòng 7 ngày!
+                            <br></br>
+                            Tuy nhiên dữ liệu <b>đã được ghi vào hệ thống.</b> Bạn có thể yên tâm!
+                        </Text>
+                    ),
+                    title: 'THẤT BẠI',
+                });
+            } else {
+                Modal.error({
+                    centered: true,
+                    content: (
+                        <Text>
+                            Mã lỗi: {error}
+                            <br></br>
+                            Vui lòng liên hệ Mr.Sang để được hỗ trợ!
+                        </Text>
+                    ),
+                    title: 'THẤT BẠI',
+                });
+            }
         } catch (error) {
             console.log(error);
         } finally {

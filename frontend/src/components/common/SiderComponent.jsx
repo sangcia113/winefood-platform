@@ -1,5 +1,6 @@
 import { Layout, Menu, Typography } from 'antd';
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     BookFill,
     ChatFill,
@@ -16,11 +17,11 @@ const { Text } = Typography;
 const { Sider } = Layout;
 
 const items = [
-    { key: '1', label: 'Trang chủ', icon: <HouseFill size={20} /> },
-    { key: '2', label: 'Đổi mật khẩu', icon: <KeyFill size={20} /> },
-    { key: '3', label: 'Góp ý - Báo lỗi', icon: <ChatFill size={18} /> },
-    { key: '4', label: 'Hướng dẫn sử dụng', icon: <BookFill size={18} /> },
-    { key: '5', label: 'Lịch sử nghỉ phép', icon: <Search size={18} /> },
+    { key: 'home', label: 'Trang chủ', icon: <HouseFill size={20} /> },
+    { key: 'password', label: 'Đổi mật khẩu', icon: <KeyFill size={20} /> },
+    { key: 'feedback', label: 'Góp ý - Báo lỗi', icon: <ChatFill size={18} /> },
+    { key: 'manual', label: 'Hướng dẫn sử dụng', icon: <BookFill size={18} /> },
+    { key: 'history', label: 'Lịch sử nghỉ phép', icon: <Search size={18} /> },
     {
         key: '6',
         type: 'group',
@@ -29,7 +30,9 @@ const items = [
                 Dành cho Leader
             </Text>
         ),
-        children: [{ key: '7', label: 'Duyệt nghỉ phép', icon: <PersonCheckFill size={20} /> }],
+        children: [
+            { key: 'leader', label: 'Duyệt nghỉ phép', icon: <PersonCheckFill size={20} /> },
+        ],
     },
     {
         key: '8',
@@ -40,23 +43,29 @@ const items = [
             </Text>
         ),
         children: [
-            { key: '9', label: 'Quản lý nghỉ phép', icon: <PersonHeart size={20} /> },
-            { key: '10', label: 'Quản lý nhân viên', icon: <PeopleFill size={20} /> },
+            { key: 'manager', label: 'Quản lý nghỉ phép', icon: <PersonHeart size={20} /> },
+            { key: 'employee', label: 'Quản lý nhân viên', icon: <PeopleFill size={20} /> },
         ],
     },
 ];
 
-const SiderComponent = ({ defaultOpenKeys, defaultSelectedKeys, handleMenuClick }) => (
-    <Sider breakpoint="xxl" collapsible collapsedWidth="0" theme="light" width="270">
-        <Menu
-            defaultOpenKeys={defaultOpenKeys}
-            defaultSelectedKeys={defaultSelectedKeys}
-            items={items}
-            mode="inline"
-            // Navigate route
-            onClick={handleMenuClick}
-        />
-    </Sider>
-);
+const SiderComponent = ({ defaultOpenKeys, defaultSelectedKeys }) => {
+    const navigate = useNavigate();
+
+    const handleMenuClick = useCallback(e => navigate(`./${e.key}`), [navigate]);
+
+    return (
+        <Sider breakpoint="xxl" collapsible collapsedWidth="0" theme="light" width="270">
+            <Menu
+                defaultOpenKeys={defaultOpenKeys}
+                defaultSelectedKeys={defaultSelectedKeys}
+                items={items}
+                mode="inline"
+                // Navigate route
+                onClick={handleMenuClick}
+            />
+        </Sider>
+    );
+};
 
 export default SiderComponent;

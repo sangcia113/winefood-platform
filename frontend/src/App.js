@@ -1,10 +1,8 @@
 import { ConfigProvider, Layout } from 'antd';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import HeaderComponent from './components/common/HeaderComponent';
-import SiderComponent from './components/common/SiderComponent';
-import FooterComponent from './components/common/FooterComponent';
+import { FooterComponent, HeaderComponent, SiderComponent } from './components/index';
+import { EmployeePage, HomePage, NotExistPage } from './pages/index';
 
 const App = () => {
     console.log('App run.....');
@@ -18,15 +16,16 @@ const App = () => {
                         controlHeight: 36,
                         fontSize: 18,
                     },
-                    // components: { Layout: { bodyBg: '#f0f2f5' } },
                 }}
             >
                 <Layout style={{ minHeight: '100vh' }}>
                     <HeaderComponent />
                     <Layout>
-                        <SiderComponent />
+                        <SiderComponent defaultSelectedKeys={'home'} />
                         <Routes>
-                            <Route path="/" element={<HomePage />} />
+                            <Route path="*" element={<NotExistPage />} />
+                            <Route path="/home" element={<HomePage />} />
+                            <Route path="/employee" element={<EmployeePage />} />
                         </Routes>
                     </Layout>
                     <FooterComponent />

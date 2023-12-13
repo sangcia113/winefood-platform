@@ -5,12 +5,7 @@ import React from 'react';
 import { Dropdown, Input, Modal, Typography } from 'antd';
 
 // Import các biểu tượng cụ thể từ thư viện ant-design/icons
-import {
-    ExclamationCircleOutlined,
-    QuestionCircleOutlined,
-    StopFilled,
-    StopOutlined,
-} from '@ant-design/icons';
+import { ExclamationCircleOutlined, QuestionCircleOutlined, StopFilled } from '@ant-design/icons';
 
 // Import các biểu tượng cụ thể từ thư viện react-bootstrap-icons
 import {

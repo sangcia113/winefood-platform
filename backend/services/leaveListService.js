@@ -59,7 +59,7 @@ const readLeaveList = async () => {
                 ON
                     alt.id = ll.actualLeaveTypeID
                 WHERE 
-                    IF (superiorId = 2, managerApproved IN (0,1), leaderApproved = 1)
+                    IF (superiorId IN(1,2), managerApproved IN (0,1), leaderApproved = 1)
                 ORDER BY
                     ll.id
                 DESC`;

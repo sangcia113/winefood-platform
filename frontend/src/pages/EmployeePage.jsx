@@ -1,4 +1,4 @@
-import { Card, DatePicker, Flex, Space, Table, Tabs, Typography } from 'antd';
+import { Card, DatePicker, Flex, Table, Tabs, Typography } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -55,20 +55,32 @@ const EmployeePage = () => {
         return uniqueNames.map(name => ({ text: name, value: name }));
     };
 
-    const handleGetLeaveListByDate = (startDate, endDate) => {
-        dayjs.extend(isSameOrBefore);
-        dayjs.extend(isSameOrAfter);
+    const handleGetLeaveListByDate = info => {
+        // if (!info) return;
 
-        dataSourceLeaveList.map(item => {
-            if (
-                dayjs(item.bookFromDate).isSameOrBefore(dayjs(endDate)) &&
-                dayjs(item.bookToDate).isSameOrAfter(dayjs(startDate))
-            ) {
-                console.log(true);
-            } else {
-                console.log(false);
-            }
-        });
+        if (info) {
+            dayjs.extend(isSameOrBefore);
+            dayjs.extend(isSameOrAfter);
+
+            const [startDate, endDate] = info;
+            const originalDataCopy = [...dataSourceLeaveList];
+
+            const arrData = originalDataCopy.filter(item => {
+                const bookFromDate = dayjs(item.bookFromDate, 'DD/MM/YYYY');
+
+                const bookToDate = dayjs(item.bookToDate, 'DD/MM/YYYY');
+
+                return (
+                    dayjs(bookFromDate).isSameOrBefore(dayjs(endDate)) &&
+                    dayjs(bookToDate).isSameOrAfter(dayjs(startDate))
+                );
+            });
+
+            setDataSourceLeaveList(arrData);
+        } else {
+            // If startDate or endDate is not selected, reset to the original leave list
+            handleGetLeaveList();
+        }
     };
 
     const columnsLeaveList = [
@@ -234,11 +246,11 @@ const EmployeePage = () => {
                                     <Flex justify={'end'} align={'center'} gap={'middle'}>
                                         <Text>Select Date</Text>
                                         <RangePicker
-                                            allowClear={false}
-                                            onChange={() => handleGetLeaveListByDate()}
-                                            onCalendarChange={info =>
-                                                handleGetLeaveListByDate(dayjs(info[0]).format(''))
-                                            }
+                                            format={'DD/MM/YYYY'}
+                                            onCalendarChange={info => {
+                                                console.log(info);
+                                                handleGetLeaveListByDate(info);
+                                            }}
                                         />
                                     </Flex>
                                     <Table

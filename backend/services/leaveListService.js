@@ -38,7 +38,31 @@ const createLeaveList = async (
 // Đọc trong cơ sở dữ liệu.
 const readLeaveList = async () => {
     // Truy vấn SQL để đọc
-    const sql = `SELECT * FROM leave_list ORDER BY id DESC`;
+    const sql = `SELECT
+                    ll.*,
+                    u.name,
+                    d.name AS department,
+                    blt.nameVN AS bookLeaveType,
+                    alt.nameVN AS actualLeaveType
+                FROM
+                    leave_list AS ll
+                LEFT JOIN user AS u
+                ON
+                    u.id = ll.userId
+                LEFT JOIN department AS d
+                ON
+                    d.id = u.departmentId
+                LEFT JOIN leave_type AS blt
+                ON
+                    blt.id = ll.bookLeaveTypeId
+                LEFT JOIN leave_type AS alt
+                ON
+                    alt.id = ll.actualLeaveTypeID
+                WHERE 
+                    IF (superiorId = 2, managerApproved IN (0,1), leaderApproved = 1)
+                ORDER BY
+                    ll.id
+                DESC`;
 
     // Thực hiện truy vấn SQL và trả về kết quả
     const [results] = await db.query(sql);

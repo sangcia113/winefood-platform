@@ -2,7 +2,7 @@ import { ConfigProvider, Layout } from 'antd';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { FooterComponent, HeaderComponent, SiderComponent } from './components/index';
-import { EmployeePage, HomePage, NotExistPage } from './pages/index';
+import { ManagerPage, HomePage, NotExistPage } from './pages/index';
 
 const App = () => {
     console.log('App run.....');
@@ -25,7 +25,7 @@ const App = () => {
                         <Routes>
                             <Route path="*" element={<NotExistPage />} />
                             <Route path="/home" element={<HomePage />} />
-                            <Route path="/employee" element={<EmployeePage />} />
+                            <Route path="/manager" element={<ManagerPage />} />
                         </Routes>
                     </Layout>
                     <FooterComponent />

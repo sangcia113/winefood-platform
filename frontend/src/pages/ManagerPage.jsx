@@ -1,15 +1,4 @@
-import {
-    Card,
-    DatePicker,
-    Divider,
-    Flex,
-    Space,
-    Table,
-    Tabs,
-    Tag,
-    Tooltip,
-    Typography,
-} from 'antd';
+import { Card, DatePicker, Divider, Flex, Table, Tabs, Tag, Tooltip, Typography } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -145,7 +134,82 @@ const EmployeePage = () => {
             title: '#',
             dataIndex: 'id',
             key: 'id',
+            ellipsis: true,
             sorter: (a, b) => a.id - b.id,
+            render: (_, record) => (
+                <Tooltip
+                    color={'white'}
+                    overlayStyle={{
+                        border: '4px solid #28a745', // Đặt độ dày và màu cho border ở đây
+                        borderRadius: '12px', // Đặt bo góc nếu cần
+                        color: 'black',
+                        fontSize: 14,
+                        minWidth: '280px',
+                    }}
+                    placement={'right'}
+                    title={
+                        <div style={{ color: 'black' }}>
+                            <p align={'center'} style={{ fontSize: 16, margin: 8 }}>
+                                <b>THÔNG TIN NGHỈ PHÉP</b>
+                            </p>
+                            <Divider style={{ backgroundColor: '#28a745', margin: 0 }} />
+                            <p>
+                                Loại phép (Đăng ký): <b>{record.bookLeaveType}</b>
+                            </p>
+                            <p>
+                                Loại phép (Thực tế): <b>{record.actualLeaveType}</b>
+                            </p>
+                            <Divider style={{ backgroundColor: '#28a745', margin: 0 }} />
+                            <p>
+                                Số ngày nghỉ (Đăng ký): <b>{record.bookLeaveDay}</b>
+                            </p>
+                            <p>
+                                Số ngày nghỉ (Thực tế): <b>{record.actualLeaveDay}</b>
+                            </p>
+                            <Divider style={{ backgroundColor: '#28a745', margin: 0 }} />
+                            <p>
+                                Từ ngày: <b>{record.bookFromDate}</b>
+                            </p>
+                            <p>
+                                Đến ngày: <b>{record.bookToDate}</b>
+                            </p>
+                            <p>
+                                Lý do: <b>{record.reason}</b>
+                            </p>
+                            <p>
+                                Ngày yêu cầu: <b>{record.requestDate}</b>
+                            </p>
+                            <Divider style={{ backgroundColor: '#28a745', margin: 0 }} />
+                            <p>
+                                Leader:{' '}
+                                <b>
+                                    {record.leaderApproved === 1 && (
+                                        <span>
+                                            <CheckCircleFilled style={{ color: '#28a745' }} />{' '}
+                                            {dayjs(record.leaderApprovedDate).format(
+                                                'DD/MM/YYYY HH:mm'
+                                            )}
+                                        </span>
+                                    )}
+                                </b>
+                            </p>
+                            <p>
+                                Manager:{' '}
+                                <b>
+                                    {record.managerApproved === 1 ? (
+                                        <CheckCircleFilled style={{ color: '#28a745' }} />
+                                    ) : (
+                                        <CloseCircleFilled style={{ color: '#dc3545' }} />
+                                    )}{' '}
+                                    {dayjs(record.managerApprovedDate).format('DD/MM/YYYY HH:mm')}
+                                </b>
+                            </p>
+                        </div>
+                    }
+                >
+                    <Text>{record.id}</Text>
+                </Tooltip>
+            ),
         },
         {
             title: 'Họ và Tên',
@@ -155,41 +219,14 @@ const EmployeePage = () => {
             filters: handleGetUniqueName(dataSourceLeaveList),
             filterSearch: true,
             filterMode: 'tree',
-            render: (_, record) => (
-                <Tooltip
-                    color={'green'}
-                    title={
-                        <Space direction={'vertical'}>
-                            <Text strong style={{ fontSize: 12 }}>
-                                THÔNG TIN NGHỈ PHÉP
-                            </Text>
-                            <Divider />
-                            <Text style={{ fontSize: 12 }}>
-                                Loại phép (Đăng ký): {record.bookLeaveType}
-                            </Text>
-                            <Text style={{ fontSize: 12 }}>
-                                Loại phép (Thực tế): {record.actualLeaveType}
-                            </Text>
-                            <Divider />
-                            <Text style={{ fontSize: 12 }}>
-                                Số ngày nghỉ (Đăng ký): {record.bookLeaveDay}
-                            </Text>
-                            <Text style={{ fontSize: 12 }}>
-                                Số ngày nghỉ (Thực tế): {record.actualLeaveDay}
-                            </Text>
-                            <Divider />
-                            <Text style={{ fontSize: 12 }}>Từ ngày: {record.bookFromDate}</Text>
-                            <Text>Đến ngày: {record.bookToDate}</Text>
-                            <Text>Lý do: {record.reason}</Text>
-                            <Text>Ngày yêu cầu: {record.requestDate}</Text>
-                            <Text>Leader: </Text>
-                            <Text>Manager: </Text>
-                        </Space>
-                    }
-                >
+            render: (_, record) =>
+                record.managerApprovedDelete === null ? (
                     <Text strong>{record.userName}</Text>
-                </Tooltip>
-            ),
+                ) : (
+                    <Text delete strong type={'danger'}>
+                        {record.userName}
+                    </Text>
+                ),
             onFilter: (value, record) => record.userName.includes(value),
         },
         {
@@ -330,7 +367,14 @@ const EmployeePage = () => {
             filters: handleGetUniqueName(dataSourceLeaveListOther),
             filterSearch: true,
             filterMode: 'tree',
-            render: record => <Text strong>{record}</Text>,
+            render: (_, record) =>
+                record.deleted === 0 ? (
+                    <Text strong>{record.userName}</Text>
+                ) : (
+                    <Text delete strong type={'danger'}>
+                        {record.userName}
+                    </Text>
+                ),
             onFilter: (value, record) => record.userName.includes(value),
         },
         {

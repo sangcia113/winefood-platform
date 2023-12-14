@@ -60,7 +60,7 @@ const readLeaveList = async (startDate, endDate) => {
                 ON
                     at.id = ll.actualLeaveTypeID
                 WHERE 
-                    IF (superiorId IN (1, 2), managerApproved IN (0, 1), leaderApproved = 1)`;
+                    IF (superiorId IN (1, 2), managerApproved IN (0, 1), leaderApproved = 1) AND (deleted = 0 OR deleted IS NULL)`;
 
     if (startDate && endDate) {
         sql += ` AND bookFromDate <= ? AND bookToDate >= ?`;

@@ -7,13 +7,13 @@ const createUser = async (
     birthday,
     gender,
     numberPhone,
-    pass,
+    password,
     departmentId,
-    supperiorId,
+    superiorId,
     roleId
 ) => {
     // Truy vấn SQL để thêm
-    const sql = `INSERT INTO user (code, name, birthday, gender, numberPhone, pass, departmentId, supperiorId, roleId, createdDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO user (code, name, birthday, gender, numberPhone, password, departmentId, superiorId, roleId, createdDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     // Thực hiện truy vấn SQL với các giá trị tham số
     await db.query(sql, [
@@ -22,9 +22,9 @@ const createUser = async (
         birthday,
         gender,
         numberPhone,
-        pass,
+        password,
         departmentId,
-        supperiorId,
+        superiorId,
         roleId,
         new Date(),
     ]);
@@ -33,36 +33,19 @@ const createUser = async (
 // Đọc trong cơ sở dữ liệu.
 const readUser = async () => {
     // Truy vấn SQL để đọc
-    const sql = `SELECT * FROM user WHERE roleId != 1 ORDER BY id ASC`;
+    const sql = `SELECT
+                    u.*,
+                    za.userId AS zaloAPIUserId
+                FROM
+                    user AS u
+                LEFT JOIN zalo_api AS za
+                ON
+                    za.numberPhone = u.numberPhone AND za.numberPhone != ''
+                ORDER BY
+                    u.id ASC`;
 
     // Thực hiện truy vấn SQL và trả về kết quả
     const [results] = await db.query(sql);
-
-    return results;
-};
-
-const readSuperiorById = async id => {
-    // Truy vấn SQL để đọc
-    const sql = `SELECT
-                    z.userId,
-                    NAME
-                FROM
-                    USER AS u
-                LEFT JOIN zalo_api_user AS z
-                ON
-                    z.numberPhone = u.numberPhone
-                WHERE
-                    u.id =(
-                    SELECT
-                        superiorId
-                    FROM
-                        user
-                    WHERE
-                        id = 5
-                )`;
-
-    // Thực hiện truy vấn SQL và trả về kết quả
-    const [results] = await db.query(sql, [id]);
 
     return results;
 };
@@ -74,14 +57,14 @@ const updateUser = async (
     birthday,
     gender,
     numberPhone,
-    pass,
+    password,
     departmentId,
-    supperiorId,
+    superiorId,
     roleId,
     id
 ) => {
     // Truy vấn SQL để cập nhật
-    const sql = `UPDATE user SET code= ?, name = ?, birthday = ?, gender = ?, numberPhone = ?, pass = ?, departmentId = ?, supperiorId = ?, roleId = ? WHERE id = ?`;
+    const sql = `UPDATE user SET code= ?, name = ?, birthday = ?, gender = ?, numberPhone = ?, password = ?, departmentId = ?, superiorId = ?, roleId = ? WHERE id = ?`;
 
     // Thực hiện truy vấn SQL với các giá trị tham số
     await db.query(sql, [
@@ -90,9 +73,9 @@ const updateUser = async (
         birthday,
         gender,
         numberPhone,
-        pass,
+        password,
         departmentId,
-        supperiorId,
+        superiorId,
         roleId,
         id,
     ]);
@@ -108,4 +91,4 @@ const deleteUser = async id => {
 };
 
 // Xuất các hàm để sử dụng trong module khác
-module.exports = { createUser, readUser, readSuperiorById, updateUser, deleteUser };
+module.exports = { createUser, readUser, updateUser, deleteUser };

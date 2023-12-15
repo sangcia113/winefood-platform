@@ -3,8 +3,17 @@ const { createUser, readUser, updateUser, deleteUser } = require('../services/us
 // Xử lý yêu cầu thêm mới dữ liệu.
 const createUserHandler = async (req, res) => {
     // Lấy thông tin từ body của yêu cầu
-    const { code, name, birthday, gender, numberPhone, pass, departmentId, supperiorId, roleId } =
-        req.body;
+    const {
+        code,
+        name,
+        birthday,
+        gender,
+        numberPhone,
+        password,
+        departmentId,
+        superiorId,
+        roleId,
+    } = req.body;
 
     // Kiểm tra tính hợp lệ của dữ liệu đầu vào
     if (
@@ -14,9 +23,9 @@ const createUserHandler = async (req, res) => {
             birthday ||
             gender ||
             numberPhone ||
-            pass ||
+            password ||
             departmentId ||
-            supperiorId ||
+            superiorId ||
             roleId
         )
     ) {
@@ -31,9 +40,9 @@ const createUserHandler = async (req, res) => {
             birthday,
             gender,
             numberPhone,
-            pass,
+            password,
             departmentId,
-            supperiorId,
+            superiorId,
             roleId
         );
 
@@ -65,8 +74,17 @@ const updateUserHandler = async (req, res) => {
     const { id } = req.params;
 
     // Lấy thông tin từ body của yêu cầu
-    const { code, name, birthday, gender, numberPhone, pass, departmentId, supperiorId, roleId } =
-        req.body;
+    const {
+        code,
+        name,
+        birthday,
+        gender,
+        numberPhone,
+        password,
+        departmentId,
+        superiorId,
+        roleId,
+    } = req.body;
 
     // Kiểm tra tính hợp lệ của dữ liệu đầu vào
     if (
@@ -76,9 +94,9 @@ const updateUserHandler = async (req, res) => {
             birthday ||
             gender ||
             numberPhone ||
-            pass ||
+            password ||
             departmentId ||
-            supperiorId ||
+            superiorId ||
             roleId ||
             id
         )
@@ -94,9 +112,9 @@ const updateUserHandler = async (req, res) => {
             birthday,
             gender,
             numberPhone,
-            pass,
+            password,
             departmentId,
-            supperiorId,
+            superiorId,
             roleId,
             id
         );

@@ -26,7 +26,7 @@ const DropdownComponent = ({ actionApprove, actionReject, name }) => (
         menu={{
             items: [
                 {
-                    key: '2',
+                    key: '1',
                     label: 'Ký duyệt',
                     icon: <PencilFill />,
                     onClick: () =>
@@ -57,7 +57,7 @@ const DropdownComponent = ({ actionApprove, actionReject, name }) => (
                     style: { color: '#28a745' },
                 },
                 {
-                    key: '3',
+                    key: '2',
                     label: 'Từ chối',
                     icon: <StopFilled />,
                     onClick: () =>

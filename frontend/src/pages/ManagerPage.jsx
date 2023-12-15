@@ -1,5 +1,16 @@
-import { Card, DatePicker, Divider, Flex, Table, Tabs, Tag, Tooltip, Typography } from 'antd';
-import { Content } from 'antd/es/layout/layout';
+import {
+    Card,
+    DatePicker,
+    Divider,
+    Flex,
+    Layout,
+    Table,
+    Tabs,
+    Tag,
+    Tooltip,
+    Typography,
+} from 'antd';
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
@@ -10,6 +21,7 @@ import dayjs from 'dayjs';
 import DropdownComponent from '../components/feature/DropdownComponent';
 const { RangePicker } = DatePicker;
 
+const { Content } = Layout;
 const { Text } = Typography;
 
 const handleGetUniqueName = data => {
@@ -23,8 +35,8 @@ const handleGetUniqueName = data => {
     return uniqueNames.map(name => ({ text: name, value: name }));
 };
 
-const EmployeePage = () => {
-    console.log('Run EmployeePage...');
+const ManagerPage = () => {
+    console.log('Run ManagerPage...');
 
     const [loading, setLoading] = useState(false);
     const [dataSourceLeaveList, setDataSourceLeaveList] = useState([]);
@@ -54,9 +66,6 @@ const EmployeePage = () => {
             const arrData = response.data.map(item => ({
                 ...item,
                 key: item.id,
-                requestDate: dayjs(item.requestDate).format('DD/MM/YYYY HH:mm'),
-                bookFromDate: dayjs(item.bookFromDate).format('DD/MM/YYYY HH:mm'),
-                bookToDate: dayjs(item.bookToDate).format('DD/MM/YYYY HH:mm'),
             }));
 
             setDataSourceLeaveList(arrData);
@@ -86,9 +95,6 @@ const EmployeePage = () => {
             const arrData = response.data.map(item => ({
                 ...item,
                 key: item.id,
-                requestDate: dayjs(item.requestDate).format('DD/MM/YYYY HH:mm'),
-                bookFromDate: dayjs(item.bookFromDate).format('DD/MM/YYYY HH:mm'),
-                bookToDate: dayjs(item.bookToDate).format('DD/MM/YYYY HH:mm'),
             }));
 
             setDataSourceLeaveListOther(arrData);
@@ -115,7 +121,12 @@ const EmployeePage = () => {
                 },
             });
 
-            setDataSourceLeaveListStatistics(response.data);
+            const arrData = response.data.map(item => ({
+                ...item,
+                key: item.id,
+            }));
+
+            setDataSourceLeaveListStatistics(arrData);
         } catch (error) {
             console.log(error);
         } finally {
@@ -274,12 +285,14 @@ const EmployeePage = () => {
             dataIndex: 'bookFromDate',
             key: 'bookFromDate',
             ellipsis: true,
+            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
         },
         {
             title: 'Đến ngày',
             dataIndex: 'bookToDate',
             key: 'bookToDate',
             ellipsis: true,
+            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
         },
         {
             title: 'Lý do',
@@ -292,6 +305,7 @@ const EmployeePage = () => {
             dataIndex: 'requestDate',
             key: 'requestDate',
             ellipsis: true,
+            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
         },
         {
             title: 'Xác nhận',
@@ -368,12 +382,12 @@ const EmployeePage = () => {
             filterSearch: true,
             filterMode: 'tree',
             render: (_, record) =>
-                record.deleted === 0 ? (
-                    <Text strong>{record.userName}</Text>
-                ) : (
+                record.deleted === 1 ? (
                     <Text delete strong type={'danger'}>
                         {record.userName}
                     </Text>
+                ) : (
+                    <Text strong>{record.userName}</Text>
                 ),
             onFilter: (value, record) => record.userName.includes(value),
         },
@@ -400,12 +414,14 @@ const EmployeePage = () => {
             dataIndex: 'bookFromDate',
             key: 'bookFromDate',
             ellipsis: true,
+            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
         },
         {
             title: 'Đến ngày',
             dataIndex: 'bookToDate',
             key: 'bookToDate',
             ellipsis: true,
+            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
         },
         {
             title: 'Lý do',
@@ -418,6 +434,7 @@ const EmployeePage = () => {
             dataIndex: 'requestDate',
             key: 'requestDate',
             ellipsis: true,
+            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
         },
     ];
 
@@ -596,4 +613,4 @@ const EmployeePage = () => {
     );
 };
 
-export default EmployeePage;
+export default ManagerPage;

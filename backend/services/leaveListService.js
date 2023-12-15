@@ -40,35 +40,42 @@ const readLeaveList = async (startDate, endDate) => {
 
     // Truy vấn SQL để đọc
     let sql = `SELECT
-                    ll.*,
+                    l.*,
                     u.name AS userName,
                     d.name AS department,
                     bt.nameVN AS bookLeaveType,
                     at.nameVN AS actualLeaveType
-                FROM
-                    list AS ll
+                FROM list AS
+                    l
                 LEFT JOIN user AS u
                 ON
-                    u.id = ll.userId
+                    u.id = l.userId
                 LEFT JOIN department AS d
                 ON
                     d.id = u.departmentId
                 LEFT JOIN type AS bt
                 ON
-                    bt.id = ll.bookLeaveTypeId
+                    bt.id = l.bookLeaveTypeId
                 LEFT JOIN type AS at
-                ON
-                    at.id = ll.actualLeaveTypeID
-                WHERE 
-                    IF (superiorId IN (1, 2), managerApproved IN (0, 1), leaderApproved = 1) AND (deleted = 0 OR deleted IS NULL)`;
+                ON 
+                    at.id = l.actualLeaveTypeID
+                WHERE
+                    deleted IS NULL 
+                AND (
+                    superiorId IN (SELECT id FROM user WHERE roleId IN (1, 2))
+                    OR leaderApproved = 1
+                )`;
 
     if (startDate && endDate) {
-        sql += ` AND bookFromDate <= ? AND bookToDate >= ?`;
+        sql +=
+            startDate === endDate
+                ? ` AND ? BETWEEN DATE(bookFromDate) AND DATE(bookToDate)`
+                : ` AND DATE(bookFromDate) <= ? AND DATE(bookToDate) >= ?`;
 
         params.push(endDate, startDate);
     }
 
-    sql += ` ORDER BY ll.id DESC`;
+    sql += ` ORDER BY l.id DESC`;
 
     // Thực hiện truy vấn SQL và trả về kết quả
     const [results] = await db.query(sql, params);
@@ -81,7 +88,7 @@ const readLeaveListOther = async (startDate, endDate) => {
 
     // Truy vấn SQL để đọc
     let sql = `SELECT
-                    ll.id,
+                    l.id,
                     userId,
                     u.name AS userName,
                     d.name AS department,
@@ -93,26 +100,29 @@ const readLeaveListOther = async (startDate, endDate) => {
                     requestDate,
                     deleted
                 FROM
-                    list AS ll
+                    list AS l
                 LEFT JOIN user AS u
                 ON
-                    u.id = ll.userId
+                    u.id = l.userId
                 LEFT JOIN department AS d
                 ON
                     d.id = u.departmentId
-                LEFT JOIN type AS bt
+                LEFT JOIN type AS t
                 ON
-                    bt.id = ll.bookLeaveTypeId
+                    t.id = l.bookLeaveTypeId
                 WHERE 
-                    IF (superiorId IN (1,2), managerApproved IN (0, NULL), leaderApproved = 0)`;
+                    leaderApproved IS NULL AND managerApproved IS NULL`;
 
     if (startDate && endDate) {
-        sql += ` AND bookFromDate <= ? AND bookToDate >= ?`;
+        sql +=
+            startDate === endDate
+                ? ` AND ? BETWEEN DATE(bookFromDate) AND DATE(bookToDate)`
+                : ` AND DATE(bookFromDate) <= ? AND DATE(bookToDate) >= ?`;
 
         params.push(endDate, startDate);
     }
 
-    sql += ` ORDER BY ll.id DESC`;
+    sql += ` ORDER BY l.id DESC`;
 
     // Thực hiện truy vấn SQL và trả về kết quả
     const [results] = await db.query(sql, params);
@@ -138,7 +148,10 @@ const readLeaveListStatistics = async (startDate, endDate) => {
                     managerApproved = 1 AND deleteRequest IS NULL`;
 
     if (startDate && endDate) {
-        sql += ` AND bookFromDate <= ? AND bookToDate >= ?`;
+        sql +=
+            startDate === endDate
+                ? ` AND ? BETWEEN DATE(bookFromDate) AND DATE(bookToDate)`
+                : ` AND DATE(bookFromDate) <= ? AND DATE(bookToDate) >= ?`;
 
         params.push(endDate, startDate);
     }

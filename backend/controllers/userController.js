@@ -46,7 +46,7 @@ const createUserHandler = async (req, res) => {
             roleId
         );
 
-        res.json({ message: 'Thêm dữ liệu thành công!' });
+        res.json({ error: 0, message: 'Thêm dữ liệu thành công!' });
     } catch (err) {
         console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
 
@@ -119,7 +119,7 @@ const updateUserHandler = async (req, res) => {
             id
         );
 
-        res.json({ message: 'Cập nhật dữ liệu thành công!' });
+        res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
     } catch (err) {
         console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
 
@@ -141,7 +141,7 @@ const deleteUserHandler = async (req, res) => {
         // Gọi hàm service để xoá dữ liệu
         await deleteUser(id);
 
-        res.json({ message: 'Xoá dữ liệu thành công!' });
+        res.json({ error: 0, message: 'Xoá dữ liệu thành công!' });
     } catch (err) {
         console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
 

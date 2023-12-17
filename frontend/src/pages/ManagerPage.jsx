@@ -1,39 +1,38 @@
 import {
+    Alert,
+    Avatar,
     Card,
     DatePicker,
     Divider,
+    Dropdown,
     Flex,
+    Input,
     Layout,
+    Modal,
+    Space,
     Table,
     Tabs,
     Tag,
     Tooltip,
     Typography,
+    message,
+    notification,
 } from 'antd';
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
+import { CheckCircleFilled, CloseCircleFilled, StopFilled, SyncOutlined } from '@ant-design/icons';
 import ReactApexChart from 'react-apexcharts';
 
 import { URL } from '../configs/urlConfig';
 import dayjs from 'dayjs';
-import DropdownComponent from '../components/feature/DropdownComponent';
+import { confirmNotification, failureNotification, getUniqueName } from '../utils';
+import { PencilFill, ThreeDotsVertical } from 'react-bootstrap-icons';
 const { RangePicker } = DatePicker;
 
 const { Content } = Layout;
-const { Text } = Typography;
-
-const handleGetUniqueName = data => {
-    // Sắp xếp mảng theo userId trước khi tạo Set
-    const sortedDataSource = [...data].sort((a, b) => a.userId - b.userId);
-
-    // Tạo Set từ mảng đã sắp xếp
-    const uniqueNames = Array.from(new Set(sortedDataSource.map(item => item.userName)));
-
-    // Trả về danh sách giá trị duy nhất
-    return uniqueNames.map(name => ({ text: name, value: name }));
-};
+const { Text, Title } = Typography;
+const { TextArea } = Input;
 
 const ManagerPage = () => {
     console.log('Run ManagerPage...');
@@ -42,6 +41,7 @@ const ManagerPage = () => {
     const [dataSourceLeaveList, setDataSourceLeaveList] = useState([]);
     const [dataSourceLeaveListOther, setDataSourceLeaveListOther] = useState([]);
     const [dataSourceLeaveListStatistics, setDataSourceLeaveListStatistics] = useState([]);
+    const [totalWaitManager, setTotalWaitManager] = useState(0);
 
     useEffect(() => {
         handleGetLeaveList();
@@ -69,6 +69,8 @@ const ManagerPage = () => {
             }));
 
             setDataSourceLeaveList(arrData);
+
+            handleGetTotalWaitManager();
         } catch (error) {
             console.error(error);
         } finally {
@@ -134,12 +136,105 @@ const ManagerPage = () => {
         }
     };
 
+    const handleGetTotalWaitManager = () => {
+        const total = dataSourceLeaveList.reduce(
+            (accumulator, currentValue) =>
+                currentValue.managerApproved === null && currentValue.deleteRequest === null
+                    ? accumulator + 1
+                    : accumulator,
+            0
+        );
+
+        setTotalWaitManager(total);
+    };
+
     const columnsLeaveList = [
         {
             title: '',
             dataIndex: 'action',
             key: 'action',
-            render: (_, record) => <DropdownComponent name={record.userName} />,
+            fixed: 'left',
+            render: (_, record) => (
+                <Dropdown
+                    arrow={true}
+                    menu={{
+                        items: [
+                            {
+                                key: 1,
+                                label: 'Phê duyệt',
+                                icon: <PencilFill />,
+                                onClick: () => {
+                                    if (
+                                        record.managerApproved === null ||
+                                        record.managerApproved === 0
+                                    ) {
+                                        confirmNotification(
+                                            <Text style={{ fontSize: 16 }}>
+                                                Bạn có chắc duyệt yêu cầu nghỉ phép của<br></br>
+                                                <b>{record.userName}</b>
+                                            </Text>
+                                        );
+                                    } else if (record.managerApproved === 1) {
+                                        failureNotification(
+                                            <Text style={{ fontSize: 16 }}>
+                                                Bạn đã duyệt yêu cầu nghỉ phép này!
+                                            </Text>
+                                        );
+                                    }
+                                },
+                                style: { color: '#52c41a' },
+                            },
+                            {
+                                key: 2,
+                                label: 'Từ chối',
+                                icon: <StopFilled />,
+                                onClick: () => {
+                                    if (
+                                        record.managerApproved === null ||
+                                        record.managerApproved === 1
+                                    ) {
+                                        confirmNotification(
+                                            <TextArea
+                                                placeholder="Lý do từ chối yêu cầu này?"
+                                                rows={5}
+                                            />
+                                        );
+                                    } else if (record.managerApproved === 0) {
+                                        failureNotification(
+                                            <Text style={{ fontSize: 16 }}>
+                                                Bạn đã từ chối yêu cầu nghỉ phép này!
+                                            </Text>
+                                        );
+                                    }
+                                },
+                                style: { color: '#ff4d4f' },
+                            },
+                            {
+                                key: 3,
+                                label: 'Xác nhận',
+                                icon: <CheckCircleFilled />,
+                                children: [
+                                    {
+                                        key: 4,
+                                        label: 'Loại phép',
+                                    },
+                                    {
+                                        key: 5,
+                                        label: 'Số ngày',
+                                    },
+                                    {
+                                        key: 6,
+                                        label: 'Huỷ phép',
+                                    },
+                                ],
+                            },
+                        ],
+                    }}
+                    placement={'bottomRight'}
+                >
+                    <ThreeDotsVertical />
+                </Dropdown>
+            ),
         },
         {
             title: '#',
@@ -151,7 +246,7 @@ const ManagerPage = () => {
                 <Tooltip
                     color={'white'}
                     overlayStyle={{
-                        border: '4px solid #28a745', // Đặt độ dày và màu cho border ở đây
+                        border: '4px solid #52c41a', // Đặt độ dày và màu cho border ở đây
                         borderRadius: '12px', // Đặt bo góc nếu cần
                         color: 'black',
                         fontSize: 14,
@@ -163,40 +258,43 @@ const ManagerPage = () => {
                             <p align={'center'} style={{ fontSize: 16, margin: 8 }}>
                                 <b>THÔNG TIN NGHỈ PHÉP</b>
                             </p>
-                            <Divider style={{ backgroundColor: '#28a745', margin: 0 }} />
+                            <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
                             <p>
                                 Loại phép (Đăng ký): <b>{record.bookLeaveType}</b>
                             </p>
                             <p>
                                 Loại phép (Thực tế): <b>{record.actualLeaveType}</b>
                             </p>
-                            <Divider style={{ backgroundColor: '#28a745', margin: 0 }} />
+                            <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
                             <p>
                                 Số ngày nghỉ (Đăng ký): <b>{record.bookLeaveDay}</b>
                             </p>
                             <p>
                                 Số ngày nghỉ (Thực tế): <b>{record.actualLeaveDay}</b>
                             </p>
-                            <Divider style={{ backgroundColor: '#28a745', margin: 0 }} />
+                            <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
                             <p>
-                                Từ ngày: <b>{record.bookFromDate}</b>
+                                Từ ngày:{' '}
+                                <b>{dayjs(record.bookFromDate).format('DD/MM/YYYY HH:mm')}</b>
                             </p>
                             <p>
-                                Đến ngày: <b>{record.bookToDate}</b>
+                                Đến ngày:{' '}
+                                <b>{dayjs(record.bookToDate).format('DD/MM/YYYY HH:mm')}</b>
                             </p>
                             <p>
                                 Lý do: <b>{record.reason}</b>
                             </p>
                             <p>
-                                Ngày yêu cầu: <b>{record.requestDate}</b>
+                                Ngày yêu cầu:{' '}
+                                <b>{dayjs(record.requestDate).format('DD/MM/YYYY HH:mm')}</b>
                             </p>
-                            <Divider style={{ backgroundColor: '#28a745', margin: 0 }} />
+                            <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
                             <p>
                                 Leader:{' '}
                                 <b>
                                     {record.leaderApproved === 1 && (
                                         <span>
-                                            <CheckCircleFilled style={{ color: '#28a745' }} />{' '}
+                                            <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
                                             {dayjs(record.leaderApprovedDate).format(
                                                 'DD/MM/YYYY HH:mm'
                                             )}
@@ -208,9 +306,9 @@ const ManagerPage = () => {
                                 Manager:{' '}
                                 <b>
                                     {record.managerApproved === 1 ? (
-                                        <CheckCircleFilled style={{ color: '#28a745' }} />
+                                        <CheckCircleFilled style={{ color: '#52c41a' }} />
                                     ) : (
-                                        <CloseCircleFilled style={{ color: '#dc3545' }} />
+                                        <CloseCircleFilled style={{ color: '#ff4d4f' }} />
                                     )}{' '}
                                     {dayjs(record.managerApprovedDate).format('DD/MM/YYYY HH:mm')}
                                 </b>
@@ -227,18 +325,28 @@ const ManagerPage = () => {
             dataIndex: 'userName',
             key: 'userName',
             ellipsis: true,
-            filters: handleGetUniqueName(dataSourceLeaveList),
+            filters: getUniqueName(dataSourceLeaveList),
             filterSearch: true,
-            filterMode: 'tree',
-            render: (_, record) =>
-                record.managerApprovedDelete === null ? (
-                    <Text strong>{record.userName}</Text>
-                ) : (
-                    <Text delete strong type={'danger'}>
-                        {record.userName}
-                    </Text>
-                ),
             onFilter: (value, record) => record.userName.includes(value),
+            render: (_, record) => {
+                if (record.managerApprovedDelete === null) {
+                    if (record.managerApproved === null) {
+                        return (
+                            <Text strong style={{ color: '#1677ff' }}>
+                                {record.userName}
+                            </Text>
+                        );
+                    } else {
+                        return <Text strong>{record.userName}</Text>;
+                    }
+                } else {
+                    return (
+                        <Text delete strong type={'danger'}>
+                            {record.userName}
+                        </Text>
+                    );
+                }
+            },
         },
         {
             title: 'Loại phép',
@@ -315,41 +423,64 @@ const ManagerPage = () => {
                     dataIndex: 'leaderApproved',
                     key: 'leaderApproved',
                     ellipsis: true,
-                    render: record =>
-                        record === 1 ? (
-                            <CheckCircleFilled style={{ color: '#28a745' }} />
-                        ) : record === 2 ? (
-                            <CloseCircleFilled style={{ color: '#dc3545' }} />
-                        ) : (
-                            ''
-                        ),
+                    render: record => record && <CheckCircleFilled style={{ color: '#52c41a' }} />,
                 },
                 {
                     title: 'Quản lý',
                     dataIndex: 'managerApproved',
                     key: 'managerApproved',
                     ellipsis: true,
-                    render: record =>
-                        record === 1 ? (
-                            <CheckCircleFilled style={{ color: '#28a745' }} />
-                        ) : record === 2 ? (
-                            <CloseCircleFilled style={{ color: '#dc3545' }} />
-                        ) : (
-                            ''
-                        ),
+                    render: (_, record) => {
+                        if (record.managerApproved === 0) {
+                            return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
+                        } else if (record.managerApproved === 1) {
+                            return <CheckCircleFilled style={{ color: '#52c41a' }} />;
+                        } else if (record.managerApprovedDelete === null) {
+                            return (
+                                <Tag
+                                    bordered={false}
+                                    color="processing"
+                                    icon={<SyncOutlined spin />}
+                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                >
+                                    Waiting...
+                                </Tag>
+                            );
+                        }
+                    },
+                },
+                {
+                    title: 'Huỷ phép',
+                    dataIndex: 'managerApprovedDelete',
+                    key: 'managerApprovedDelete',
+                    ellipsis: true,
+                    render: (_, record) => {
+                        if (record.deleteRequest === 1) {
+                            if (record.managerApprovedDelete === null) {
+                                return (
+                                    <Tag
+                                        bordered={false}
+                                        color="processing"
+                                        icon={<SyncOutlined spin />}
+                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                    >
+                                        Waiting...
+                                    </Tag>
+                                );
+                            } else if (record.managerApprovedDelete === 1) {
+                                return <CheckCircleFilled style={{ color: '#52c41a' }} />;
+                            } else {
+                                return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
+                            }
+                        }
+                    },
                 },
             ],
         },
         {
             title: 'Lý do từ chối',
-            dataIndex: 'managerReason',
+            dataIndex: 'managerRejectReason',
             key: 'managerReason',
-            ellipsis: true,
-        },
-        {
-            title: 'Yêu cầu huỷ phép',
-            dataIndex: 'managerApprovedDelete',
-            key: 'managerApprovedDelete',
             ellipsis: true,
         },
     ];
@@ -368,9 +499,9 @@ const ManagerPage = () => {
             ellipsis: true,
             render: record =>
                 record === 1 ? (
-                    <Tag color={'error'}>Đã xóa</Tag>
+                    <Tag color={'#ff4d4f'}>Đã xóa</Tag>
                 ) : (
-                    <Tag color={'success'}>Chờ duyệt</Tag>
+                    <Tag color={'#52c41a'}>Chờ duyệt</Tag>
                 ),
         },
         {
@@ -378,9 +509,9 @@ const ManagerPage = () => {
             dataIndex: 'userName',
             key: 'userName',
             ellipsis: true,
-            filters: handleGetUniqueName(dataSourceLeaveListOther),
+            filters: getUniqueName(dataSourceLeaveListOther),
             filterSearch: true,
-            filterMode: 'tree',
+            onFilter: (value, record) => record.userName.includes(value),
             render: (_, record) =>
                 record.deleted === 1 ? (
                     <Text delete strong type={'danger'}>
@@ -389,7 +520,6 @@ const ManagerPage = () => {
                 ) : (
                     <Text strong>{record.userName}</Text>
                 ),
-            onFilter: (value, record) => record.userName.includes(value),
         },
         {
             title: 'Bộ phận',
@@ -460,7 +590,20 @@ const ManagerPage = () => {
                     items={[
                         {
                             key: 1,
-                            label: 'Danh Sách Nghỉ Phép',
+                            label: (
+                                <>
+                                    Danh Sách Nghỉ Phép{' '}
+                                    {totalWaitManager !== 0 && (
+                                        <Avatar
+                                            style={{
+                                                backgroundColor: '#f50',
+                                            }}
+                                        >
+                                            {totalWaitManager}
+                                        </Avatar>
+                                    )}
+                                </>
+                            ),
                             children: (
                                 <Flex vertical gap={'large'}>
                                     <Flex justify={'end'} align={'center'} gap={'middle'}>

@@ -6,9 +6,9 @@ const FormComponent = ({ form, onFinish, formFields }) => {
     return (
         <Form
             form={form}
-            labelCol={{ span: 8 }}
+            labelCol={{ span: 10 }}
             onFinish={onFinish}
-            wrapperCol={{ span: 16 }}
+            wrapperCol={{ span: 14 }}
             // layout='vertical'
         >
             <Form.Item name="id" hidden>

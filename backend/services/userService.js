@@ -34,15 +34,17 @@ const createUser = async (
 const readUser = async () => {
     // Truy vấn SQL để đọc
     const sql = `SELECT
-                    u.*,
-                    za.userId AS zaloAPIUserId
+                    l.*,
+                    l.id userId,
+                    l.name userName,
+                    za.zaloUserId
                 FROM
-                    user AS u
-                LEFT JOIN zalo_api AS za
+                    leave.user l
+                LEFT JOIN zalo_api.user za
                 ON
-                    za.numberPhone = u.numberPhone AND za.numberPhone != ''
+                    za.zaloNumberPhone = l.numberPhone AND za.zaloNumberPhone != ''
                 ORDER BY
-                    u.id ASC`;
+                    l.id ASC`;
 
     // Thực hiện truy vấn SQL và trả về kết quả
     const [results] = await db.query(sql);

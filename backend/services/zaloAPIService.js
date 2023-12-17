@@ -11,6 +11,27 @@ const readZaloAPI = async () => {
     return results;
 };
 
+// Đọc trong cơ sở dữ liệu.
+const readZaloUser = async () => {
+    // Truy vấn SQL để đọc
+    const sql = `SELECT
+                    za.*,
+                    l.id userId,
+                    l.name userName
+                FROM
+                    zalo_api.user AS za
+                INNER JOIN leave.user AS l
+                ON
+                    l.numberPhone = za.zaloNumberPhone AND za.zaloNumberPhone != ''
+                ORDER BY
+                    za.id ASC`;
+
+    // Thực hiện truy vấn SQL và trả về kết quả
+    const [results] = await db.query(sql);
+
+    return results;
+};
+
 // Cập nhật trong cơ sở dữ liệu.
 const updateZaloAPI = async (accessToken, refreshToken) => {
     // Truy vấn SQL để cập nhật
@@ -21,4 +42,4 @@ const updateZaloAPI = async (accessToken, refreshToken) => {
 };
 
 // Xuất các hàm để sử dụng trong module khác
-module.exports = { readZaloAPI, updateZaloAPI };
+module.exports = { readZaloAPI, updateZaloAPI, readZaloUser };

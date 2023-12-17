@@ -1,3 +1,12 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import dayjs from 'dayjs';
+
+// React Bootstrap Icons
+import { PencilFill, PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons';
+import { DeleteFilled } from '@ant-design/icons';
+
+// Ant Design components
 import {
     Button,
     Card,
@@ -9,18 +18,24 @@ import {
     Layout,
     Modal,
     Select,
+    Spin,
     Table,
     Tabs,
     Tag,
     Typography,
 } from 'antd';
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+
+// Local imports
 import { URL } from '../configs/urlConfig';
-import dayjs from 'dayjs';
-import { PencilFill, PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons';
-import { DeleteFilled } from '@ant-design/icons';
 import FormComponent from '../components/feature/FormComponent';
+import {
+    confirmNotification,
+    failureNotification,
+    getUniqueName,
+    successNotification,
+} from '../utils';
+
+// Ant Design Layout
 const { Content } = Layout;
 const { Text } = Typography;
 
@@ -28,10 +43,12 @@ const EmployeePage = () => {
     console.log('Run EmployeePage');
 
     const [loading, setLoading] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
     const [dataSourceEmployee, setDataSourceEmployee] = useState([]);
     const [dataSourceDepartment, setDataSourceDepartment] = useState([]);
     const [dataSourceRole, setDataSourceRole] = useState([]);
+    const [dataSourceZaloUser, setDataSourceZaloUser] = useState([]);
 
     const [form] = Form.useForm();
 
@@ -39,6 +56,7 @@ const EmployeePage = () => {
         handleGetDepartment();
         handleGetRole();
         handleGetEmployee();
+        handleGetZaloUser();
     }, []);
 
     const handleGetDepartment = async () => {
@@ -65,6 +83,22 @@ const EmployeePage = () => {
         }
     };
 
+    const handleGetZaloUser = async () => {
+        try {
+            setLoading(true);
+
+            const response = await axios.get(`${URL}/api/zalo/user`);
+
+            const arrData = response.data.map(item => ({ ...item, key: item.id }));
+
+            setDataSourceZaloUser(arrData);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleGetEmployee = async () => {
         try {
             setLoading(true);
@@ -83,10 +117,19 @@ const EmployeePage = () => {
 
     const handleInsertEmployee = async values => {
         try {
-            console.log(values);
             const response = await axios.post(`${URL}/api/leave/user`, values);
 
-            console.log(response.data);
+            if (response.data.error === 0) {
+                handleModal();
+
+                successNotification(response.data.message);
+
+                handleGetEmployee();
+            } else {
+                handleModal();
+
+                failureNotification(response.data.message);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -94,16 +137,39 @@ const EmployeePage = () => {
 
     const handleUpdateEmployee = async values => {
         try {
-            console.log(values);
             const response = await axios.put(`${URL}/api/leave/user/${values.id}`, values);
 
-            console.log(response.data);
+            if (response.data.error === 0) {
+                handleModal();
+
+                successNotification(response.data.message);
+
+                handleGetEmployee();
+            } else {
+                handleModal();
+
+                failureNotification(response.data.message);
+            }
         } catch (error) {
             console.log(error);
         }
     };
 
-    const handleModal = () => setModalOpen(prevModalOpen => !prevModalOpen);
+    const handleDeleteEmployee = async id => {
+        try {
+            const response = await axios.delete(`${URL}/api/leave/user/${id}`);
+
+            if (response.data.error === 0) {
+                successNotification(response.data.message);
+
+                handleGetEmployee();
+            } else {
+                failureNotification(response.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const onFinish = async values => {
         values.id
@@ -117,11 +183,14 @@ const EmployeePage = () => {
               });
     };
 
+    const handleModal = () => setModalOpen(prevModalOpen => !prevModalOpen);
+
     const columnsEmployee = [
         {
             title: '',
             dataIndex: 'action',
             key: 'action',
+            fixed: 'left',
             render: (_, record) => (
                 <Dropdown
                     arrow={true}
@@ -129,18 +198,34 @@ const EmployeePage = () => {
                         items: [
                             {
                                 key: '1',
-                                label: 'Edit',
+                                label: 'Sửa',
                                 icon: <PencilFill />,
-                                onClick: () => {},
-
-                                style: { color: '#28a745' },
+                                onClick: () => {
+                                    form.setFieldsValue({
+                                        ...record,
+                                        birthday: dayjs(record.birthday),
+                                    });
+                                    setModalTitle('SỬA NHÂN VIÊN');
+                                    handleModal();
+                                },
+                                style: { color: '#faad14' },
                             },
                             {
                                 key: '2',
-                                label: 'Delete',
+                                label: 'Xoá',
                                 icon: <DeleteFilled />,
-                                onClick: () => {},
-                                style: { color: '#dc3545' },
+                                onClick: () =>
+                                    confirmNotification(
+                                        <Text style={{ fontSize: 16 }}>
+                                            Bạn có chắc muốn xóa?
+                                            <br />
+                                            <b>{record.userName}</b>
+                                            <br />
+                                            Thao tác này không thể hoàn tác!
+                                        </Text>,
+                                        () => handleDeleteEmployee(record.id)
+                                    ),
+                                style: { color: '#ff4d4f' },
                             },
                         ],
                     }}
@@ -155,6 +240,7 @@ const EmployeePage = () => {
             dataIndex: 'id',
             key: 'id',
             ellipsis: true,
+            sorter: (a, b) => a.id - b.id,
         },
         {
             title: 'Mã nhân viên',
@@ -164,9 +250,13 @@ const EmployeePage = () => {
         },
         {
             title: 'Tên nhân viên',
-            dataIndex: 'name',
-            key: 'name',
+            dataIndex: 'userName',
+            key: 'userName',
             ellipsis: true,
+            filterSearch: true,
+            filters: getUniqueName(dataSourceEmployee),
+            onFilter: (value, record) => record.userName.includes(value),
+            render: record => <Text strong>{record}</Text>,
         },
         {
             title: 'Ngày sinh',
@@ -217,9 +307,62 @@ const EmployeePage = () => {
         },
         {
             title: 'Zalo API User',
-            dataIndex: 'zaloAPIUserId',
-            key: 'zaloAPIUserId',
+            dataIndex: 'zaloUserId',
+            key: 'zaloUserId',
             ellipsis: true,
+        },
+        {
+            title: 'Ngày tạo',
+            dataIndex: 'createdDate',
+            key: 'createdDate',
+            ellipsis: true,
+            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+        },
+    ];
+
+    const columnsZaloUser = [
+        {
+            title: '#',
+            dataIndex: 'userId',
+            key: 'userId',
+            ellipsis: true,
+            sorter: (a, b) => a.userId - b.userId,
+        },
+        {
+            title: 'Tên nhân viên',
+            dataIndex: 'userName',
+            key: 'userName',
+            ellipsis: true,
+            filterSearch: true,
+            filters: getUniqueName(dataSourceZaloUser),
+            onFilter: (value, record) => record.userName.includes(value),
+            render: record => <Text strong>{record}</Text>,
+        },
+        {
+            title: 'Zalo ID',
+            dataIndex: 'zaloUserId',
+            key: 'zaloUserId',
+            ellipsis: true,
+        },
+        {
+            title: 'Số điện thoại',
+            dataIndex: 'zaloNumberPhone',
+            key: 'zaloNumberPhone',
+            ellipsis: true,
+        },
+        {
+            title: 'Yêu cầu',
+            dataIndex: 'sendRequest',
+            key: 'sendRequest',
+            ellipsis: true,
+            render: record =>
+                record === 0 ? (
+                    <>
+                        <Spin size={'small'} /> Waiting...
+                    </>
+                ) : (
+                    record
+                ),
         },
         {
             title: 'Ngày tạo',
@@ -235,13 +378,13 @@ const EmployeePage = () => {
             label: 'Mã nhân viên',
             name: 'code',
             rules: [{ required: true, message: 'Vui lòng nhập mã nhân viên' }],
-            typeInput: <Input allowClear maxLength={50} showCount />,
+            typeInput: <Input allowClear maxLength={10} showCount />,
         },
         {
             label: 'Tên nhân viên',
             name: 'name',
             rules: [{ required: true, message: 'Vui lòng nhập tên nhân viên' }],
-            typeInput: <Input allowClear maxLength={100} showCount />,
+            typeInput: <Input allowClear maxLength={50} showCount />,
         },
         {
             label: 'Ngày sinh',
@@ -304,7 +447,7 @@ const EmployeePage = () => {
             label: 'Số điện thoại',
             name: 'numberPhone',
             rules: [{ required: true, message: 'Vui lòng nhập số điện thoại' }],
-            typeInput: <Input allowClear maxLength={9} prefix="+84" showCount />,
+            typeInput: <Input allowClear maxLength={11} showCount />,
         },
     ];
 
@@ -333,14 +476,17 @@ const EmployeePage = () => {
                             label: 'Danh Sách Nhân Viên',
                             children: (
                                 <Flex vertical gap={'large'}>
-                                    <Flex justify={'end'} align={'center'}>
+                                    <Flex justify={'end'}>
                                         <Button
                                             icon={
                                                 <PlusCircleFill
-                                                    style={{ fontSize: 22, paddingTop: 4 }}
+                                                    style={{ fontSize: 22, paddingTop: 3 }}
                                                 />
                                             }
-                                            onClick={() => handleModal()}
+                                            onClick={() => {
+                                                setModalTitle('THÊM NHÂN VIÊN');
+                                                handleModal();
+                                            }}
                                             shape={'circle'}
                                             type={'primary'}
                                         />
@@ -360,14 +506,33 @@ const EmployeePage = () => {
                             key: 2,
                             label: 'Quản Lý API',
                             children: (
-                                <Table
-                                    bordered
-                                    // columns={columnsLeaveListOther}
-                                    // dataSource={dataSourceLeaveListOther}
-                                    // loading={loading}
-                                    scroll={{ x: true }}
-                                    showSorterTooltip={false}
-                                />
+                                <Flex vertical gap={'large'}>
+                                    <Flex justify={'center'} gap={'large'}>
+                                        <Button
+                                            style={{ backgroundColor: '#f759ab', color: 'white' }}
+                                        >
+                                            Get All User
+                                        </Button>
+                                        <Button
+                                            style={{ backgroundColor: '#2db7f5', color: 'white' }}
+                                        >
+                                            Request API
+                                        </Button>
+                                        <Button
+                                            style={{ backgroundColor: '#73d13d', color: 'white' }}
+                                        >
+                                            Get Number Phone
+                                        </Button>
+                                    </Flex>
+                                    <Table
+                                        bordered
+                                        columns={columnsZaloUser}
+                                        dataSource={dataSourceZaloUser}
+                                        loading={loading}
+                                        scroll={{ x: true }}
+                                        showSorterTooltip={false}
+                                    />
+                                </Flex>
                             ),
                         },
                     ]}
@@ -376,14 +541,13 @@ const EmployeePage = () => {
             </Card>
             <Modal
                 afterClose={() => form.resetFields()}
-                okText="Submit"
+                forceRender
                 onCancel={() => handleModal()}
                 onOk={() => form.submit()}
                 open={modalOpen}
-                title="THÊM MỚI NHÂN VIÊN"
+                title={modalTitle}
                 styles={{
                     header: { textAlign: 'center', marginBottom: '20px' },
-                    footer: { textAlign: 'center' },
                 }}
             >
                 <FormComponent form={form} formFields={formFields} onFinish={onFinish} />

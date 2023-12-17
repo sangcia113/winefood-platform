@@ -27,32 +27,20 @@ const DropdownComponent = ({ actionApprove, actionReject, name }) => (
             items: [
                 {
                     key: '1',
-                    label: 'Ký duyệt',
+                    label: 'Phê duyệt',
                     icon: <PencilFill />,
                     onClick: () =>
                         Modal.confirm({
-                            cancelText: (
-                                <Text style={{ color: '#dc3545' }}>
-                                    <HandThumbsDownFill /> Hủy Bỏ
-                                </Text>
-                            ),
                             centered: true,
-                            className: 'custom-modal',
                             content: (
-                                <Text>
+                                <Text style={{ fontSize: 16 }}>
                                     Bạn có chắc duyệt yêu cầu nghỉ phép của<br></br>
                                     <b>{name}</b>
                                 </Text>
                             ),
                             icon: <QuestionCircleOutlined style={{ color: '#4096ff' }} />,
-                            okText: (
-                                <Text style={{ color: 'white' }}>
-                                    <HandThumbsUpFill /> Đồng Ý
-                                </Text>
-                            ),
-                            okType: 'primary',
                             onOk: actionApprove,
-                            title: 'VUI LÒNG XÁC NHẬN',
+                            title: <Text style={{ fontSize: 18 }}>VUI LÒNG XÁC NHẬN</Text>,
                         }),
                     style: { color: '#28a745' },
                 },
@@ -68,7 +56,6 @@ const DropdownComponent = ({ actionApprove, actionReject, name }) => (
                                 </Text>
                             ),
                             centered: true,
-                            className: 'custom-modal',
                             content: <TextArea placeholder="Lý do từ chối yêu cầu này?" rows={5} />,
                             icon: <ExclamationCircleOutlined style={{ color: '#4096ff' }} />,
                             okText: (

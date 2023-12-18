@@ -24,4 +24,16 @@ const checkleaveListExistedMiddleWare = async (req, res, next) => {
     }
 };
 
+// Xử lý yêu cầu đọc dữ liệu.
+const checkApprovalConditionMiddleWare = async (req, res, next) => {
+    // Lấy thông tin từ body của yêu cầu
+    const { id } = req.params;
+};
+
+// Xử lý yêu cầu đọc dữ liệu.
+const checkNotApprovalConditionMiddleWare = async (req, res, next) => {
+    // Lấy thông tin từ body của yêu cầu
+    const { id } = req.params;
+};
+
 module.exports = { checkleaveListExistedMiddleWare };

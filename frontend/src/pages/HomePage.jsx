@@ -21,8 +21,8 @@ const { Text } = Typography;
 const HomePage = () => {
     console.log('Run Home...');
 
-    const [department, setDepartment] = useState([]);
     const [user, setUser] = useState([]);
+    const [department, setDepartment] = useState([]);
     const [leaveType, setLeaveType] = useState([]);
     const [spinning, setSpinning] = useState(false);
 
@@ -32,6 +32,19 @@ const HomePage = () => {
         handleGetDepartment();
         handleGetUser();
         handleGetLeaveType();
+        const handleLoad = () => {
+            setSpinning(false);
+        };
+
+        if (document.readyState === 'complete') {
+            handleLoad();
+        } else {
+            window.addEventListener('load', handleLoad);
+        }
+
+        return () => {
+            window.removeEventListener('load', handleLoad);
+        };
     }, []);
 
     const handleGetDepartment = async () => {

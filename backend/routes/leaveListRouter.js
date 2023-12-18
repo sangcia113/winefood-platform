@@ -9,6 +9,8 @@ const {
     readLeaveListOtherByDateHandler,
     readLeaveListStatisticsHandler,
     readLeaveListStatisticsByDateHandler,
+    updateApproveLeaveListHandler,
+    updateNotApproveLeaveListHandler,
 } = require('../controllers/leaveListController');
 
 const { checkleaveListExistedMiddleWare } = require('../middleWares/leaveListMiddleWare');
@@ -33,6 +35,12 @@ router.get('/statistics', readLeaveListStatisticsHandler);
 
 // End point GET
 router.get('/statistics/search', readLeaveListStatisticsByDateHandler);
+
+// End point PUT
+router.put('/approval/:id', updateApproveLeaveListHandler);
+
+// End point PUT
+router.put('/not-approval/:id', updateNotApproveLeaveListHandler);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

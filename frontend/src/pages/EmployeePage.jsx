@@ -31,9 +31,7 @@ import {
 import { URL } from '../configs/urlConfig';
 import FormComponent from '../components/feature/FormComponent';
 import { getUniqueName } from '../utils';
-import ModalSuccessComponent from '../components/feature/modal/ModalSuccessComponent';
-import ModalErrorComponent from '../components/feature/modal/ModalErrorComponent';
-import ModalQuestionComponent from '../components/feature/modal/ModalQuestionComponent';
+import { ModalConfirmComponent, ModalErrorComponent, ModalSuccessComponent } from '../components';
 
 // Ant Design Layout
 const { Content } = Layout;
@@ -53,6 +51,12 @@ const EmployeePage = () => {
         title: '',
     });
 
+    const [modalConfirm, setModalConfirm] = useState({
+        onOk: () => {},
+        open: false,
+        message: '',
+    });
+
     const [modalError, setModalError] = useState({
         open: false,
         title: '',
@@ -62,12 +66,6 @@ const EmployeePage = () => {
     const [modalSuccess, setModalSuccess] = useState({
         open: false,
         title: '',
-        message: '',
-    });
-
-    const [modalQuestion, setModalQuestion] = useState({
-        onOk: () => {},
-        open: false,
         message: '',
     });
 
@@ -192,7 +190,7 @@ const EmployeePage = () => {
 
             const { error, message } = response.data;
 
-            setModalQuestion({
+            setModalConfirm({
                 open: false,
             });
 
@@ -255,7 +253,7 @@ const EmployeePage = () => {
                                 label: 'Xoá',
                                 icon: <DeleteFilled />,
                                 onClick: () =>
-                                    setModalQuestion({
+                                    setModalConfirm({
                                         onOk: () => handleDeleteEmployee(record.id),
                                         open: true,
                                         message: (
@@ -603,10 +601,11 @@ const EmployeePage = () => {
             >
                 <FormComponent form={form} formFields={formFields} onFinish={onFinish} />
             </Modal>
-            <ModalSuccessComponent
-                onOk={() => setModalSuccess({ open: false })}
-                open={modalSuccess.open}
-                message={modalSuccess.message}
+            <ModalConfirmComponent
+                onCancel={() => setModalConfirm({ open: false })}
+                onOk={modalConfirm.onOk}
+                open={modalConfirm.open}
+                message={modalConfirm.message}
             />
             <ModalErrorComponent
                 onOk={() => setModalError({ open: false })}
@@ -614,11 +613,10 @@ const EmployeePage = () => {
                 message={modalError.message}
                 title={modalError.title}
             />
-            <ModalQuestionComponent
-                onCancel={() => setModalQuestion({ open: false })}
-                onOk={modalQuestion.onOk}
-                open={modalQuestion.open}
-                message={modalQuestion.message}
+            <ModalSuccessComponent
+                onOk={() => setModalSuccess({ open: false })}
+                open={modalSuccess.open}
+                message={modalSuccess.message}
             />
         </Content>
     );

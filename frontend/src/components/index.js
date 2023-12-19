@@ -3,7 +3,7 @@ import HeaderComponent from './common/HeaderComponent';
 import SiderComponent from './common/SiderComponent';
 import ModalSuccessComponent from './feature/modal/ModalSuccessComponent';
 import ModalErrorComponent from './feature/modal/ModalErrorComponent';
-import ModalQuestionComponent from './feature/modal/ModalQuestionComponent';
+import ModalConfirmComponent from './feature/modal/ModalConfirmComponent';
 import ModalReasonComponent from './feature/modal/ModalReasonComponent';
 
 export {
@@ -11,7 +11,7 @@ export {
     HeaderComponent,
     ModalSuccessComponent,
     ModalErrorComponent,
-    ModalQuestionComponent,
+    ModalConfirmComponent,
     ModalReasonComponent,
     SiderComponent,
 };

@@ -1,13 +1,12 @@
-const { readLeaveListIsExist } = require('../services/leaveListService');
+const { readLeaveListIsExist, readStatusLeaveList } = require('../services/leaveListService');
 
-// Xử lý yêu cầu đọc dữ liệu.
-const checkleaveListExistedMiddleWare = async (req, res, next) => {
+const checkIsExisted = async (req, res, next) => {
     // Lấy thông tin từ body của yêu cầu
-    const { userId, leaveDay, fromDate, toDate } = req.body;
+    const { userId, leaveTypeId, leaveDay, fromDate, toDate, reason } = req.body;
 
     // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (!(userId || leaveDay || fromDate || toDate)) {
-        return res.status(400).json({ messageApp: 'Dữ liệu đầu vào không hợp lệ' });
+    if (!(userId && leaveTypeId && leaveDay && fromDate && toDate && reason)) {
+        return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
     }
 
     try {
@@ -24,16 +23,68 @@ const checkleaveListExistedMiddleWare = async (req, res, next) => {
     }
 };
 
-// Xử lý yêu cầu đọc dữ liệu.
-const checkApprovalConditionMiddleWare = async (req, res, next) => {
+const checkApproved = async (req, res, next) => {
     // Lấy thông tin từ body của yêu cầu
     const { id } = req.params;
+
+    // Kiểm tra tính hợp lệ của dữ liệu đầu vào
+    if (!id) {
+        return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
+    }
+
+    try {
+        // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+        const results = await readStatusLeaveList(id);
+
+        if (results[0].managerApproved === 1)
+            return res.json({
+                error: 908,
+                message: 'Bạn đã phê duyệt yêu cầu nghỉ phép này.!',
+            });
+
+        next();
+    } catch (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+
+        res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+    }
 };
 
-// Xử lý yêu cầu đọc dữ liệu.
-const checkNotApprovalConditionMiddleWare = async (req, res, next) => {
+const checkRejected = async (req, res, next) => {
     // Lấy thông tin từ body của yêu cầu
     const { id } = req.params;
+
+    // Lấy thông tin từ body của yêu cầu
+    const { reason } = req.body;
+
+    // Kiểm tra tính hợp lệ của dữ liệu đầu vào
+    if (!(id && reason)) {
+        return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
+    }
+
+    try {
+        // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+        const results = await readStatusLeaveList(id);
+
+        if (results[0].managerApproved === 0)
+            return res.json({ error: 909, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
+
+        next();
+    } catch (err) {
+        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+
+        res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+    }
 };
 
-module.exports = { checkleaveListExistedMiddleWare };
+const checkDate = async (req, res, next) => {
+    // Lấy thông tin từ body của yêu cầu
+    const { startDate, endDate } = req.query;
+
+    // Kiểm tra tính hợp lệ của dữ liệu đầu vào
+    if (!(startDate && endDate)) {
+        return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
+    }
+};
+
+module.exports = { checkIsExisted, checkApproved, checkRejected, checkDate };

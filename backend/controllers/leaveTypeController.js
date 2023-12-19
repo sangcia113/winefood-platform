@@ -11,7 +11,7 @@ const createLeaveTypeHandler = async (req, res) => {
     const { code, nameVN, nameEN } = req.body;
 
     // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (!(code || nameVN || nameEN)) {
+    if (!(code && nameVN && nameEN)) {
         return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
     }
 
@@ -50,7 +50,7 @@ const updateLeaveTypeHandler = async (req, res) => {
     const { code, nameVN, nameEN } = req.body;
 
     // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (!(code || nameVN || nameEN || id)) {
+    if (!(code && nameVN && nameEN && id)) {
         return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
     }
 

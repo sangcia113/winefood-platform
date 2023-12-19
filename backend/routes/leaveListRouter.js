@@ -2,45 +2,50 @@ const router = require('express').Router();
 
 // Import các hàm xử lý yêu cầu từ controller
 const {
-    readLeaveListHandler,
-    createLeaveListHandler,
-    readLeaveListByDateHandler,
-    readLeaveListOtherHandler,
-    readLeaveListOtherByDateHandler,
-    readLeaveListStatisticsHandler,
-    readLeaveListStatisticsByDateHandler,
-    updateApproveLeaveListHandler,
-    updateNotApproveLeaveListHandler,
+    createHandler,
+    readHandler,
+    readByDateHandler,
+    readOtherHandler,
+    readOtherByDateHandler,
+    readStatisticsHandler,
+    readStatisticsByDateHandler,
+    updateApprovedHandler,
+    updateRejectedHandler,
 } = require('../controllers/leaveListController');
 
-const { checkleaveListExistedMiddleWare } = require('../middleWares/leaveListMiddleWare');
+const {
+    checkIsExisted,
+    checkApproved,
+    checkRejected,
+    checkDate,
+} = require('../middleWares/leaveListMiddleWare');
 
 // End point POST
-router.post('/', checkleaveListExistedMiddleWare, createLeaveListHandler);
+router.post('/', checkIsExisted, createHandler);
 
 // End point GET
-router.get('/', readLeaveListHandler);
+router.get('/', readHandler);
 
 // End point GET
-router.get('/search', readLeaveListByDateHandler);
+router.get('/search', checkDate, readByDateHandler);
 
 // End point GET
-router.get('/other', readLeaveListOtherHandler);
+router.get('/other', readOtherHandler);
 
 // End point GET
-router.get('/other/search', readLeaveListOtherByDateHandler);
+router.get('/other/search', checkDate, readOtherByDateHandler);
 
 // End point GET
-router.get('/statistics', readLeaveListStatisticsHandler);
+router.get('/statistics', readStatisticsHandler);
 
 // End point GET
-router.get('/statistics/search', readLeaveListStatisticsByDateHandler);
+router.get('/statistics/search', checkDate, readStatisticsByDateHandler);
 
 // End point PUT
-router.put('/approval/:id', updateApproveLeaveListHandler);
+router.put('/approved/:id', checkApproved, updateApprovedHandler);
 
 // End point PUT
-router.put('/not-approval/:id', updateNotApproveLeaveListHandler);
+router.put('/rejected/:id', checkRejected, updateRejectedHandler);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

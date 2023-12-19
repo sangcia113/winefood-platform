@@ -18,14 +18,14 @@ const createUserHandler = async (req, res) => {
     // Kiểm tra tính hợp lệ của dữ liệu đầu vào
     if (
         !(
-            code ||
-            name ||
-            birthday ||
-            gender ||
-            numberPhone ||
-            password ||
-            departmentId ||
-            superiorId ||
+            code &&
+            name &&
+            birthday &&
+            gender &&
+            numberPhone &&
+            password &&
+            departmentId &&
+            superiorId &&
             roleId
         )
     ) {
@@ -89,15 +89,15 @@ const updateUserHandler = async (req, res) => {
     // Kiểm tra tính hợp lệ của dữ liệu đầu vào
     if (
         !(
-            code ||
-            name ||
-            birthday ||
-            gender ||
-            numberPhone ||
-            password ||
-            departmentId ||
-            superiorId ||
-            roleId ||
+            code &&
+            name &&
+            birthday &&
+            gender &&
+            numberPhone &&
+            password &&
+            departmentId &&
+            superiorId &&
+            roleId &&
             id
         )
     ) {

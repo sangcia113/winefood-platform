@@ -32,8 +32,8 @@ import dayjs from 'dayjs';
 import { getUniqueName } from '../utils';
 import { PencilFill, ThreeDotsVertical } from 'react-bootstrap-icons';
 import {
+    ModalConfirmComponent,
     ModalErrorComponent,
-    ModalQuestionComponent,
     ModalSuccessComponent,
     ModalReasonComponent,
 } from '../components';
@@ -50,25 +50,26 @@ const ManagerPage = () => {
     const [dataSourceLeaveListOther, setDataSourceLeaveListOther] = useState([]);
     const [dataSourceLeaveListStatistics, setDataSourceLeaveListStatistics] = useState([]);
     const [totalWaitManager, setTotalWaitManager] = useState(0);
+
+    const [modalConfirm, setModalConfirm] = useState({
+        onOk: () => {},
+        open: false,
+        message: '',
+    });
+
     const [modalError, setModalError] = useState({
         open: false,
         title: '',
         message: '',
     });
 
+    const [modalReason, setModalReason] = useState({ onOk: () => {}, open: false });
+
     const [modalSuccess, setModalSuccess] = useState({
         open: false,
         title: '',
         message: '',
     });
-
-    const [modalQuestion, setModalQuestion] = useState({
-        onOk: () => {},
-        open: false,
-        message: '',
-    });
-
-    const [modalReason, setModalReason] = useState({ onOk: () => {}, open: false });
 
     useEffect(() => {
         handleGetLeaveList();
@@ -99,7 +100,7 @@ const ManagerPage = () => {
 
             handleGetTotalWaitManager();
         } catch (error) {
-            console.error(error);
+            console.log(error.response.data);
         } finally {
             setLoading(false);
         }
@@ -128,7 +129,7 @@ const ManagerPage = () => {
 
             setDataSourceLeaveListOther(arrData);
         } catch (error) {
-            console.log(error);
+            console.log(error.response.data);
         } finally {
             setLoading(false);
         }
@@ -157,7 +158,7 @@ const ManagerPage = () => {
 
             setDataSourceLeaveListStatistics(arrData);
         } catch (error) {
-            console.log(error);
+            console.log(error.response.data);
         } finally {
             setLoading(false);
         }
@@ -177,23 +178,48 @@ const ManagerPage = () => {
 
     const handleApproval = async id => {
         try {
-            const response = await axios.put(`${URL}/api/leave/list/approval/${id}`);
+            const response = await axios.put(`${URL}/api/leave/list/approved/${id}`);
 
-            console.log(response);
+            const { error, message } = response.data;
+
+            setModalConfirm({ open: false });
+
+            error === 0
+                ? setModalSuccess({
+                      message,
+                      open: true,
+                  })
+                : setModalError({
+                      message,
+                      open: true,
+                      title: 'THẤT BẠI',
+                  });
+
+            handleGetLeaveList();
         } catch (error) {
-            console.log(error);
+            console.log(error.response.data);
         }
     };
 
     const handleNotApproval = async (id, reason) => {
         try {
-            const response = await axios.put(`${URL}/api/leave/list/not-approval/${id}`, {
-                reason: reason,
-            });
+            const response = await axios.put(`${URL}/api/leave/list/rejected/${id}`, reason);
 
             console.log(response);
         } catch (error) {
-            console.log(error);
+            setModalReason({ open: false });
+
+            setModalError({
+                message: (
+                    <Paragraph>
+                        <ul>
+                            <li>{error.response.data.error}</li>
+                        </ul>
+                    </Paragraph>
+                ),
+                open: true,
+                title: 'THẤT BẠI',
+            });
         }
     };
 
@@ -229,7 +255,7 @@ const ManagerPage = () => {
                                             title: 'KHÔNG THỂ PHÊ DUYỆT',
                                         });
                                     } else {
-                                        setModalQuestion({
+                                        setModalConfirm({
                                             message: (
                                                 <Space direction="vertical" align="center">
                                                     Bạn có chắc duyệt yêu cầu nghỉ phép của
@@ -902,10 +928,11 @@ const ManagerPage = () => {
                     tabBarGutter={40}
                 />
             </Card>
-            <ModalSuccessComponent
-                onOk={() => setModalSuccess({ open: false })}
-                open={modalSuccess.open}
-                message={modalSuccess.message}
+            <ModalConfirmComponent
+                onCancel={() => setModalConfirm({ open: false })}
+                onOk={modalConfirm.onOk}
+                open={modalConfirm.open}
+                message={modalConfirm.message}
             />
             <ModalErrorComponent
                 onOk={() => setModalError({ open: false })}
@@ -913,16 +940,15 @@ const ManagerPage = () => {
                 message={modalError.message}
                 title={modalError.title}
             />
-            <ModalQuestionComponent
-                onCancel={() => setModalQuestion({ open: false })}
-                onOk={modalQuestion.onOk}
-                open={modalQuestion.open}
-                message={modalQuestion.message}
-            />
             <ModalReasonComponent
                 onCancel={() => setModalReason({ open: false })}
                 onOk={modalReason.onOk}
                 open={modalReason.open}
+            />
+            <ModalSuccessComponent
+                onOk={() => setModalSuccess({ open: false })}
+                open={modalSuccess.open}
+                message={modalSuccess.message}
             />
         </Content>
     );

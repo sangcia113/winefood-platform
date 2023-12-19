@@ -6,7 +6,7 @@ const createRoleHandler = async (req, res) => {
     const { code, name } = req.body;
 
     // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (!(code || name)) {
+    if (!(code && name)) {
         return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
     }
 
@@ -45,7 +45,7 @@ const updateRoleHandler = async (req, res) => {
     const { code, name } = req.body;
 
     // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (!(code || name || id)) {
+    if (!(code && name && id)) {
         return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
     }
 

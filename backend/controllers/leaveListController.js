@@ -3,21 +3,15 @@ const {
     readLeaveList,
     readLeaveListOther,
     readLeaveListStatistics,
-    updateApprovalLeaveList,
-    updateNotApprovalLeaveList,
+    updateRejectedLeaveList,
+    updateApprovedLeaveList,
 } = require('../services/leaveListService');
 
 const { handleSendZaloNotificationV3 } = require('../utils/handleZaloAPI');
 
-// Xử lý yêu cầu thêm mới dữ liệu.
-const createLeaveListHandler = async (req, res) => {
+const createHandler = async (req, res) => {
     // Lấy thông tin từ body của yêu cầu
     const { userId, leaveTypeId, leaveDay, fromDate, toDate, reason } = req.body;
-
-    // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (!(userId || leaveTypeId || leaveDay || fromDate || toDate || reason)) {
-        return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
-    }
 
     try {
         // Gọi hàm service để thêm mới vào cơ sở dữ liệu
@@ -38,7 +32,7 @@ const createLeaveListHandler = async (req, res) => {
 };
 
 // Xử lý yêu cầu đọc dữ liệu.
-const readLeaveListHandler = async (req, res) => {
+const readHandler = async (req, res) => {
     try {
         // Gọi hàm service để đọc dữ liệu
         const results = await readLeaveList();
@@ -52,14 +46,9 @@ const readLeaveListHandler = async (req, res) => {
 };
 
 // Xử lý yêu cầu đọc dữ liệu.
-const readLeaveListByDateHandler = async (req, res) => {
+const readByDateHandler = async (req, res) => {
     // Lấy thông tin từ body của yêu cầu
     const { startDate, endDate } = req.query;
-
-    // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (!(startDate || endDate)) {
-        return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
-    }
 
     try {
         // Gọi hàm service để đọc dữ liệu
@@ -74,7 +63,7 @@ const readLeaveListByDateHandler = async (req, res) => {
 };
 
 // Xử lý yêu cầu đọc dữ liệu.
-const readLeaveListOtherHandler = async (req, res) => {
+const readOtherHandler = async (req, res) => {
     try {
         // Gọi hàm service để đọc dữ liệu
         const results = await readLeaveListOther();
@@ -88,14 +77,9 @@ const readLeaveListOtherHandler = async (req, res) => {
 };
 
 // Xử lý yêu cầu đọc dữ liệu.
-const readLeaveListOtherByDateHandler = async (req, res) => {
+const readOtherByDateHandler = async (req, res) => {
     // Lấy thông tin từ body của yêu cầu
     const { startDate, endDate } = req.query;
-
-    // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (!(startDate || endDate)) {
-        return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
-    }
 
     try {
         // Gọi hàm service để đọc dữ liệu
@@ -110,7 +94,7 @@ const readLeaveListOtherByDateHandler = async (req, res) => {
 };
 
 // Xử lý yêu cầu đọc dữ liệu.
-const readLeaveListStatisticsHandler = async (req, res) => {
+const readStatisticsHandler = async (req, res) => {
     try {
         // Gọi hàm service để đọc dữ liệu
         const results = await readLeaveListStatistics();
@@ -124,14 +108,9 @@ const readLeaveListStatisticsHandler = async (req, res) => {
 };
 
 // Xử lý yêu cầu đọc dữ liệu.
-const readLeaveListStatisticsByDateHandler = async (req, res) => {
+const readStatisticsByDateHandler = async (req, res) => {
     // Lấy thông tin từ body của yêu cầu
     const { startDate, endDate } = req.query;
-
-    // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (!(startDate || endDate)) {
-        return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
-    }
 
     try {
         // Gọi hàm service để đọc dữ liệu
@@ -146,18 +125,13 @@ const readLeaveListStatisticsByDateHandler = async (req, res) => {
 };
 
 // Xử lý yêu cầu cập nhật dữ liệu.
-const updateApproveLeaveListHandler = async (req, res) => {
+const updateApprovedHandler = async (req, res) => {
     // Lấy ID từ params của yêu cầu
     const { id } = req.params;
 
-    // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (!id) {
-        return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
-    }
-
     try {
         // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-        await updateApprovalLeaveList(id);
+        await updateApprovedLeaveList(id);
 
         res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
     } catch (err) {
@@ -168,24 +142,16 @@ const updateApproveLeaveListHandler = async (req, res) => {
 };
 
 // Xử lý yêu cầu cập nhật dữ liệu.
-const updateNotApproveLeaveListHandler = async (req, res) => {
+const updateRejectedHandler = async (req, res) => {
     // Lấy ID từ params của yêu cầu
     const { id } = req.params;
 
     // Lấy thông tin từ body của yêu cầu
     const { reason } = req.body;
 
-    console.log('id', id);
-    console.log('reason', reason);
-
-    // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (id === undefined || reason === undefined) {
-        return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
-    }
-
     try {
         // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-        await updateNotApprovalLeaveList(id, reason);
+        await updateRejectedLeaveList(id, reason);
 
         res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
     } catch (err) {
@@ -197,13 +163,13 @@ const updateNotApproveLeaveListHandler = async (req, res) => {
 
 // Xuất các hàm xử lý yêu cầu để sử dụng trong module khác (router)
 module.exports = {
-    createLeaveListHandler,
-    readLeaveListHandler,
-    readLeaveListByDateHandler,
-    readLeaveListOtherHandler,
-    readLeaveListOtherByDateHandler,
-    readLeaveListStatisticsHandler,
-    readLeaveListStatisticsByDateHandler,
-    updateApproveLeaveListHandler,
-    updateNotApproveLeaveListHandler,
+    createHandler,
+    readHandler,
+    readByDateHandler,
+    readOtherHandler,
+    readOtherByDateHandler,
+    readStatisticsHandler,
+    readStatisticsByDateHandler,
+    updateApprovedHandler,
+    updateRejectedHandler,
 };

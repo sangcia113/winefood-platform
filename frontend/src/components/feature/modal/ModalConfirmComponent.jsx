@@ -4,7 +4,7 @@ import React from 'react';
 
 const { Text } = Typography;
 
-const ModalQuestionComponent = ({ onCancel, onOk, open, message }) => (
+const ModalConfirmComponent = ({ onCancel, onOk, open, message }) => (
     <Modal
         cancelText="Hủy Bỏ"
         centered
@@ -32,4 +32,4 @@ const ModalQuestionComponent = ({ onCancel, onOk, open, message }) => (
     </Modal>
 );
 
-export default ModalQuestionComponent;
+export default ModalConfirmComponent;

@@ -182,8 +182,19 @@ const readLeaveListIsExist = async (userID, bookLeaveDay, bookFromDate, bookToDa
     return results;
 };
 
+// Đọc trong cơ sở dữ liệu.
+const readStatusLeaveList = async id => {
+    // Truy vấn SQL để đọc
+    const sql = `SELECT managerApproved FROM list WHERE id = ?`;
+
+    // Thực hiện truy vấn SQL và trả về kết quả
+    const [results] = await db.query(sql, [id]);
+
+    return results;
+};
+
 // Cập nhật trong cơ sở dữ liệu.
-const updateApprovalLeaveList = async id => {
+const updateApprovedLeaveList = async id => {
     // Truy vấn SQL để đọc
     const sql = `UPDATE 
                     list 
@@ -199,7 +210,7 @@ const updateApprovalLeaveList = async id => {
 };
 
 // Cập nhật trong cơ sở dữ liệu.
-const updateNotApprovalLeaveList = async (id, reason) => {
+const updateRejectedLeaveList = async (id, reason) => {
     // Truy vấn SQL để đọc
     const sql = `UPDATE 
                     list 
@@ -221,6 +232,7 @@ module.exports = {
     readLeaveListOther,
     readLeaveListStatistics,
     readLeaveListIsExist,
-    updateApprovalLeaveList,
-    updateNotApprovalLeaveList,
+    readStatusLeaveList,
+    updateApprovedLeaveList,
+    updateRejectedLeaveList,
 };

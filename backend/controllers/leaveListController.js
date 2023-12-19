@@ -175,8 +175,11 @@ const updateNotApproveLeaveListHandler = async (req, res) => {
     // Lấy thông tin từ body của yêu cầu
     const { reason } = req.body;
 
+    console.log('id', id);
+    console.log('reason', reason);
+
     // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    if (!(id || reason)) {
+    if (id === undefined || reason === undefined) {
         return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
     }
 

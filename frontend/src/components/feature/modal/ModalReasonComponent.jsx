@@ -10,12 +10,16 @@ const ModalReasonComponent = ({ onCancel, onOk, open }) => (
         cancelText="Hủy Bỏ"
         centered
         closeIcon={false}
-        forceRender
         okText="Đồng Ý"
         onCancel={onCancel}
         onOk={onOk}
         open={open}
-        title={<Text style={{ fontSize: 26 }}>VUI LÒNG NHẬP LÝ DO</Text>}
+        title={
+            <Text strong style={{ fontSize: 26 }}>
+                VUI LÒNG NHẬP LÝ DO
+            </Text>
+        }
+        width={440}
         styles={{
             header: { textAlign: 'center' },
             footer: { paddingTop: 20, textAlign: 'center' },

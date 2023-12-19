@@ -1,10 +1,10 @@
-import { CloseCircleFilled } from '@ant-design/icons';
-import { Alert, Modal, Space, Typography } from 'antd';
+import { CheckCircleFilled } from '@ant-design/icons';
+import { Flex, Modal, Space, Typography } from 'antd';
 import React from 'react';
 
 const { Text } = Typography;
 
-const ModalErrorComponent = ({ onOk, open, title, message }) => (
+const ModalSuccessComponent = ({ onOk, open, message }) => (
     <Modal
         cancelButtonProps={{ style: { display: 'none' } }}
         centered
@@ -14,10 +14,10 @@ const ModalErrorComponent = ({ onOk, open, title, message }) => (
         open={open}
         title={
             <Space direction="vertical" size="large">
-                <CloseCircleFilled style={{ color: '#ff4d4f', fontSize: 60 }} />
+                <CheckCircleFilled style={{ color: '#52c41a', fontSize: 60 }} />
 
                 <Text strong style={{ fontSize: 32 }}>
-                    {title}
+                    THÀNH CÔNG
                 </Text>
             </Space>
         }
@@ -27,8 +27,8 @@ const ModalErrorComponent = ({ onOk, open, title, message }) => (
             footer: { paddingTop: 20, textAlign: 'center' },
         }}
     >
-        <Alert message={message} type="error" />
+        <Flex justify="center">{message}</Flex>
     </Modal>
 );
 
-export default ModalErrorComponent;
+export default ModalSuccessComponent;

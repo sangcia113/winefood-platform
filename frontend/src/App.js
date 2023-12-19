@@ -13,8 +13,8 @@ const App = () => {
                 theme={{
                     token: {
                         colorBgLayout: '#fff',
-                        controlHeight: 36,
-                        fontSize: 18,
+                        controlHeight: 40,
+                        fontSize: 20,
                     },
                 }}
             >

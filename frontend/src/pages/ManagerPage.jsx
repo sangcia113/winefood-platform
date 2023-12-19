@@ -6,6 +6,7 @@ import {
     Dropdown,
     Flex,
     Layout,
+    Space,
     Table,
     Tabs,
     Tag,
@@ -28,20 +29,18 @@ import ReactApexChart from 'react-apexcharts';
 
 import { URL } from '../configs/urlConfig';
 import dayjs from 'dayjs';
-import {
-    confirmNotification,
-    failureNotification,
-    getUniqueName,
-    successNotification,
-} from '../utils';
+import { getUniqueName } from '../utils';
 import { PencilFill, ThreeDotsVertical } from 'react-bootstrap-icons';
-import { confirmNotApprovalNotification } from '../utils/handleModalNotification';
-import ModalErrorComponent from '../components/feature/modal/ModalErrorComponent';
-import ModalReasonComponent from '../components/feature/modal/ModalReasonComponent';
+import {
+    ModalErrorComponent,
+    ModalQuestionComponent,
+    ModalSuccessComponent,
+    ModalReasonComponent,
+} from '../components';
 const { RangePicker } = DatePicker;
 
 const { Content } = Layout;
-const { Text } = Typography;
+const { Paragraph, Text } = Typography;
 
 const ManagerPage = () => {
     console.log('Run ManagerPage...');
@@ -51,10 +50,25 @@ const ManagerPage = () => {
     const [dataSourceLeaveListOther, setDataSourceLeaveListOther] = useState([]);
     const [dataSourceLeaveListStatistics, setDataSourceLeaveListStatistics] = useState([]);
     const [totalWaitManager, setTotalWaitManager] = useState(0);
-    const [modalErrorOpen, setModalErrorOpen] = useState(false);
-    const [titleModalError, setTitleModalError] = useState('');
-    const [messageModalError, setMessageModalError] = useState('');
-    const [modalReasonOpen, setModalReasonOpen] = useState(false);
+    const [modalError, setModalError] = useState({
+        open: false,
+        title: '',
+        message: '',
+    });
+
+    const [modalSuccess, setModalSuccess] = useState({
+        open: false,
+        title: '',
+        message: '',
+    });
+
+    const [modalQuestion, setModalQuestion] = useState({
+        onOk: () => {},
+        open: false,
+        message: '',
+    });
+
+    const [modalReason, setModalReason] = useState({ onOk: () => {}, open: false });
 
     useEffect(() => {
         handleGetLeaveList();
@@ -165,13 +179,7 @@ const ManagerPage = () => {
         try {
             const response = await axios.put(`${URL}/api/leave/list/approval/${id}`);
 
-            if (response.data.error === 0) {
-                successNotification(response.data.message);
-
-                handleGetLeaveList();
-            } else {
-                failureNotification(response.data.message);
-            }
+            console.log(response);
         } catch (error) {
             console.log(error);
         }
@@ -179,23 +187,15 @@ const ManagerPage = () => {
 
     const handleNotApproval = async (id, reason) => {
         try {
-            const response = await axios.put(`${URL}/api/leave/list/not-approval/${id}`);
+            const response = await axios.put(`${URL}/api/leave/list/not-approval/${id}`, {
+                reason: reason,
+            });
 
-            if (response.data.error === 0) {
-                successNotification(response.data.message);
-
-                handleGetLeaveList();
-            } else {
-                failureNotification(response.data.message);
-            }
+            console.log(response);
         } catch (error) {
             console.log(error);
         }
     };
-
-    const handleModalError = () => setModalErrorOpen(prevModalOpen => !prevModalOpen);
-
-    const handleModalReason = () => setModalReasonOpen(prevModalOpen => !prevModalOpen);
 
     const columnsLeaveList = [
         {
@@ -214,21 +214,31 @@ const ManagerPage = () => {
                                 icon: <PencilFill />,
                                 onClick: () => {
                                     if (record.managerApproved === 1) {
-                                        setTitleModalError('KHÔNG THỂ PHÊ DUYỆT');
-                                        setMessageModalError(
-                                            <>
-                                                - <b>Bạn đã ký duyệt</b> yêu cầu nghỉ phép này.
-                                            </>
-                                        );
-                                        handleModalError();
+                                        setModalError({
+                                            open: true,
+                                            message: (
+                                                <Paragraph>
+                                                    <ul>
+                                                        <li>
+                                                            <b>Bạn đã phê duyệt</b> yêu cầu nghỉ
+                                                            phép này.
+                                                        </li>
+                                                    </ul>
+                                                </Paragraph>
+                                            ),
+                                            title: 'KHÔNG THỂ PHÊ DUYỆT',
+                                        });
                                     } else {
-                                        confirmNotification(
-                                            <Text style={{ fontSize: 16 }}>
-                                                Bạn có chắc phê duyệt yêu cầu nghỉ phép của<br></br>
-                                                <b>{record.userName}</b>
-                                            </Text>,
-                                            () => handleApproval(record.id)
-                                        );
+                                        setModalQuestion({
+                                            message: (
+                                                <Space direction="vertical" align="center">
+                                                    Bạn có chắc duyệt yêu cầu nghỉ phép của
+                                                    <b>{record.userName}</b>
+                                                </Space>
+                                            ),
+                                            onOk: () => handleApproval(record.id),
+                                            open: true,
+                                        });
                                     }
                                 },
                                 style: { color: '#52c41a' },
@@ -239,23 +249,25 @@ const ManagerPage = () => {
                                 icon: <StopFilled />,
                                 onClick: () => {
                                     if (record.managerApproved === 0) {
-                                        setTitleModalError('KHÔNG THỂ TỪ CHỐI');
-                                        setMessageModalError(
-                                            <>
-                                                - <b>Bạn đã từ chối</b> yêu cầu nghỉ phép này.
-                                            </>
-                                        );
-                                        handleModalError();
+                                        setModalError({
+                                            open: true,
+                                            message: (
+                                                <Paragraph>
+                                                    <ul>
+                                                        <li>
+                                                            <b>Bạn đã từ chối</b> yêu cầu nghỉ phép
+                                                            này.
+                                                        </li>
+                                                    </ul>
+                                                </Paragraph>
+                                            ),
+                                            title: 'KHÔNG THỂ TỪ CHỐI',
+                                        });
                                     } else {
-                                        // confirmNotification(
-                                        //     <TextArea
-                                        //         placeholder="Lý do từ chối yêu cầu này?"
-                                        //         required={true}
-                                        //         rows={5}
-                                        //     />,
-                                        //     () => handleNotApproval(record.id)
-                                        // );
-                                        handleModalReason();
+                                        setModalReason({
+                                            onOk: () => handleNotApproval(record.id),
+                                            open: true,
+                                        });
                                     }
                                 },
                                 style: { color: '#ff4d4f' },
@@ -269,24 +281,32 @@ const ManagerPage = () => {
                                         key: 4,
                                         label: 'Loại phép',
                                         icon: <TagFilled />,
-                                        style: { color: '#1677ff' },
+                                        style: { color: '#c41d7f' },
                                         onClick: () => {
                                             if (
-                                                record.managerApprovedLeaveType === null ||
+                                                record.actualLeaveTypeID === null ||
                                                 record.managerApprovedLeaveType === 1
                                             ) {
-                                                setTitleModalError('KHÔNG THỂ XÁC NHẬN');
-                                                setMessageModalError(
-                                                    <>
-                                                        - Không có yêu cầu{' '}
-                                                        <b>điều chỉnh loại nghỉ phép thực tế.</b>
-                                                        <br />- <b>
-                                                            Bạn đã xác nhận điều chỉnh
-                                                        </b>{' '}
-                                                        loại nghỉ phép thực tế này.
-                                                    </>
-                                                );
-                                                handleModalError();
+                                                setModalError({
+                                                    open: true,
+                                                    message: (
+                                                        <Paragraph>
+                                                            <ul>
+                                                                <li>
+                                                                    Không có yêu cầu điều chỉnh{' '}
+                                                                    <b>loại nghỉ phép thực tế.</b>
+                                                                </li>
+                                                                <li>
+                                                                    <b>
+                                                                        Bạn đã xác nhận điều chỉnh
+                                                                    </b>{' '}
+                                                                    loại nghỉ phép thực tế này.
+                                                                </li>
+                                                            </ul>
+                                                        </Paragraph>
+                                                    ),
+                                                    title: 'KHÔNG THỂ XÁC NHẬN',
+                                                });
                                             }
                                         },
                                     },
@@ -297,19 +317,31 @@ const ManagerPage = () => {
                                         style: { color: '#1677ff' },
                                         onClick: () => {
                                             if (
-                                                record.managerApprovedLeaveDay === null ||
+                                                record.actualLeaveDay === null ||
                                                 record.managerApprovedLeaveDay === 1
                                             ) {
-                                                setTitleModalError('KHÔNG THỂ XÁC NHẬN');
-                                                setMessageModalError(
-                                                    <>
-                                                        - Không có yêu cầu{' '}
-                                                        <b>điều chỉnh số ngày nghỉ phép thực tế.</b>
-                                                        <br />- <b>Bạn đã xác nhận điều chỉnh</b> số
-                                                        ngày nghỉ phép thực tế này.
-                                                    </>
-                                                );
-                                                handleModalError();
+                                                setModalError({
+                                                    open: true,
+                                                    message: (
+                                                        <Paragraph>
+                                                            <ul>
+                                                                <li>
+                                                                    Không có yêu cầu điều chỉnh{' '}
+                                                                    <b>
+                                                                        số ngày nghỉ phép thực tế.
+                                                                    </b>
+                                                                </li>
+                                                                <li>
+                                                                    <b>
+                                                                        Bạn đã xác nhận điều chỉnh
+                                                                    </b>{' '}
+                                                                    số ngày nghỉ phép thực tế này.
+                                                                </li>
+                                                            </ul>
+                                                        </Paragraph>
+                                                    ),
+                                                    title: 'KHÔNG THỂ XÁC NHẬN',
+                                                });
                                             }
                                         },
                                     },
@@ -317,20 +349,30 @@ const ManagerPage = () => {
                                         key: 6,
                                         label: 'Huỷ phép',
                                         icon: <UnlockFilled />,
-                                        style: { color: '#1677ff' },
+                                        style: { color: '#531dab' },
                                         onClick: () => {
                                             if (
-                                                record.managerApprovedDelete === null ||
+                                                record.deleteRequest === null ||
                                                 record.managerApprovedDelete === 1
                                             ) {
-                                                setTitleModalError('KHÔNG THỂ XÁC NHẬN');
-                                                setMessageModalError(
-                                                    <>
-                                                        - Không có yêu cầu <b>hủy phép.</b>
-                                                        <br />- <b>Bạn đã xác nhận hủy phép</b> này.
-                                                    </>
-                                                );
-                                                handleModalError();
+                                                setModalError({
+                                                    open: true,
+                                                    message: (
+                                                        <Paragraph>
+                                                            <ul>
+                                                                <li>
+                                                                    Không có yêu cầu{' '}
+                                                                    <b>hủy phép.</b>
+                                                                </li>
+                                                                <li>
+                                                                    <b>Bạn đã xác nhận hủy phép</b>{' '}
+                                                                    này.
+                                                                </li>
+                                                            </ul>
+                                                        </Paragraph>
+                                                    ),
+                                                    title: 'KHÔNG THỂ XÁC NHẬN',
+                                                });
                                             }
                                         },
                                     },
@@ -338,7 +380,7 @@ const ManagerPage = () => {
                             },
                         ],
                     }}
-                    placement={'bottomRight'}
+                    placement={'bottomLeft'}
                 >
                     <ThreeDotsVertical />
                 </Dropdown>
@@ -355,15 +397,15 @@ const ManagerPage = () => {
                     color={'white'}
                     overlayStyle={{
                         border: '4px solid #52c41a', // Đặt độ dày và màu cho border ở đây
-                        borderRadius: '12px', // Đặt bo góc nếu cần
+                        borderRadius: '10px', // Đặt bo góc nếu cần
                         color: 'black',
-                        fontSize: 14,
-                        minWidth: '280px',
+                        fontSize: 18,
+                        minWidth: '300px',
                     }}
                     placement={'right'}
                     title={
                         <div style={{ color: 'black' }}>
-                            <p align={'center'} style={{ fontSize: 16, margin: 8 }}>
+                            <p align={'center'} style={{ margin: 8 }}>
                                 <b>THÔNG TIN NGHỈ PHÉP</b>
                             </p>
                             <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
@@ -860,13 +902,28 @@ const ManagerPage = () => {
                     tabBarGutter={40}
                 />
             </Card>
-            <ModalErrorComponent
-                onOk={handleModalError}
-                open={modalErrorOpen}
-                title={titleModalError}
-                message={messageModalError}
+            <ModalSuccessComponent
+                onOk={() => setModalSuccess({ open: false })}
+                open={modalSuccess.open}
+                message={modalSuccess.message}
             />
-            <ModalReasonComponent onCancel={handleModalReason} open={modalReasonOpen} />
+            <ModalErrorComponent
+                onOk={() => setModalError({ open: false })}
+                open={modalError.open}
+                message={modalError.message}
+                title={modalError.title}
+            />
+            <ModalQuestionComponent
+                onCancel={() => setModalQuestion({ open: false })}
+                onOk={modalQuestion.onOk}
+                open={modalQuestion.open}
+                message={modalQuestion.message}
+            />
+            <ModalReasonComponent
+                onCancel={() => setModalReason({ open: false })}
+                onOk={modalReason.onOk}
+                open={modalReason.open}
+            />
         </Content>
     );
 };

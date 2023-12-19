@@ -1,23 +1,24 @@
-import { CloseCircleFilled } from '@ant-design/icons';
-import { Alert, Modal, Space, Typography } from 'antd';
+import { QuestionCircleFilled } from '@ant-design/icons';
+import { Flex, Modal, Space, Typography } from 'antd';
 import React from 'react';
 
 const { Text } = Typography;
 
-const ModalErrorComponent = ({ onOk, open, title, message }) => (
+const ModalQuestionComponent = ({ onCancel, onOk, open, message }) => (
     <Modal
-        cancelButtonProps={{ style: { display: 'none' } }}
+        cancelText="Hủy Bỏ"
         centered
         closeIcon={false}
         okText="Đồng Ý"
+        onCancel={onCancel}
         onOk={onOk}
         open={open}
         title={
             <Space direction="vertical" size="large">
-                <CloseCircleFilled style={{ color: '#ff4d4f', fontSize: 60 }} />
+                <QuestionCircleFilled style={{ color: '#1677ff', fontSize: 60 }} />
 
                 <Text strong style={{ fontSize: 32 }}>
-                    {title}
+                    VUI LÒNG XÁC NHẬN
                 </Text>
             </Space>
         }
@@ -27,8 +28,8 @@ const ModalErrorComponent = ({ onOk, open, title, message }) => (
             footer: { paddingTop: 20, textAlign: 'center' },
         }}
     >
-        <Alert message={message} type="error" />
+        <Flex justify="center">{message}</Flex>
     </Modal>
 );
 
-export default ModalErrorComponent;
+export default ModalQuestionComponent;

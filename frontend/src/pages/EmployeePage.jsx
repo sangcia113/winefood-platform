@@ -8,6 +8,7 @@ import { DeleteFilled } from '@ant-design/icons';
 
 // Ant Design components
 import {
+    Alert,
     Button,
     Card,
     DatePicker,
@@ -18,6 +19,7 @@ import {
     Layout,
     Modal,
     Select,
+    Space,
     Spin,
     Table,
     Tabs,
@@ -28,12 +30,10 @@ import {
 // Local imports
 import { URL } from '../configs/urlConfig';
 import FormComponent from '../components/feature/FormComponent';
-import {
-    confirmNotification,
-    failureNotification,
-    getUniqueName,
-    successNotification,
-} from '../utils';
+import { getUniqueName } from '../utils';
+import ModalSuccessComponent from '../components/feature/modal/ModalSuccessComponent';
+import ModalErrorComponent from '../components/feature/modal/ModalErrorComponent';
+import ModalQuestionComponent from '../components/feature/modal/ModalQuestionComponent';
 
 // Ant Design Layout
 const { Content } = Layout;
@@ -43,12 +43,33 @@ const EmployeePage = () => {
     console.log('Run EmployeePage');
 
     const [loading, setLoading] = useState(false);
-    const [modalTitle, setModalTitle] = useState('');
-    const [modalOpen, setModalOpen] = useState(false);
     const [dataSourceEmployee, setDataSourceEmployee] = useState([]);
     const [dataSourceDepartment, setDataSourceDepartment] = useState([]);
     const [dataSourceRole, setDataSourceRole] = useState([]);
     const [dataSourceZaloUser, setDataSourceZaloUser] = useState([]);
+
+    const [modalForm, setModalForm] = useState({
+        open: false,
+        title: '',
+    });
+
+    const [modalError, setModalError] = useState({
+        open: false,
+        title: '',
+        message: '',
+    });
+
+    const [modalSuccess, setModalSuccess] = useState({
+        open: false,
+        title: '',
+        message: '',
+    });
+
+    const [modalQuestion, setModalQuestion] = useState({
+        onOk: () => {},
+        open: false,
+        message: '',
+    });
 
     const [form] = Form.useForm();
 
@@ -119,17 +140,22 @@ const EmployeePage = () => {
         try {
             const response = await axios.post(`${URL}/api/leave/user`, values);
 
-            if (response.data.error === 0) {
-                handleModal();
+            const { error, message } = response.data;
 
-                successNotification(response.data.message);
+            setModalForm({ open: false });
 
-                handleGetEmployee();
-            } else {
-                handleModal();
+            error === 0
+                ? setModalSuccess({
+                      message,
+                      open: true,
+                  })
+                : setModalError({
+                      message,
+                      open: true,
+                      title: 'THẤT BẠI',
+                  });
 
-                failureNotification(response.data.message);
-            }
+            handleGetEmployee();
         } catch (error) {
             console.log(error);
         }
@@ -139,17 +165,22 @@ const EmployeePage = () => {
         try {
             const response = await axios.put(`${URL}/api/leave/user/${values.id}`, values);
 
-            if (response.data.error === 0) {
-                handleModal();
+            const { error, message } = response.data;
 
-                successNotification(response.data.message);
+            setModalForm({ open: false });
 
-                handleGetEmployee();
-            } else {
-                handleModal();
+            error === 0
+                ? setModalSuccess({
+                      message,
+                      open: true,
+                  })
+                : setModalError({
+                      message,
+                      open: true,
+                      title: 'THẤT BẠI',
+                  });
 
-                failureNotification(response.data.message);
-            }
+            handleGetEmployee();
         } catch (error) {
             console.log(error);
         }
@@ -159,13 +190,24 @@ const EmployeePage = () => {
         try {
             const response = await axios.delete(`${URL}/api/leave/user/${id}`);
 
-            if (response.data.error === 0) {
-                successNotification(response.data.message);
+            const { error, message } = response.data;
 
-                handleGetEmployee();
-            } else {
-                failureNotification(response.data.message);
-            }
+            setModalQuestion({
+                open: false,
+            });
+
+            error === 0
+                ? setModalSuccess({
+                      message,
+                      open: true,
+                  })
+                : setModalError({
+                      message,
+                      open: true,
+                      title: 'THẤT BẠI',
+                  });
+
+            handleGetEmployee();
         } catch (error) {
             console.log(error);
         }
@@ -182,8 +224,6 @@ const EmployeePage = () => {
                   birthday: dayjs(values.birthday).format('YYYY-MM-DD'),
               });
     };
-
-    const handleModal = () => setModalOpen(prevModalOpen => !prevModalOpen);
 
     const columnsEmployee = [
         {
@@ -205,8 +245,8 @@ const EmployeePage = () => {
                                         ...record,
                                         birthday: dayjs(record.birthday),
                                     });
-                                    setModalTitle('SỬA NHÂN VIÊN');
-                                    handleModal();
+
+                                    setModalForm({ open: true, title: 'SỬA NHÂN VIÊN' });
                                 },
                                 style: { color: '#faad14' },
                             },
@@ -215,16 +255,21 @@ const EmployeePage = () => {
                                 label: 'Xoá',
                                 icon: <DeleteFilled />,
                                 onClick: () =>
-                                    confirmNotification(
-                                        <Text style={{ fontSize: 16 }}>
-                                            Bạn có chắc muốn xóa?
-                                            <br />
-                                            <b>{record.userName}</b>
-                                            <br />
-                                            Thao tác này không thể hoàn tác!
-                                        </Text>,
-                                        () => handleDeleteEmployee(record.id)
-                                    ),
+                                    setModalQuestion({
+                                        onOk: () => handleDeleteEmployee(record.id),
+                                        open: true,
+                                        message: (
+                                            <Space direction="vertical" align="center">
+                                                Bạn có chắc muốn xóa nhân viên?
+                                                <b>{record.userName}</b>
+                                                khỏi CSDL không?
+                                                <Alert
+                                                    message="Thao tác này không thể hoàn tác!"
+                                                    type="error"
+                                                />
+                                            </Space>
+                                        ),
+                                    }),
                                 style: { color: '#ff4d4f' },
                             },
                         ],
@@ -484,8 +529,10 @@ const EmployeePage = () => {
                                                 />
                                             }
                                             onClick={() => {
-                                                setModalTitle('THÊM NHÂN VIÊN');
-                                                handleModal();
+                                                setModalForm({
+                                                    open: true,
+                                                    title: 'THÊM NHÂN VIÊN',
+                                                });
                                             }}
                                             shape={'circle'}
                                             type={'primary'}
@@ -541,17 +588,38 @@ const EmployeePage = () => {
             </Card>
             <Modal
                 afterClose={() => form.resetFields()}
+                cancelText="Hủy Bỏ"
+                closeIcon={false}
                 forceRender
-                onCancel={() => handleModal()}
+                okText="Đồng Ý"
+                onCancel={() => setModalForm({ open: false })}
                 onOk={() => form.submit()}
-                open={modalOpen}
-                title={modalTitle}
+                open={modalForm.open}
+                title={modalForm.title}
                 styles={{
-                    header: { textAlign: 'center', marginBottom: '20px' },
+                    header: { paddingBottom: 20, textAlign: 'center' },
+                    footer: { paddingTop: 20, textAlign: 'center' },
                 }}
             >
                 <FormComponent form={form} formFields={formFields} onFinish={onFinish} />
             </Modal>
+            <ModalSuccessComponent
+                onOk={() => setModalSuccess({ open: false })}
+                open={modalSuccess.open}
+                message={modalSuccess.message}
+            />
+            <ModalErrorComponent
+                onOk={() => setModalError({ open: false })}
+                open={modalError.open}
+                message={modalError.message}
+                title={modalError.title}
+            />
+            <ModalQuestionComponent
+                onCancel={() => setModalQuestion({ open: false })}
+                onOk={modalQuestion.onOk}
+                open={modalQuestion.open}
+                message={modalQuestion.message}
+            />
         </Content>
     );
 };

@@ -1,70 +1,69 @@
-# Getting Started with Create React App
+### FLOW LEAVE REQUEST
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+-> Employee gửi phép -> Leader
 
-## Available Scripts
+-> Leader phê duyệt -> Manager
 
-In the project directory, you can run:
+        -> Manager phê duyệt -> Employee
 
-### `yarn start`
+        -> Manager từ chối -> Employee
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+-> Leader từ chối - > Employee
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### FLOW CANCEL LEAVE REQUEST
 
-### `yarn test`
+-> Employee gửi yêu cầu -> Manager
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+\*\*\* Condition:
 
-### `yarn build`
+-   deleteRequest === null || managerApprovedDelete === 1
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### FLOW LEADER APPROVAL LEAVE REQUEST
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+-> Employee gửi phép -> Leader
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+\*\*\* Condition:
 
-### `yarn eject`
+-   leaderApproved !== 1
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### FLOW LEADER NOT APPROVAL LEAVE REQUEST
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+-> Employee gửi phép -> Leader
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+\*\*\* Condition:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+-   leaderApproved !== 0 && managerApproved !== 1
 
-## Learn More
+-   leaderApproved !== 0 && managerApproved !== 0
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### FLOW MANAGER APPROVAL LEAVE REQUEST
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+-> Employee gửi phép -> Manager
 
-### Code Splitting
+\*\*\* Condition:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+-   managerApproved !== 1
 
-### Analyzing the Bundle Size
+### FLOW MANAGER NOT APPROVAL LEAVE REQUEST
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+-> Employee gửi phép -> Manager
 
-### Making a Progressive Web App
+\*\*\* Condition:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+-   managerApproved !== 0
 
-### Advanced Configuration
+### FLOW MANAGER APPROVAL LEAVE TYPE
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+-> Employee gửi yêu cầu -> Manager
 
-### Deployment
+\*\*\* Condition:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+-   managerApproved === 1 && managerApprovedLeaveType !== 1
 
-### `yarn build` fails to minify
+### FLOW MANAGER APPROVAL LEAVE DAY
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+-> Employee gửi yêu cầu -> Manager
+
+\*\*\* Condition:
+
+-   managerApproved === 1 && managerApprovedLeaveDay !== 1

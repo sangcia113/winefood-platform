@@ -1,5 +1,5 @@
 const { leaveListService } = require('../services/leaveListService');
-const { zaloAPIService } = require('../services/zaloAPIService');
+const { userService } = require('../services/userService');
 
 const { handleSendZaloNotificationV3 } = require('../utils/handleZaloAPI');
 
@@ -12,11 +12,13 @@ const leaveListController = {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
             await leaveListService.create(userId, leaveTypeId, leaveDay, fromDate, toDate, reason);
 
-            const response = await zaloAPIService.readZaloUserId(userId);
+            // const response = await userService.readInfoLeader(userId);
 
-            const superiorId = response[0].data;
+            // const { name, gender, roleId, role, zaloUserId } = response[0].data;
 
-            await handleSendZaloNotificationV3(userId, superiorId);
+            // console.log(response.data);
+
+            await handleSendZaloNotificationV3(userId, '8851502365121811999', 'TEST');
 
             res.status(200).json({ error: 0, message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!' });
         } catch (error) {

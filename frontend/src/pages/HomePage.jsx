@@ -2,6 +2,7 @@ import {
     Button,
     Card,
     DatePicker,
+    Flex,
     Form,
     InputNumber,
     Layout,
@@ -16,6 +17,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { URL } from '../configs/urlConfig';
 import dayjs from 'dayjs';
+import { ModalErrorComponent, ModalSuccessComponent } from '../components';
 const { Content } = Layout;
 const { Text } = Typography;
 const HomePage = () => {
@@ -24,7 +26,19 @@ const HomePage = () => {
     const [user, setUser] = useState([]);
     const [department, setDepartment] = useState([]);
     const [leaveType, setLeaveType] = useState([]);
-    const [spinning, setSpinning] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const [modalError, setModalError] = useState({
+        open: false,
+        title: '',
+        message: '',
+    });
+
+    const [modalSuccess, setModalSuccess] = useState({
+        open: false,
+        title: '',
+        message: '',
+    });
 
     const [form] = Form.useForm();
 
@@ -32,19 +46,6 @@ const HomePage = () => {
         handleGetDepartment();
         handleGetUser();
         handleGetLeaveType();
-        const handleLoad = () => {
-            setSpinning(false);
-        };
-
-        if (document.readyState === 'complete') {
-            handleLoad();
-        } else {
-            window.addEventListener('load', handleLoad);
-        }
-
-        return () => {
-            window.removeEventListener('load', handleLoad);
-        };
     }, []);
 
     const handleGetDepartment = async () => {
@@ -52,7 +53,11 @@ const HomePage = () => {
             const response = await axios.get(`${URL}/api/leave/department`);
             setDepartment(response.data);
         } catch (error) {
-            console.log(error);
+            setModalError({
+                message: error.response.data.message,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         }
     };
 
@@ -61,7 +66,11 @@ const HomePage = () => {
             const response = await axios.get(`${URL}/api/leave/user`);
             setUser(response.data);
         } catch (error) {
-            console.log(error);
+            setModalError({
+                message: error.response.data.message,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         }
     };
 
@@ -70,75 +79,88 @@ const HomePage = () => {
             const response = await axios.get(`${URL}/api/leave/type`);
             setLeaveType(response.data);
         } catch (error) {
-            console.log(error);
+            setModalError({
+                message: error.response.data.message,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         }
     };
 
     const handleInsertData = async values => {
         try {
-            setSpinning(true);
+            setLoading(true);
 
             const response = await axios.post(`${URL}/api/leave/list`, values);
 
             console.log(response);
 
-            const { error } = response.data;
-
-            if (error === 0) {
-                Modal.success({
-                    centered: true,
-                    content: (
+            setModalSuccess({
+                message: (
+                    <Text>
+                        Đã gửi yêu cầu lên <b>MANAGER</b>
+                        <br></br>
+                        <b>TEST</b> qua <b>Zalo</b>
+                    </Text>
+                ),
+                open: true,
+            });
+        } catch (error) {
+            if (error.response.data.error === -904) {
+                setModalError({
+                    message: (
                         <Text>
-                            Đã gửi yêu cầu lên <b>MANAGER</b>
-                            <br></br>
-                            <b>TEST</b> qua <b>Zalo</b>
+                            Đơn xin nghỉ phép của bạn đã
+                            <br />
+                            <b>tồn tại trong hệ thống!</b>
+                            <br />
+                            Vui lòng liên hệ <b>cấp trên</b> để được
+                            <br />
+                            phê duyệt!
                         </Text>
                     ),
-                    title: 'THÀNH CÔNG',
-                });
-            } else if (error === -904) {
-                Modal.error({
-                    centered: true,
-                    content: (
-                        <Text>
-                            Đơn xin nghỉ phép của bạn đã <b>tồn tại trong hệ thống!</b>
-                            <br></br>
-                            Vui lòng liên hệ cấp trên để được phê duyệt!
-                        </Text>
-                    ),
+                    open: true,
                     title: 'THẤT BẠI',
                 });
             } else if (error === -230) {
-                Modal.error({
-                    centered: true,
-                    content: (
+                setModalError({
+                    message: (
                         <Text>
                             Gửi thông báo qua Zalo <b>thất bại!</b>
-                            <br></br>
-                            Do người dùng đã không <b>tương tác</b> với WineFood trong vòng 7 ngày!
-                            <br></br>
-                            Tuy nhiên dữ liệu <b>đã được ghi vào hệ thống.</b> Bạn có thể yên tâm!
+                            <br />
+                            Do người dùng đã không <b>tương tác</b>
+                            <br />
+                            với <b>WineFood</b> trong vòng 7 ngày!
+                            <br />
+                            Tuy nhiên
+                            <br />
+                            Dữ liệu <b>đã được ghi vào hệ thống.</b>
+                            <br />
+                            Bạn có thể yên tâm!
                         </Text>
                     ),
+                    open: true,
                     title: 'THẤT BẠI',
                 });
             } else {
-                Modal.error({
-                    centered: true,
-                    content: (
+                setModalError({
+                    message: (
                         <Text>
-                            Mã lỗi: {error}
-                            <br></br>
-                            Vui lòng liên hệ Mr.Sang để được hỗ trợ!
+                            Mã lỗi: {error.response.data.error}
+                            <br />
+                            Vui lòng liên hệ{' '}
+                            <a href="https://zalo.me/0972868740" target="_blank">
+                                Mr.Sang
+                            </a>{' '}
+                            để được hỗ trợ!
                         </Text>
                     ),
+                    open: true,
                     title: 'THẤT BẠI',
                 });
             }
-        } catch (error) {
-            console.log(error);
         } finally {
-            setSpinning(false);
+            setLoading(false);
         }
     };
 
@@ -193,7 +215,7 @@ const HomePage = () => {
                 backgroundPosition: 'center',
             }}
         >
-            <Spin fullscreen size={'large'} spinning={spinning} tip="Vui lòng đợi..." />
+            <Spin fullscreen size={'large'} spinning={loading} tip="Vui lòng đợi..." />
             <Card
                 bordered={false}
                 style={{
@@ -394,16 +416,22 @@ const HomePage = () => {
                     </Form.Item>
                 </Form>
             </Card>
-            <Row>
-                <Button
-                    size={'large'}
-                    type={'primary'}
-                    onClick={() => form.submit()}
-                    style={{ margin: 'auto', marginTop: 30 }}
-                >
+            <Flex justify="center" style={{ marginTop: 30 }}>
+                <Button size={'large'} type={'primary'} onClick={() => form.submit()}>
                     Gửi Phép
                 </Button>
-            </Row>
+            </Flex>
+            <ModalErrorComponent
+                onOk={() => setModalError({ open: false })}
+                open={modalError.open}
+                message={modalError.message}
+                title={modalError.title}
+            />
+            <ModalSuccessComponent
+                onOk={() => setModalSuccess({ open: false })}
+                open={modalSuccess.open}
+                message={modalSuccess.message}
+            />
         </Content>
     );
 };

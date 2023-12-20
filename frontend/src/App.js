@@ -15,6 +15,7 @@ const App = () => {
                         colorBgLayout: '#fff',
                         controlHeight: 40,
                         fontSize: 20,
+                        fontFamily: "'Roboto', sans-serif",
                     },
                 }}
             >

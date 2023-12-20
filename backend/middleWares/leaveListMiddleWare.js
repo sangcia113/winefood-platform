@@ -15,7 +15,11 @@ const leaveListMiddleWare = {
             // Gọi hàm service để đọc dữ liệu
             const results = await leaveListService.checkIsExist(userId, leaveDay, fromDate, toDate);
 
-            if (results.length > 0) return res.json({ error: -904 });
+            if (results.length > 0)
+                return res.status(400).json({
+                    error: -904,
+                    message: 'Đơn xin nghỉ phép của bạn đã tồn tại trong hệ thống!',
+                });
 
             next();
         } catch (err) {

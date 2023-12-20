@@ -9,13 +9,13 @@ const ModalSuccessComponent = ({ onOk, open, message }) => (
         cancelButtonProps={{ style: { display: 'none' } }}
         centered
         closeIcon={false}
+        okButtonProps={{ style: { borderRadius: 20 } }}
         okText="Đồng Ý"
         onOk={onOk}
         open={open}
         title={
             <Space direction="vertical" size="large">
                 <CheckCircleFilled style={{ color: '#52c41a', fontSize: 60 }} />
-
                 <Text strong style={{ fontSize: 32 }}>
                     THÀNH CÔNG
                 </Text>

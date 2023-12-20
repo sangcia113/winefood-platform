@@ -53,6 +53,41 @@ const userService = {
         return results;
     },
 
+    // Đọc trong cơ sở dữ liệu.
+    readInfoLeader: async id => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT
+                        l.name,
+                        l.gender,
+                        l.roleId,
+                        r.name role,
+                        za.zaloUserId
+                    FROM
+                        leave.user l
+                    LEFT JOIN
+                        leave.role r
+                    ON
+                        r.id = l.roleId
+                    LEFT JOIN
+                        zalo_api.user za
+                    ON
+                        za.zaloNumberPhone = l.numberPhone
+                    WHERE
+                        l.id = (
+                        SELECT
+                            l.superiorId
+                        FROM 
+                            leave.user l
+                        WHERE
+                            l.id = ?
+                    )`;
+
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, [id]);
+
+        return results;
+    },
+
     // Cập nhật trong cơ sở dữ liệu.
     update: async (
         code,

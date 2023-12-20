@@ -574,9 +574,11 @@ const EmployeePage = () => {
             </Card>
             <Modal
                 afterClose={() => form.resetFields()}
+                cancelButtonProps={{ style: { borderRadius: 20 } }}
                 cancelText="Hủy Bỏ"
                 closeIcon={false}
                 forceRender
+                okButtonProps={{ style: { borderRadius: 20 } }}
                 okText="Đồng Ý"
                 onCancel={() => setModalForm({ open: false })}
                 onOk={() => form.submit()}

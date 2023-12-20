@@ -8,9 +8,11 @@ const { TextArea } = Input;
 const ModalReasonComponent = ({ afterClose, onCancel, onOk, open, form, onFinish }) => (
     <Modal
         afterClose={afterClose}
+        cancelButtonProps={{ style: { borderRadius: 20 } }}
         cancelText="Hủy Bỏ"
         centered
         closeIcon={false}
+        okButtonProps={{ style: { borderRadius: 20 } }}
         okText="Đồng Ý"
         onCancel={onCancel}
         onOk={onOk}

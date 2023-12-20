@@ -1,14 +1,14 @@
 const axios = require('axios');
 const qs = require('qs');
-const { updateZaloAPI, readZaloAPI } = require('../services/zaloAPIService');
-const { createError } = require('../services/errorService');
+const { zaloAPIService } = require('../services/zaloAPIService');
+const { errorService } = require('../services/errorService');
 
 const ZALO_API_URL = 'https://openapi.zalo.me/v3.0/oa/message/cs';
 const ZALO_OAUTH_URL = 'https://oauth.zaloapp.com/v4/oa/access_token';
 
 const handleGetAccessToken = async () => {
     try {
-        const zaloAPIInfo = await readZaloAPI();
+        const zaloAPIInfo = await zaloAPIService.read();
 
         const { refreshToken, secretKey, appId } = zaloAPIInfo[0];
 
@@ -37,7 +37,7 @@ const handleGetAccessToken = async () => {
 
 const handleSendZaloNotificationV3 = async (userId, zaloAPIUserID, zaloAPIText, retryCount = 1) => {
     try {
-        const zaloAPIInfo = await readZaloAPI();
+        const zaloAPIInfo = await zaloAPIService.read();
 
         const { accessToken } = zaloAPIInfo[0];
 
@@ -66,17 +66,16 @@ const handleSendZaloNotificationV3 = async (userId, zaloAPIUserID, zaloAPIText, 
         const { error, message } = response.data;
 
         if (error === 0) {
-            console.log(response);
             return response.data;
         } else if (error === -216) {
-            createError(userId, error, message);
+            errorService.create(userId, error, message);
 
             try {
                 const responseGet = await handleGetAccessToken();
 
                 const { access_token, refresh_token } = responseGet.data;
 
-                await updateZaloAPI(access_token, refresh_token);
+                await zaloAPIService.update(access_token, refresh_token);
 
                 if (retryCount > 0) {
                     const responseResend = await handleSendZaloNotificationV3(
@@ -89,10 +88,10 @@ const handleSendZaloNotificationV3 = async (userId, zaloAPIUserID, zaloAPIText, 
                     return responseResend;
                 }
             } catch (error) {
-                return { error: -901, messageApp: 'Resend Zalo Notification V3 failed!' };
+                return { error: -901, message: 'Resend Zalo Notification V3 failed!' };
             }
         } else {
-            createError(userId, error, message);
+            errorService.create(userId, error, message);
 
             return response.data;
         }
@@ -103,7 +102,7 @@ const handleSendZaloNotificationV3 = async (userId, zaloAPIUserID, zaloAPIText, 
 
 const handleGetAllUser = async () => {
     try {
-        const zaloAPIInfo = await readZaloAPI();
+        const zaloAPIInfo = await zaloAPIService.read();
 
         const { accessToken } = zaloAPIInfo[0];
 
@@ -128,7 +127,7 @@ const handleGetAllUser = async () => {
 
 const handleRequestUserInfo = async zaloAPIUserID => {
     try {
-        const zaloAPIInfo = await readZaloAPI();
+        const zaloAPIInfo = await zaloAPIService.read();
 
         const { accessToken } = zaloAPIInfo[0];
 
@@ -176,7 +175,7 @@ const handleRequestUserInfo = async zaloAPIUserID => {
 
 const handleGetUserProfile = async zaloAPIUserID => {
     try {
-        const zaloAPIInfo = await readZaloAPI();
+        const zaloAPIInfo = await zaloAPIService.read();
 
         const { accessToken } = zaloAPIInfo[0];
 

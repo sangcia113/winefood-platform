@@ -33,39 +33,6 @@ const zaloAPIService = {
         return results;
     },
 
-    // Đọc trong cơ sở dữ liệu.
-    readZaloUserId: async id => {
-        // Truy vấn SQL để đọc
-        const sql = `SELECT
-                    zaloUserId
-                FROM
-                    zalo_api.user za
-                INNER JOIN leave.user l
-                ON
-                    l.numberPhone = za.zaloNumberPhone
-                WHERE
-                    za.zaloNumberPhone = (
-                    SELECT
-                        l.numberPhone
-                    FROM
-                        leave.user l
-                    WHERE
-                        l.id =(
-                        SELECT
-                            l.superiorId
-                        FROM
-                            leave.user l
-                        WHERE
-                            l.id = ?
-                    )
-                )`;
-
-        // Thực hiện truy vấn SQL và trả về kết quả
-        const [results] = await db.query(sql, [id]);
-
-        return results;
-    },
-
     // Cập nhật trong cơ sở dữ liệu.
     update: async (accessToken, refreshToken) => {
         // Truy vấn SQL để cập nhật

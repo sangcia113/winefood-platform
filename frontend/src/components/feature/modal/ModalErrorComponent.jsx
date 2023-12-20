@@ -9,13 +9,14 @@ const ModalErrorComponent = ({ onOk, open, title, message }) => (
         cancelButtonProps={{ style: { display: 'none' } }}
         centered
         closeIcon={false}
+        okButtonProps={{ style: { borderRadius: 20 } }}
         okText="Đồng Ý"
+        okType="danger"
         onOk={onOk}
         open={open}
         title={
             <Space direction="vertical" size="large">
                 <CloseCircleFilled style={{ color: '#ff4d4f', fontSize: 60 }} />
-
                 <Text strong style={{ fontSize: 32 }}>
                     {title}
                 </Text>
@@ -27,7 +28,7 @@ const ModalErrorComponent = ({ onOk, open, title, message }) => (
             footer: { paddingTop: 20, textAlign: 'center' },
         }}
     >
-        <Alert message={message} type="error" />
+        <Alert message={message} type="error" style={{ textAlign: 'center' }} />
     </Modal>
 );
 

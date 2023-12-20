@@ -4,13 +4,7 @@ import { Form, Input } from 'antd';
 
 const FormComponent = ({ form, onFinish, formFields }) => {
     return (
-        <Form
-            form={form}
-            labelCol={{ span: 10 }}
-            onFinish={onFinish}
-            wrapperCol={{ span: 14 }}
-            // layout='vertical'
-        >
+        <Form form={form} labelCol={{ span: 8 }} onFinish={onFinish} wrapperCol={{ span: 16 }}>
             <Form.Item name="id" hidden>
                 <Input />
             </Form.Item>

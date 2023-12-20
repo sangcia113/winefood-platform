@@ -138,24 +138,20 @@ const EmployeePage = () => {
         try {
             const response = await axios.post(`${URL}/api/leave/user`, values);
 
-            const { error, message } = response.data;
-
             setModalForm({ open: false });
 
-            error === 0
-                ? setModalSuccess({
-                      message,
-                      open: true,
-                  })
-                : setModalError({
-                      message,
-                      open: true,
-                      title: 'THẤT BẠI',
-                  });
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
 
             handleGetEmployee();
         } catch (error) {
-            console.log(error);
+            setModalError({
+                message: error.response.data.message,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         }
     };
 
@@ -163,24 +159,20 @@ const EmployeePage = () => {
         try {
             const response = await axios.put(`${URL}/api/leave/user/${values.id}`, values);
 
-            const { error, message } = response.data;
-
             setModalForm({ open: false });
 
-            error === 0
-                ? setModalSuccess({
-                      message,
-                      open: true,
-                  })
-                : setModalError({
-                      message,
-                      open: true,
-                      title: 'THẤT BẠI',
-                  });
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
 
             handleGetEmployee();
         } catch (error) {
-            console.log(error);
+            setModalError({
+                message: error.response.data.error,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         }
     };
 
@@ -188,26 +180,22 @@ const EmployeePage = () => {
         try {
             const response = await axios.delete(`${URL}/api/leave/user/${id}`);
 
-            const { error, message } = response.data;
-
             setModalConfirm({
                 open: false,
             });
 
-            error === 0
-                ? setModalSuccess({
-                      message,
-                      open: true,
-                  })
-                : setModalError({
-                      message,
-                      open: true,
-                      title: 'THẤT BẠI',
-                  });
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
 
             handleGetEmployee();
         } catch (error) {
-            console.log(error);
+            setModalError({
+                message: error.response.data.message,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         }
     };
 

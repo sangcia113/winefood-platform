@@ -13,5 +13,5 @@ code {
 input::placeholder,
 .ant-select-selection-placeholder,
 textarea::placeholder {
-    font-size: 16px;
+    font-size: 18px;
 }

@@ -1,20 +1,21 @@
 const db = require('../configs/databaseZaloAPIConfig');
 
-// Đọc trong cơ sở dữ liệu.
-const readZaloAPI = async () => {
-    // Truy vấn SQL để đọc
-    const sql = `SELECT * FROM api`;
+const zaloAPIService = {
+    // Đọc trong cơ sở dữ liệu.
+    read: async () => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT * FROM api`;
 
-    // Thực hiện truy vấn SQL và trả về kết quả
-    const [results] = await db.query(sql);
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql);
 
-    return results;
-};
+        return results;
+    },
 
-// Đọc trong cơ sở dữ liệu.
-const readZaloUser = async () => {
-    // Truy vấn SQL để đọc
-    const sql = `SELECT
+    // Đọc trong cơ sở dữ liệu.
+    readAllZaloUser: async () => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT
                     za.*,
                     l.id userId,
                     l.name userName
@@ -26,20 +27,54 @@ const readZaloUser = async () => {
                 ORDER BY
                     za.id ASC`;
 
-    // Thực hiện truy vấn SQL và trả về kết quả
-    const [results] = await db.query(sql);
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql);
 
-    return results;
-};
+        return results;
+    },
 
-// Cập nhật trong cơ sở dữ liệu.
-const updateZaloAPI = async (accessToken, refreshToken) => {
-    // Truy vấn SQL để cập nhật
-    const sql = `UPDATE api SET accessToken = ?, refreshToken = ?, createdDate = ?`;
+    // Đọc trong cơ sở dữ liệu.
+    readZaloUserId: async id => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT
+                    zaloUserId
+                FROM
+                    zalo_api.user za
+                INNER JOIN leave.user l
+                ON
+                    l.numberPhone = za.zaloNumberPhone
+                WHERE
+                    za.zaloNumberPhone = (
+                    SELECT
+                        l.numberPhone
+                    FROM
+                        leave.user l
+                    WHERE
+                        l.id =(
+                        SELECT
+                            l.superiorId
+                        FROM
+                            leave.user l
+                        WHERE
+                            l.id = ?
+                    )
+                )`;
 
-    // Thực hiện truy vấn SQL với các giá trị tham số
-    await db.query(sql, [accessToken, refreshToken, new Date()]);
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, [id]);
+
+        return results;
+    },
+
+    // Cập nhật trong cơ sở dữ liệu.
+    update: async (accessToken, refreshToken) => {
+        // Truy vấn SQL để cập nhật
+        const sql = `UPDATE api SET accessToken = ?, refreshToken = ?, createdDate = ?`;
+
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [accessToken, refreshToken, new Date()]);
+    },
 };
 
 // Xuất các hàm để sử dụng trong module khác
-module.exports = { readZaloAPI, updateZaloAPI, readZaloUser };
+module.exports = { zaloAPIService };

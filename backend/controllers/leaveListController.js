@@ -1,175 +1,188 @@
-const {
-    createLeaveList,
-    readLeaveList,
-    readLeaveListOther,
-    readLeaveListStatistics,
-    updateRejectedLeaveList,
-    updateApprovedLeaveList,
-} = require('../services/leaveListService');
+const { leaveListService } = require('../services/leaveListService');
+const { zaloAPIService } = require('../services/zaloAPIService');
 
 const { handleSendZaloNotificationV3 } = require('../utils/handleZaloAPI');
 
-const createHandler = async (req, res) => {
-    // Lấy thông tin từ body của yêu cầu
-    const { userId, leaveTypeId, leaveDay, fromDate, toDate, reason } = req.body;
+const leaveListController = {
+    createHandler: async (req, res) => {
+        // Lấy thông tin từ body của yêu cầu
+        const { userId, leaveTypeId, leaveDay, fromDate, toDate, reason } = req.body;
 
-    try {
-        // Gọi hàm service để thêm mới vào cơ sở dữ liệu
-        await createLeaveList(userId, leaveTypeId, leaveDay, fromDate, toDate, reason);
+        try {
+            // Gọi hàm service để thêm mới vào cơ sở dữ liệu
+            await leaveListService.create(userId, leaveTypeId, leaveDay, fromDate, toDate, reason);
 
-        // const rsGetSuperior=await handleGetSuperior(userId)
+            const response = await zaloAPIService.readZaloUserId(userId);
 
-        // const {userId,name}=rsGetSuperior
+            const superiorId = response[0].data;
 
-        const response = await handleSendZaloNotificationV3(userId, '8851502365121811999', 'TTTTT');
+            await handleSendZaloNotificationV3(userId, superiorId);
 
-        res.json(response);
-    } catch (error) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', error);
+            res.status(200).json({ error: 0, message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!' });
+        } catch (error) {
+            res.status(500).json({ message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+        }
+    },
 
-        res.status(500).json({ message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
-    }
-};
+    // Xử lý yêu cầu đọc dữ liệu.
+    readHandler: async (req, res) => {
+        try {
+            // Gọi hàm service để đọc dữ liệu
+            const results = await leaveListService.read();
 
-// Xử lý yêu cầu đọc dữ liệu.
-const readHandler = async (req, res) => {
-    try {
-        // Gọi hàm service để đọc dữ liệu
-        const results = await readLeaveList();
+            res.json(results);
+        } catch (err) {
+            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+        }
+    },
 
-        res.json(results);
-    } catch (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+    // Xử lý yêu cầu đọc dữ liệu.
+    readByDateHandler: async (req, res) => {
+        // Lấy thông tin từ body của yêu cầu
+        const { startDate, endDate } = req.query;
 
-        res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
-    }
-};
+        try {
+            // Gọi hàm service để đọc dữ liệu
+            const results = await leaveListService.read(startDate, endDate);
 
-// Xử lý yêu cầu đọc dữ liệu.
-const readByDateHandler = async (req, res) => {
-    // Lấy thông tin từ body của yêu cầu
-    const { startDate, endDate } = req.query;
+            res.json(results);
+        } catch (err) {
+            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+        }
+    },
 
-    try {
-        // Gọi hàm service để đọc dữ liệu
-        const results = await readLeaveList(startDate, endDate);
+    // Xử lý yêu cầu đọc dữ liệu.
+    readOtherHandler: async (req, res) => {
+        try {
+            // Gọi hàm service để đọc dữ liệu
+            const results = await leaveListService.readOther();
 
-        res.json(results);
-    } catch (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+            res.json(results);
+        } catch (err) {
+            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+        }
+    },
 
-        res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
-    }
-};
+    // Xử lý yêu cầu đọc dữ liệu.
+    readOtherByDateHandler: async (req, res) => {
+        // Lấy thông tin từ body của yêu cầu
+        const { startDate, endDate } = req.query;
 
-// Xử lý yêu cầu đọc dữ liệu.
-const readOtherHandler = async (req, res) => {
-    try {
-        // Gọi hàm service để đọc dữ liệu
-        const results = await readLeaveListOther();
+        try {
+            // Gọi hàm service để đọc dữ liệu
+            const results = await leaveListService.readOther(startDate, endDate);
 
-        res.json(results);
-    } catch (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+            res.json(results);
+        } catch (err) {
+            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+        }
+    },
 
-        res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
-    }
-};
+    // Xử lý yêu cầu đọc dữ liệu.
+    readStatisticsHandler: async (req, res) => {
+        try {
+            // Gọi hàm service để đọc dữ liệu
+            const results = await leaveListService.readStatistics();
 
-// Xử lý yêu cầu đọc dữ liệu.
-const readOtherByDateHandler = async (req, res) => {
-    // Lấy thông tin từ body của yêu cầu
-    const { startDate, endDate } = req.query;
+            res.json(results);
+        } catch (err) {
+            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+        }
+    },
 
-    try {
-        // Gọi hàm service để đọc dữ liệu
-        const results = await readLeaveListOther(startDate, endDate);
+    // Xử lý yêu cầu đọc dữ liệu.
+    readStatisticsByDateHandler: async (req, res) => {
+        // Lấy thông tin từ body của yêu cầu
+        const { startDate, endDate } = req.query;
 
-        res.json(results);
-    } catch (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        try {
+            // Gọi hàm service để đọc dữ liệu
+            const results = await leaveListService.readStatistics(startDate, endDate);
 
-        res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
-    }
-};
+            res.json(results);
+        } catch (err) {
+            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+        }
+    },
 
-// Xử lý yêu cầu đọc dữ liệu.
-const readStatisticsHandler = async (req, res) => {
-    try {
-        // Gọi hàm service để đọc dữ liệu
-        const results = await readLeaveListStatistics();
+    // Xử lý yêu cầu cập nhật dữ liệu.
+    updateApprovedHandler: async (req, res) => {
+        // Lấy ID từ params của yêu cầu
+        const { id } = req.params;
 
-        res.json(results);
-    } catch (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        try {
+            // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+            await leaveListService.updateApproved(id);
 
-        res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
-    }
-};
+            res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+        } catch (err) {
+            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+        }
+    },
 
-// Xử lý yêu cầu đọc dữ liệu.
-const readStatisticsByDateHandler = async (req, res) => {
-    // Lấy thông tin từ body của yêu cầu
-    const { startDate, endDate } = req.query;
+    // Xử lý yêu cầu cập nhật dữ liệu.
+    updateRejectedHandler: async (req, res) => {
+        // Lấy ID từ params của yêu cầu
+        const { id } = req.params;
 
-    try {
-        // Gọi hàm service để đọc dữ liệu
-        const results = await readLeaveListStatistics(startDate, endDate);
+        // Lấy thông tin từ body của yêu cầu
+        const { reason } = req.body;
 
-        res.json(results);
-    } catch (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        try {
+            // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+            await leaveListService.updateRejected(id, reason);
 
-        res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
-    }
-};
+            res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+        } catch (err) {
+            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+        }
+    },
 
-// Xử lý yêu cầu cập nhật dữ liệu.
-const updateApprovedHandler = async (req, res) => {
-    // Lấy ID từ params của yêu cầu
-    const { id } = req.params;
+    // Xử lý yêu cầu cập nhật dữ liệu.
+    updateApprovedLeaveTypeHandler: async (req, res) => {
+        // Lấy ID từ params của yêu cầu
+        const { id } = req.params;
 
-    try {
-        // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-        await updateApprovedLeaveList(id);
+        try {
+            // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+            await leaveListService.updateApprovedLeaveType(id);
 
-        res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
-    } catch (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+            res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+        } catch (err) {
+            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+        }
+    },
 
-        res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
-    }
-};
+    // Xử lý yêu cầu cập nhật dữ liệu.
+    updateApprovedLeaveDayHandler: async (req, res) => {
+        // Lấy ID từ params của yêu cầu
+        const { id } = req.params;
 
-// Xử lý yêu cầu cập nhật dữ liệu.
-const updateRejectedHandler = async (req, res) => {
-    // Lấy ID từ params của yêu cầu
-    const { id } = req.params;
+        try {
+            // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+            await leaveListService.updateApprovedLeaveDay(id);
 
-    // Lấy thông tin từ body của yêu cầu
-    const { reason } = req.body;
+            res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+        } catch (err) {
+            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+        }
+    },
 
-    try {
-        // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-        await updateRejectedLeaveList(id, reason);
+    // Xử lý yêu cầu cập nhật dữ liệu.
+    updateApprovedRequestDeleteHandler: async (req, res) => {
+        // Lấy ID từ params của yêu cầu
+        const { id } = req.params;
 
-        res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
-    } catch (err) {
-        console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
+        try {
+            // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+            await leaveListService.updateApprovedRequestDelete(id);
 
-        res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
-    }
+            res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+        } catch (err) {
+            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+        }
+    },
 };
 
 // Xuất các hàm xử lý yêu cầu để sử dụng trong module khác (router)
-module.exports = {
-    createHandler,
-    readHandler,
-    readByDateHandler,
-    readOtherHandler,
-    readOtherByDateHandler,
-    readStatisticsHandler,
-    readStatisticsByDateHandler,
-    updateApprovedHandler,
-    updateRejectedHandler,
-};
+module.exports = { leaveListController };

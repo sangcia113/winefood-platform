@@ -5,6 +5,7 @@ import {
     Divider,
     Dropdown,
     Flex,
+    Form,
     Layout,
     Space,
     Table,
@@ -63,13 +64,19 @@ const ManagerPage = () => {
         message: '',
     });
 
-    const [modalReason, setModalReason] = useState({ onOk: () => {}, open: false });
+    const [modalReason, setModalReason] = useState({
+        onOk: () => {},
+        open: false,
+        onFinish: () => {},
+    });
 
     const [modalSuccess, setModalSuccess] = useState({
         open: false,
         title: '',
         message: '',
     });
+
+    const [form] = Form.useForm();
 
     useEffect(() => {
         handleGetLeaveList();
@@ -100,7 +107,11 @@ const ManagerPage = () => {
 
             handleGetTotalWaitManager();
         } catch (error) {
-            console.log(error.response.data);
+            setModalError({
+                message: `Mã Lỗi: ${error.response.data.error}`,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         } finally {
             setLoading(false);
         }
@@ -129,7 +140,11 @@ const ManagerPage = () => {
 
             setDataSourceLeaveListOther(arrData);
         } catch (error) {
-            console.log(error.response.data);
+            setModalError({
+                message: `Mã Lỗi: ${error.response.data.error}`,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         } finally {
             setLoading(false);
         }
@@ -158,7 +173,11 @@ const ManagerPage = () => {
 
             setDataSourceLeaveListStatistics(arrData);
         } catch (error) {
-            console.log(error.response.data);
+            setModalError({
+                message: `Mã Lỗi: ${error.response.data.error}`,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         } finally {
             setLoading(false);
         }
@@ -176,47 +195,109 @@ const ManagerPage = () => {
         setTotalWaitManager(total);
     };
 
-    const handleApproval = async id => {
+    const handleApproved = async id => {
         try {
             const response = await axios.put(`${URL}/api/leave/list/approved/${id}`);
 
-            const { error, message } = response.data;
-
             setModalConfirm({ open: false });
 
-            error === 0
-                ? setModalSuccess({
-                      message,
-                      open: true,
-                  })
-                : setModalError({
-                      message,
-                      open: true,
-                      title: 'THẤT BẠI',
-                  });
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
 
             handleGetLeaveList();
         } catch (error) {
-            console.log(error.response.data);
+            setModalConfirm({ open: false });
+
+            setModalError({
+                message: `Mã Lỗi: ${error.response.data.error}`,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         }
     };
 
-    const handleNotApproval = async (id, reason) => {
+    const handleRejected = async (id, reason) => {
         try {
             const response = await axios.put(`${URL}/api/leave/list/rejected/${id}`, reason);
 
-            console.log(response);
+            setModalReason({ open: false });
+
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
+
+            handleGetLeaveList();
         } catch (error) {
             setModalReason({ open: false });
 
             setModalError({
-                message: (
-                    <Paragraph>
-                        <ul>
-                            <li>{error.response.data.error}</li>
-                        </ul>
-                    </Paragraph>
-                ),
+                message: `Mã Lỗi: ${error.response.data.error}`,
+                open: true,
+                title: 'THẤT BẠI',
+            });
+        }
+    };
+
+    const handleApprovedLeaveType = async id => {
+        try {
+            const response = await axios.put(`${URL}/api/leave/list/approved-leave-type/${id}`);
+
+            setModalConfirm({ open: false });
+
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
+        } catch (error) {
+            setModalConfirm({ open: false });
+
+            setModalError({
+                message: `Mã Lỗi: ${error.response.data.error}`,
+                open: true,
+                title: 'THẤT BẠI',
+            });
+        }
+    };
+
+    const handleApprovedLeaveDay = async id => {
+        try {
+            const response = await axios.put(`${URL}/api/leave/list/approved-leave-day/${id}`);
+
+            setModalConfirm({ open: false });
+
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
+        } catch (error) {
+            setModalConfirm({ open: false });
+
+            setModalError({
+                message: `Mã Lỗi: ${error.response.data.error}`,
+                open: true,
+                title: 'THẤT BẠI',
+            });
+        }
+    };
+
+    const handleApprovedRequestDelete = async id => {
+        try {
+            const response = await axios.put(`${URL}/api/leave/list/approved-request-delete/${id}`);
+
+            setModalConfirm({ open: false });
+
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
+        } catch (error) {
+            setModalConfirm({ open: false });
+
+            setModalError({
+                message: `Mã Lỗi: ${error.response.data.error}`,
                 open: true,
                 title: 'THẤT BẠI',
             });
@@ -262,7 +343,7 @@ const ManagerPage = () => {
                                                     <b>{record.userName}</b>
                                                 </Space>
                                             ),
-                                            onOk: () => handleApproval(record.id),
+                                            onOk: () => handleApproved(record.id),
                                             open: true,
                                         });
                                     }
@@ -291,8 +372,8 @@ const ManagerPage = () => {
                                         });
                                     } else {
                                         setModalReason({
-                                            onOk: () => handleNotApproval(record.id),
                                             open: true,
+                                            onFinish: reason => handleRejected(record.id, reason),
                                         });
                                     }
                                 },
@@ -333,6 +414,17 @@ const ManagerPage = () => {
                                                     ),
                                                     title: 'KHÔNG THỂ XÁC NHẬN',
                                                 });
+                                            } else {
+                                                setModalConfirm({
+                                                    message: (
+                                                        <Space direction="vertical" align="center">
+                                                            Bạn có chắc xác nhận loại phép của
+                                                            <b>{record.userName}</b>
+                                                        </Space>
+                                                    ),
+                                                    onOk: () => handleApprovedLeaveType(record.id),
+                                                    open: true,
+                                                });
                                             }
                                         },
                                     },
@@ -368,6 +460,18 @@ const ManagerPage = () => {
                                                     ),
                                                     title: 'KHÔNG THỂ XÁC NHẬN',
                                                 });
+                                            } else {
+                                                setModalConfirm({
+                                                    message: (
+                                                        <Space direction="vertical" align="center">
+                                                            Bạn có chắc xác nhận số ngày nghỉ phép
+                                                            của
+                                                            <b>{record.userName}</b>
+                                                        </Space>
+                                                    ),
+                                                    onOk: () => handleApprovedLeaveDay(record.id),
+                                                    open: true,
+                                                });
                                             }
                                         },
                                     },
@@ -398,6 +502,19 @@ const ManagerPage = () => {
                                                         </Paragraph>
                                                     ),
                                                     title: 'KHÔNG THỂ XÁC NHẬN',
+                                                });
+                                            } else {
+                                                setModalConfirm({
+                                                    message: (
+                                                        <Space direction="vertical" align="center">
+                                                            Bạn có chắc xác nhận yêu cầu hủy phép
+                                                            của
+                                                            <b>{record.userName}</b>
+                                                        </Space>
+                                                    ),
+                                                    onOk: () =>
+                                                        handleApprovedRequestDelete(record.id),
+                                                    open: true,
                                                 });
                                             }
                                         },
@@ -941,9 +1058,12 @@ const ManagerPage = () => {
                 title={modalError.title}
             />
             <ModalReasonComponent
+                afterClose={() => form.resetFields()}
                 onCancel={() => setModalReason({ open: false })}
-                onOk={modalReason.onOk}
+                onOk={() => form.submit()}
                 open={modalReason.open}
+                form={form}
+                onFinish={modalReason.onFinish}
             />
             <ModalSuccessComponent
                 onOk={() => setModalSuccess({ open: false })}

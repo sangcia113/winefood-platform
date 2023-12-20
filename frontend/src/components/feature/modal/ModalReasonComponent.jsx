@@ -1,12 +1,13 @@
-import { Input, Modal, Typography } from 'antd';
+import { Form, Input, Modal, Typography } from 'antd';
 import React from 'react';
 
 const { Text } = Typography;
 
 const { TextArea } = Input;
 
-const ModalReasonComponent = ({ onCancel, onOk, open }) => (
+const ModalReasonComponent = ({ afterClose, onCancel, onOk, open, form, onFinish }) => (
     <Modal
+        afterClose={afterClose}
         cancelText="Hủy Bỏ"
         centered
         closeIcon={false}
@@ -25,7 +26,11 @@ const ModalReasonComponent = ({ onCancel, onOk, open }) => (
             footer: { paddingTop: 20, textAlign: 'center' },
         }}
     >
-        <TextArea rows={3} />
+        <Form form={form} onFinish={onFinish}>
+            <Form.Item name={'reason'} rules={[{ message: 'Vui lòng nhập lý do', required: true }]}>
+                <TextArea rows={3} placeholder="Vui lòng nhập lý do" />
+            </Form.Item>
+        </Form>
     </Modal>
 );
 

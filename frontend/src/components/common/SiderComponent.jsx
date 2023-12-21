@@ -17,7 +17,7 @@ const { Text } = Typography;
 const { Sider } = Layout;
 
 const items = [
-    { key: 'home', label: 'Trang chủ', icon: <HouseFill size={20} /> },
+    { key: '', label: 'Trang chủ', icon: <HouseFill size={20} /> },
     { key: 'password', label: 'Đổi mật khẩu', icon: <KeyFill size={20} /> },
     { key: 'feedback', label: 'Góp ý - Báo lỗi', icon: <ChatFill size={18} /> },
     { key: 'manual', label: 'Hướng dẫn sử dụng', icon: <BookFill size={18} /> },

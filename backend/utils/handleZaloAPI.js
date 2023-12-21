@@ -6,19 +6,19 @@ const { errorService } = require('../services/errorService');
 const ZALO_API_URL = 'https://openapi.zalo.me/v3.0/oa/message/cs';
 const ZALO_OAUTH_URL = 'https://oauth.zaloapp.com/v4/oa/access_token';
 
-const handleGetAccessToken = async () => {
+const refreshAccessToken = async () => {
     try {
         const zaloAPIInfo = await zaloAPIService.read();
 
         const { refreshToken, secretKey, appId } = zaloAPIInfo[0];
 
-        let data = qs.stringify({
+        const data = qs.stringify({
             refresh_token: refreshToken,
             app_id: appId,
             grant_type: 'refresh_token',
         });
 
-        let config = {
+        const config = {
             method: 'post',
             maxBodyLength: Infinity,
             url: ZALO_OAUTH_URL,
@@ -31,26 +31,26 @@ const handleGetAccessToken = async () => {
 
         return await axios.request(config);
     } catch (error) {
-        return { error: -902, message: 'Get Access Token is failed!' };
+        return { error: -1002, message: 'Refresh Access Token is failed!' };
     }
 };
 
-const handleSendZaloNotificationV3 = async (userId, zaloAPIUserID, zaloAPIText, retryCount = 1) => {
+const sendZaloNotificationV3 = async (userId, zaloAPIUserId, zaloAPIText, retryCount = 1) => {
     try {
         const zaloAPIInfo = await zaloAPIService.read();
 
         const { accessToken } = zaloAPIInfo[0];
 
-        let data = JSON.stringify({
+        const data = JSON.stringify({
             recipient: {
-                user_id: zaloAPIUserID,
+                user_id: zaloAPIUserId,
             },
             message: {
                 text: zaloAPIText,
             },
         });
 
-        let config = {
+        const config = {
             method: 'post',
             maxBodyLength: Infinity,
             url: ZALO_API_URL,
@@ -62,45 +62,37 @@ const handleSendZaloNotificationV3 = async (userId, zaloAPIUserID, zaloAPIText, 
         };
 
         const response = await axios.request(config);
+        console.log(response.data);
+        const { error } = response.data;
 
-        const { error, message } = response.data;
+        if (error === -216) {
+            const responseRefresh = await refreshAccessToken();
 
-        if (error === 0) {
-            return response.data;
-        } else if (error === -216) {
-            errorService.create(userId, error, message);
+            const { access_token, refresh_token } = responseRefresh.data;
 
-            try {
-                const responseGet = await handleGetAccessToken();
+            if (!access_token || !refresh_token)
+                return { error: -1007, message: 'Invalid Refresh Token!' };
 
-                const { access_token, refresh_token } = responseGet.data;
+            await zaloAPIService.update(access_token, refresh_token);
 
-                await zaloAPIService.update(access_token, refresh_token);
+            if (retryCount > 0)
+                return await sendZaloNotificationV3(
+                    userId,
+                    zaloAPIUserId,
+                    zaloAPIText,
+                    retryCount - 1
+                );
 
-                if (retryCount > 0) {
-                    const responseResend = await handleSendZaloNotificationV3(
-                        userId,
-                        zaloAPIUserID,
-                        zaloAPIText,
-                        retryCount - 1
-                    );
-
-                    return responseResend;
-                }
-            } catch (error) {
-                return { error: -901, message: 'Resend Zalo Notification V3 failed!' };
-            }
+            throw new Error('Maximum retry count reached.');
         } else {
-            errorService.create(userId, error, message);
-
             return response.data;
         }
     } catch (error) {
-        return { error: -900, message: 'Send Zalo Notification V3 failed!' };
+        return { error: -1001, message: 'Send Zalo Notification V3 failed!' };
     }
 };
 
-const handleGetAllUser = async () => {
+const getAllUser = async () => {
     try {
         const zaloAPIInfo = await zaloAPIService.read();
 
@@ -108,7 +100,7 @@ const handleGetAllUser = async () => {
 
         let offset = 0;
 
-        let config = {
+        const config = {
             method: 'get',
             maxBodyLength: Infinity,
             url: `https://openapi.zalo.me/v2.0/oa/getfollowers?data={"offset":${offset},"count":50}`,
@@ -121,20 +113,20 @@ const handleGetAllUser = async () => {
 
         console.log(response);
     } catch (error) {
-        return { error: -903, message: 'Get All User is failed!' };
+        return { error: -1004, message: 'Get All User is failed!' };
     }
 };
 
-const handleRequestUserInfo = async zaloAPIUserID => {
+const requestUserInfo = async zaloAPIUserId => {
     try {
         const zaloAPIInfo = await zaloAPIService.read();
 
         const { accessToken } = zaloAPIInfo[0];
 
         const axios = require('axios');
-        let data = JSON.stringify({
+        const data = JSON.stringify({
             recipient: {
-                user_id: zaloAPIUserID,
+                user_id: zaloAPIUserId,
             },
             message: {
                 attachment: {
@@ -154,7 +146,7 @@ const handleRequestUserInfo = async zaloAPIUserID => {
             },
         });
 
-        let config = {
+        const config = {
             method: 'post',
             maxBodyLength: Infinity,
             url: 'https://openapi.zalo.me/v3.0/oa/message/cs',
@@ -162,18 +154,18 @@ const handleRequestUserInfo = async zaloAPIUserID => {
                 'Content-Type': 'application/json',
                 access_token: accessToken,
             },
-            data: data,
+            data,
         };
 
         const response = axios.request(config);
 
         console.log(response);
     } catch (error) {
-        return { error: -904, message: 'Request User Info is failed!' };
+        return { error: -1005, message: 'Request User Info is failed!' };
     }
 };
 
-const handleGetUserProfile = async zaloAPIUserID => {
+const getUserProfile = async zaloAPIUserId => {
     try {
         const zaloAPIInfo = await zaloAPIService.read();
 
@@ -181,10 +173,10 @@ const handleGetUserProfile = async zaloAPIUserID => {
 
         const axios = require('axios');
 
-        let config = {
+        const config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: `https://openapi.zalo.me/v2.0/oa/getprofile?data={"user_id":${zaloAPIUserID}}`,
+            url: `https://openapi.zalo.me/v2.0/oa/getprofile?data={"user_id":${zaloAPIUserId}}`,
             headers: {
                 access_token: accessToken,
             },
@@ -194,13 +186,13 @@ const handleGetUserProfile = async zaloAPIUserID => {
 
         console.log(response);
     } catch (error) {
-        return { error: -905, message: 'Get User Profile is failed!' };
+        return { error: -1006, message: 'Get User Profile is failed!' };
     }
 };
 
 module.exports = {
-    handleSendZaloNotificationV3,
-    handleGetAllUser,
-    handleRequestUserInfo,
-    handleGetUserProfile,
+    sendZaloNotificationV3,
+    getAllUser,
+    requestUserInfo,
+    getUserProfile,
 };

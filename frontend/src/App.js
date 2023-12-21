@@ -22,10 +22,10 @@ const App = () => {
                 <Layout style={{ minHeight: '100vh' }}>
                     <HeaderComponent />
                     <Layout>
-                        <SiderComponent defaultSelectedKeys={'home'} />
+                        <SiderComponent defaultSelectedKeys={''} />
                         <Routes>
                             <Route path="*" element={<NotExistPage />} />
-                            <Route path="/home" element={<HomePage />} />
+                            <Route path="/" element={<HomePage />} />
                             <Route path="/manager" element={<ManagerPage />} />
                             <Route path="/employee" element={<EmployeePage />} />
                         </Routes>

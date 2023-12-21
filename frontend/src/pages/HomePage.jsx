@@ -7,7 +7,6 @@ import {
     InputNumber,
     Layout,
     Modal,
-    Row,
     Select,
     Spin,
     Typography,
@@ -19,7 +18,7 @@ import { URL } from '../configs/urlConfig';
 import dayjs from 'dayjs';
 import { ModalErrorComponent, ModalSuccessComponent } from '../components';
 const { Content } = Layout;
-const { Text } = Typography;
+const { Link, Text } = Typography;
 const HomePage = () => {
     console.log('Run Home...');
 
@@ -97,10 +96,12 @@ const HomePage = () => {
 
             setModalSuccess({
                 message: (
-                    <Text>
-                        Đã gửi yêu cầu lên <b>MANAGER</b>
-                        <br></br>
-                        <b>TEST</b> qua <b>Zalo</b>
+                    <Text style={{ textAlign: 'center' }}>
+                        Đã gửi yêu cầu lên cấp trên
+                        <br />
+                        <b>TEST</b>
+                        <br />
+                        qua <b>Zalo</b>
                     </Text>
                 ),
                 open: true,
@@ -143,15 +144,16 @@ const HomePage = () => {
                     title: 'THẤT BẠI',
                 });
             } else {
+                console.log(error);
                 setModalError({
                     message: (
                         <Text>
                             Mã lỗi: {error.response.data.error}
                             <br />
                             Vui lòng liên hệ{' '}
-                            <a href="https://zalo.me/0972868740" target="_blank">
+                            <Link href="https://zalo.me/0972868740" target="_blank">
                                 Mr.Sang
-                            </a>{' '}
+                            </Link>{' '}
                             để được hỗ trợ!
                         </Text>
                     ),
@@ -257,7 +259,13 @@ const HomePage = () => {
                         ]}
                     >
                         <Select
+                            filterOption={(input, option) => {
+                                const optionChildren = option.children || ''; // Đảm bảo option.children không phải là undefined
+                                return optionChildren.toLowerCase().includes(input.toLowerCase());
+                            }}
+                            optionFilterProp="children"
                             placeholder="Chọn tên trong danh sách..."
+                            showSearch
                             size={'large'}
                             style={{ width: '100%' }}
                         >

@@ -1,7 +1,8 @@
 const { leaveListService } = require('../services/leaveListService');
 const { userService } = require('../services/userService');
 
-const { handleSendZaloNotificationV3 } = require('../utils/handleZaloAPI');
+const { sendZaloNotificationV3 } = require('../utils/handleZaloAPI');
+const { zaloController } = require('./zaloAPIController');
 
 const leaveListController = {
     createHandler: async (req, res) => {
@@ -10,17 +11,50 @@ const leaveListController = {
 
         try {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
-            await leaveListService.create(userId, leaveTypeId, leaveDay, fromDate, toDate, reason);
+            // await leaveListService.create(userId, leaveTypeId, leaveDay, fromDate, toDate, reason);
 
-            // const response = await userService.readInfoLeader(userId);
+            const response = await userService.readInfoLeader(userId);
 
-            // const { name, gender, roleId, role, zaloUserId } = response[0].data;
+            const { name, gender, roleId, role, zaloUserId } = response[0];
 
-            // console.log(response.data);
+            const zaloAPIText = `ĐƠN XIN NGHỈ PHÉP
 
-            await handleSendZaloNotificationV3(userId, '8851502365121811999', 'TEST');
+Dear ${gender === 1 ? 'Mr.' : 'Ms.'} ${name},
+xin gửi đến ${gender === 1 ? 'anh' : 'chị'} với các thông tin như sau:
 
-            res.status(200).json({ error: 0, message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!' });
+- Họ và tên: ${name}
+- Loại phép: ${leaveTypeId}
+- Bộ phận: ${name}
+- Số ngày nghỉ: ${leaveDay}
+- Từ ngày: ${fromDate}
+- Đến ngày: ${toDate}
+- Lý do: ${reason}
+- Ngày yêu cầu: ${name}
+- Vui lòng truy cập vào đây để xem chi tiết: http://winefood-sw.com/nghiphep/${
+                roleId === 2 ? 'manager' : 'leader'
+            }
+
+Chú ý: Để nhận được thông báo tiếp theo từ Wine Food. 
+Vui lòng reply 1 tin nhắn bất kỳ!
+`;
+
+            const responseSend = await sendZaloNotificationV3(
+                userId,
+                '8851502365121811999',
+                zaloAPIText
+            );
+
+            const { error, message } = responseSend;
+
+            if (error === 0) {
+                res.status(200).json({
+                    error: 0,
+                    message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
+                    name,
+                });
+            } else {
+                res.status(400).json(responseSend);
+            }
         } catch (error) {
             res.status(500).json({ message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
         }

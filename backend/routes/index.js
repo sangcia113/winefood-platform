@@ -36,5 +36,10 @@ router.use('/leave/list', leaveListRouter);
 
 router.use('/zalo', zaloAPIRouter);
 
+router.use('/webhook', (req, res) => {
+    console.log('Webhook ok!');
+    res.sendStatus(200);
+});
+
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

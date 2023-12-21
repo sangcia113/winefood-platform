@@ -62,8 +62,10 @@ const sendZaloNotificationV3 = async (userId, zaloAPIUserId, zaloAPIText, retryC
         };
 
         const response = await axios.request(config);
-        console.log(response.data);
-        const { error } = response.data;
+
+        const { error, message } = response.data;
+
+        errorService.create(userId, error, message);
 
         if (error === -216) {
             const responseRefresh = await refreshAccessToken();

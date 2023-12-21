@@ -599,11 +599,29 @@ const ManagerPage = () => {
                                 Manager:{' '}
                                 <b>
                                     {record.managerApproved === 1 ? (
-                                        <CheckCircleFilled style={{ color: '#52c41a' }} />
+                                        <>
+                                            <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
+                                            {dayjs(record.managerApprovedDate).format(
+                                                'DD/MM/YYYY HH:mm'
+                                            )}
+                                        </>
+                                    ) : record.managerApproved === 0 ? (
+                                        <>
+                                            <CloseCircleFilled style={{ color: '#ff4d4f' }} />{' '}
+                                            {dayjs(record.managerApprovedDate).format(
+                                                'DD/MM/YYYY HH:mm'
+                                            )}
+                                        </>
                                     ) : (
-                                        <CloseCircleFilled style={{ color: '#ff4d4f' }} />
-                                    )}{' '}
-                                    {dayjs(record.managerApprovedDate).format('DD/MM/YYYY HH:mm')}
+                                        <Tag
+                                            bordered={false}
+                                            color="processing"
+                                            icon={<SyncOutlined spin />}
+                                            style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                        >
+                                            Waiting...
+                                        </Tag>
+                                    )}
                                 </b>
                             </p>
                         </div>

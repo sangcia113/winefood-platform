@@ -9,6 +9,8 @@ const leaveListController = {
         // Lấy thông tin từ body của yêu cầu
         const { userId, leaveTypeId, leaveDay, fromDate, toDate, reason } = req.body;
 
+        console.log(req.body);
+
         try {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
             // await leaveListService.create(userId, leaveTypeId, leaveDay, fromDate, toDate, reason);

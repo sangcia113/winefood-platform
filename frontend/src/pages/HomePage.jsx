@@ -17,6 +17,8 @@ import axios from 'axios';
 import { URL } from '../configs/urlConfig';
 import dayjs from 'dayjs';
 import { ModalErrorComponent, ModalSuccessComponent } from '../components';
+var isBetween = require('dayjs/plugin/isBetween');
+dayjs.extend(isBetween);
 const { Content } = Layout;
 const { Link, Text } = Typography;
 const HomePage = () => {
@@ -168,6 +170,17 @@ const HomePage = () => {
 
     const onFinish = values => {
         const { fromDate, toDate } = values;
+
+        const userInfo = {
+            userName: user.find(u => u.id === values.userId)?.name,
+            department: department.find(
+                d => d.id === user.find(u => u.id === values.userId)?.departmentId
+            )?.name,
+            leaveType: leaveType.find(lt => lt.id === values.leaveTypeId)?.nameVN,
+        };
+
+        console.log({ ...userInfo, ...values });
+
         if (fromDate < toDate) {
             if (
                 dayjs(fromDate).hour() >= 7 &&
@@ -179,6 +192,7 @@ const HomePage = () => {
                     ...values,
                     fromDate: dayjs(fromDate).format('YYYY-MM-DD HH:mm'),
                     toDate: dayjs(toDate).format('YYYY-MM-DD HH:mm'),
+                    ...userInfo,
                 });
             } else {
                 Modal.warning({
@@ -259,10 +273,9 @@ const HomePage = () => {
                         ]}
                     >
                         <Select
-                            filterOption={(input, option) => {
-                                const optionChildren = option.children || ''; // Đảm bảo option.children không phải là undefined
-                                return optionChildren.toLowerCase().includes(input.toLowerCase());
-                            }}
+                            filterOption={(input, option) =>
+                                (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
+                            }
                             optionFilterProp="children"
                             placeholder="Chọn tên trong danh sách..."
                             showSearch

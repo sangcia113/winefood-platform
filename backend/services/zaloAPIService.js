@@ -13,19 +13,23 @@ const zaloAPIService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    readAllZaloUser: async () => {
+    readAllZaloAPIInfo: async () => {
         // Truy vấn SQL để đọc
         const sql = `SELECT
-                    za.*,
-                    l.id userId,
-                    l.name userName
+                    l.id,
+                    name,
+                    zaloUserId,
+                    zaloNumberPhone,
+                    sendRequest,
+                    za.createdDate,
+                    za.id zaloAPIInfoId
                 FROM
                     zalo_api.user AS za
                 INNER JOIN leave.user AS l
                 ON
                     l.numberPhone = za.zaloNumberPhone AND za.zaloNumberPhone != ''
                 ORDER BY
-                    za.id ASC`;
+                    l.id ASC`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql);

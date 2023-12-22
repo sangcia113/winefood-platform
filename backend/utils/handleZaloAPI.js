@@ -72,7 +72,7 @@ const sendZaloNotificationV3 = async (userId, zaloAPIUserId, zaloAPIText, retryC
 
             const { access_token, refresh_token } = responseRefresh.data;
 
-            if (!access_token || !refresh_token)
+            if (!(access_token && refresh_token))
                 return { error: -1007, message: 'Invalid Refresh Token!' };
 
             await zaloAPIService.update(access_token, refresh_token);

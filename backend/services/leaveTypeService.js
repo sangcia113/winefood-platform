@@ -1,42 +1,86 @@
 const db = require('../configs/databaseConfig');
 
-// Tạo mới trong cơ sở dữ liệu.
-const createLeaveType = async (code, nameVN, nameEN) => {
-    // Truy vấn SQL để thêm
-    const sql = `INSERT INTO type (code, nameVN, nameEN, createdDate) VALUES (?, ?, ?, ?)`;
+const leaveTypeService = {
+    // Tạo mới trong cơ sở dữ liệu.
+    create: async (code, nameVN, nameEN) => {
+        // Truy vấn SQL để thêm
+        const sql = `INSERT INTO 
+                        type (
+                            code, 
+                            nameVN, 
+                            nameEN, 
+                            createdDate) 
+                    VALUES (?, ?, ?, ?)`;
 
-    // Thực hiện truy vấn SQL với các giá trị tham số
-    await db.query(sql, [code, nameVN, nameEN, new Date()]);
-};
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [code, nameVN, nameEN, new Date()]);
+    },
 
-// Đọc trong cơ sở dữ liệu.
-const readLeaveType = async () => {
-    // Truy vấn SQL để đọc
-    const sql = `SELECT * FROM type ORDER BY id ASC`;
+    // Đọc trong cơ sở dữ liệu.
+    read: async () => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT 
+                        * 
+                    FROM 
+                        type 
+                    ORDER BY 
+                        id 
+                    ASC`;
 
-    // Thực hiện truy vấn SQL và trả về kết quả
-    const [results] = await db.query(sql);
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql);
 
-    return results;
-};
+        return results;
+    },
 
-// Cập nhật trong cơ sở dữ liệu.
-const updateLeaveType = async (code, nameVN, nameEN, id) => {
-    // Truy vấn SQL để cập nhật
-    const sql = `UPDATE type SET code= ?, nameVN = ?, nameEN = ? WHERE id = ?`;
+    // Cập nhật trong cơ sở dữ liệu.
+    update: async (code, nameVN, nameEN, id) => {
+        // Truy vấn SQL để cập nhật
+        const sql = `UPDATE 
+                        type 
+                    SET 
+                        code= ?, 
+                        nameVN = ?, 
+                        nameEN = ? 
+                    WHERE 
+                        id = ?`;
 
-    // Thực hiện truy vấn SQL với các giá trị tham số
-    await db.query(sql, [code, nameVN, nameEN, id]);
-};
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [code, nameVN, nameEN, id]);
+    },
 
-// Xóa khỏi cơ sở dữ liệu.
-const deleteLeaveType = async id => {
-    // Truy vấn SQL để xoá
-    const sql = 'DELETE FROM type WHERE id = ?';
+    // Xóa khỏi cơ sở dữ liệu.
+    delete: async id => {
+        // Truy vấn SQL để xoá
+        const sql = `DELETE FROM 
+                        type 
+                    WHERE 
+                        id = ?`;
 
-    // Thực hiện truy vấn SQL với các giá trị tham số
-    await db.query(sql, [id]);
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [id]);
+    },
+
+    // Đọc trong cơ sở dữ liệu.
+    checkIsExist: async (code, nameVN, nameEN) => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT 
+                        * 
+                    FROM 
+                        type 
+                    WHERE
+                        code = ? 
+                    OR
+                        nameVN = ?
+                    OR
+                        nameEN = ?`;
+
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, [code, nameVN, nameEN]);
+
+        return results;
+    },
 };
 
 // Xuất các hàm để sử dụng trong module khác
-module.exports = { createLeaveType, readLeaveType, updateLeaveType, deleteLeaveType };
+module.exports = { leaveTypeService };

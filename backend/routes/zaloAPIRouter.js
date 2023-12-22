@@ -5,13 +5,13 @@ const { zaloController } = require('../controllers/zaloAPIController');
 const { zaloAPIMiddleWare } = require('../middleWares/zaloAPIMiddleWare');
 
 // End point GET
-router.get('/', zaloController.readHandler);
+router.get('/token', zaloController.readHandler);
 
 // End point GET
-router.get('/info', zaloController.readAllUserInfoHandler);
+router.get('/info', zaloController.readAllZaloAPIInfoHandler);
 
 // End point PUT
-router.put('/', zaloAPIMiddleWare.checkUpdate, zaloController.updateHandler);
+router.put('/token', zaloAPIMiddleWare.checkUpdate, zaloController.updateHandler);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

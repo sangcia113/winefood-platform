@@ -27,19 +27,19 @@ const zaloController = {
 
             res.json(results);
         } catch (err) {
-            res.status(500).json({ error: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
         }
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readAllUserInfoHandler: async (req, res) => {
+    readAllZaloAPIInfoHandler: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await zaloAPIService.readAllZaloUser();
+            const results = await zaloAPIService.readAllZaloAPIInfo();
 
             res.json(results);
         } catch (err) {
-            res.status(500).json({ error: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
         }
     },
 

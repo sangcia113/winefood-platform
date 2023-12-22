@@ -6,7 +6,6 @@ import {
     Form,
     InputNumber,
     Layout,
-    Modal,
     Select,
     Spin,
     Typography,
@@ -17,8 +16,9 @@ import axios from 'axios';
 import { URL } from '../configs/urlConfig';
 import dayjs from 'dayjs';
 import { ModalErrorComponent, ModalSuccessComponent } from '../components';
-var isBetween = require('dayjs/plugin/isBetween');
-dayjs.extend(isBetween);
+import ModalWarningComponent from '../components/feature/modal/ModalWarningComponent';
+import ModalPasswordComponent from '../components/feature/modal/ModalPasswordComponent';
+import { SyncOutlined } from '@ant-design/icons';
 const { Content } = Layout;
 const { Link, Text } = Typography;
 const HomePage = () => {
@@ -35,13 +35,22 @@ const HomePage = () => {
         message: '',
     });
 
+    const [modalPassword, setModalPassword] = useState({
+        open: false,
+    });
+
     const [modalSuccess, setModalSuccess] = useState({
         open: false,
-        title: '',
         message: '',
     });
 
-    const [form] = Form.useForm();
+    const [modalWarning, setModalWarning] = useState({
+        open: false,
+        message: '',
+    });
+
+    const [formMain] = Form.useForm();
+    const [formPassword] = Form.useForm();
 
     useEffect(() => {
         handleGetDepartment();
@@ -94,14 +103,12 @@ const HomePage = () => {
 
             const response = await axios.post(`${URL}/api/leave/list`, values);
 
-            console.log(response);
-
             setModalSuccess({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
                         Đã gửi yêu cầu lên cấp trên
                         <br />
-                        <b>TEST</b>
+                        <b>{response.data.superiorName}</b>
                         <br />
                         qua <b>Zalo</b>
                     </Text>
@@ -146,7 +153,6 @@ const HomePage = () => {
                     title: 'THẤT BẠI',
                 });
             } else {
-                console.log(error);
                 setModalError({
                     message: (
                         <Text>
@@ -168,18 +174,12 @@ const HomePage = () => {
         }
     };
 
+    const handlePassword = values => {
+        console.log(values);
+    };
+
     const onFinish = values => {
         const { fromDate, toDate } = values;
-
-        const userInfo = {
-            userName: user.find(u => u.id === values.userId)?.name,
-            department: department.find(
-                d => d.id === user.find(u => u.id === values.userId)?.departmentId
-            )?.name,
-            leaveType: leaveType.find(lt => lt.id === values.leaveTypeId)?.nameVN,
-        };
-
-        console.log({ ...userInfo, ...values });
 
         if (fromDate < toDate) {
             if (
@@ -192,32 +192,44 @@ const HomePage = () => {
                     ...values,
                     fromDate: dayjs(fromDate).format('YYYY-MM-DD HH:mm'),
                     toDate: dayjs(toDate).format('YYYY-MM-DD HH:mm'),
-                    ...userInfo,
+                    userName: user.find(u => u.id === values.userId)?.name,
+                    department: department.find(
+                        d => d.id === user.find(u => u.id === values.userId)?.departmentId
+                    )?.name,
+                    leaveType: leaveType.find(lt => lt.id === values.leaveTypeId)?.nameVN,
                 });
             } else {
-                Modal.warning({
-                    centered: true,
-                    content: (
-                        <Text>
-                            Giờ bắt đầu & kết thúc phải nằm trong khoảng từ <b>07:30</b> đến{' '}
-                            <b>16:30</b>!<br></br>
-                            Giờ bắt đầu của bạn là: <b>{dayjs(fromDate).format('HH:mm')}</b>
-                            <br></br>
-                            Giờ kết thúc của bạn là: <b>{dayjs(toDate).format('HH:mm')}</b>
+                setModalWarning({
+                    message: (
+                        <Text style={{ textAlign: 'center' }}>
+                            Giờ bắt đầu & kết thúc phải nằm trong khoảng từ
+                            <br />
+                            <b>07:30</b> đến <b>16:30</b>
+                            <br />
+                            Giờ bắt đầu của bạn là:{' '}
+                            <Text strong type="danger">
+                                {dayjs(fromDate).format('HH:mm')}
+                            </Text>
+                            <br />
+                            Giờ kết thúc của bạn là:{' '}
+                            <Text strong type="danger">
+                                {dayjs(toDate).format('HH:mm')}
+                            </Text>
                         </Text>
                     ),
-                    title: 'CẢNH BÁO',
+                    open: true,
                 });
             }
         } else {
-            Modal.warning({
-                centered: true,
-                content: (
-                    <Text>
-                        Ngày/ giờ kết thúc phải <b>lớn hơn</b> ngày/ giờ bắt đầu!
+            setModalWarning({
+                message: (
+                    <Text style={{ textAlign: 'center' }}>
+                        Ngày/ giờ kết thúc phải <b>lớn hơn</b>
+                        <br />
+                        ngày/ giờ bắt đầu!
                     </Text>
                 ),
-                title: 'CẢNH BÁO',
+                open: true,
             });
         }
     };
@@ -241,7 +253,7 @@ const HomePage = () => {
             >
                 <Form
                     colon={false}
-                    form={form}
+                    form={formMain}
                     labelAlign={'left'}
                     labelCol={{
                         xs: { span: 24 },
@@ -438,7 +450,7 @@ const HomePage = () => {
                 </Form>
             </Card>
             <Flex justify="center" style={{ marginTop: 30 }}>
-                <Button size={'large'} type={'primary'} onClick={() => form.submit()}>
+                <Button size={'large'} type={'primary'} onClick={() => formMain.submit()}>
                     Gửi Phép
                 </Button>
             </Flex>
@@ -448,10 +460,23 @@ const HomePage = () => {
                 message={modalError.message}
                 title={modalError.title}
             />
+            <ModalPasswordComponent
+                afterClose={() => formPassword.resetFields()}
+                form={formPassword}
+                onCancel={() => setModalPassword({ open: false })}
+                onFinish={handlePassword}
+                onOk={() => formPassword.submit()}
+                open={modalPassword.open}
+            />
             <ModalSuccessComponent
                 onOk={() => setModalSuccess({ open: false })}
                 open={modalSuccess.open}
                 message={modalSuccess.message}
+            />
+            <ModalWarningComponent
+                onOk={() => setModalWarning({ open: false })}
+                open={modalWarning.open}
+                message={modalWarning.message}
             />
         </Content>
     );

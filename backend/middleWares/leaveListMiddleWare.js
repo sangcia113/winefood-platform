@@ -1,15 +1,30 @@
-require('dotenv').config();
-
 const { leaveListService } = require('../services/leaveListService');
 
 const leaveListMiddleWare = {
-    checkIsExisted: async (req, res, next) => {
+    checkParam: async (req, res, next) => {
+        // Lấy thông tin từ param của yêu cầu
+        const { id } = req.params;
+
+        if (!id)
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ' });
+
+        next();
+    },
+
+    checkBody: async (req, res, next) => {
         // Lấy thông tin từ body của yêu cầu
         const { userId, leaveTypeId, leaveDay, fromDate, toDate, reason } = req.body;
 
         // Kiểm tra tính hợp lệ của dữ liệu đầu vào
         if (!(userId && leaveTypeId && leaveDay && fromDate && toDate && reason))
-            return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
+
+        next();
+    },
+
+    checkIsExist: async (req, res, next) => {
+        // Lấy thông tin từ body của yêu cầu
+        const { userId, leaveTypeId, leaveDay, fromDate, toDate, reason } = req.body;
 
         try {
             // Gọi hàm service để đọc dữ liệu
@@ -24,8 +39,8 @@ const leaveListMiddleWare = {
             next();
         } catch (err) {
             res.status(500).json({
-                error: 1000,
-                message: 'Lỗi truy vấn cơ sở dữ liệu',
+                error: -1000,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
             });
         }
     },
@@ -33,9 +48,6 @@ const leaveListMiddleWare = {
     checkApproved: async (req, res, next) => {
         // Lấy thông tin từ body của yêu cầu
         const { id } = req.params;
-
-        // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-        if (!id) return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
@@ -50,8 +62,8 @@ const leaveListMiddleWare = {
             next();
         } catch (err) {
             res.status(500).json({
-                error: 1000,
-                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn',
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },
@@ -64,8 +76,8 @@ const leaveListMiddleWare = {
         const { reason } = req.body;
 
         // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-        if (!(id && reason))
-            return res.status(400).json({ error: -1020, message: 'Dữ liệu đầu vào không hợp lệ' });
+        if (!reason)
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
@@ -77,8 +89,8 @@ const leaveListMiddleWare = {
             next();
         } catch (err) {
             res.status(500).json({
-                error: 1000,
-                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn',
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },
@@ -86,9 +98,6 @@ const leaveListMiddleWare = {
     checkApprovedLeaveType: async (req, res, next) => {
         // Lấy thông tin từ body của yêu cầu
         const { id } = req.params;
-
-        // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-        if (!id) return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
@@ -104,8 +113,8 @@ const leaveListMiddleWare = {
             next();
         } catch (err) {
             res.status(500).json({
-                error: 1000,
-                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn',
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },
@@ -113,9 +122,6 @@ const leaveListMiddleWare = {
     checkApprovedLeaveDay: async (req, res, next) => {
         // Lấy thông tin từ body của yêu cầu
         const { id } = req.params;
-
-        // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-        if (!id) return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
@@ -131,8 +137,8 @@ const leaveListMiddleWare = {
             next();
         } catch (err) {
             res.status(500).json({
-                error: 1000,
-                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn',
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },
@@ -140,9 +146,6 @@ const leaveListMiddleWare = {
     checkApprovedRequestDelete: async (req, res, next) => {
         // Lấy thông tin từ body của yêu cầu
         const { id } = req.params;
-
-        // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-        if (!id) return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ' });
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
@@ -157,8 +160,8 @@ const leaveListMiddleWare = {
             next();
         } catch (err) {
             res.status(500).json({
-                error: 1000,
-                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn',
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },
@@ -169,7 +172,7 @@ const leaveListMiddleWare = {
 
         // Kiểm tra tính hợp lệ của dữ liệu đầu vào
         if (!(startDate && endDate))
-            return res.status(400).json({ error: 1000, message: 'Dữ liệu đầu vào không hợp lệ' });
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
 
         next();
     },

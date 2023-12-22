@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 
 // React Bootstrap Icons
 import { PencilFill, PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons';
-import { DeleteFilled } from '@ant-design/icons';
+import { DeleteFilled, SyncOutlined } from '@ant-design/icons';
 
 // Ant Design components
 import {
@@ -44,9 +44,9 @@ const EmployeePage = () => {
     const [dataSourceEmployee, setDataSourceEmployee] = useState([]);
     const [dataSourceDepartment, setDataSourceDepartment] = useState([]);
     const [dataSourceRole, setDataSourceRole] = useState([]);
-    const [dataSourceZaloUser, setDataSourceZaloUser] = useState([]);
+    const [dataSourceZaloAPIInfo, setDataSourceZaloAPIInfo] = useState([]);
 
-    const [modalForm, setModalForm] = useState({
+    const [modalMain, setModalMain] = useState({
         open: false,
         title: '',
     });
@@ -65,7 +65,6 @@ const EmployeePage = () => {
 
     const [modalSuccess, setModalSuccess] = useState({
         open: false,
-        title: '',
         message: '',
     });
 
@@ -75,7 +74,7 @@ const EmployeePage = () => {
         handleGetDepartment();
         handleGetRole();
         handleGetEmployee();
-        handleGetZaloUser();
+        handleGetZaloAPIInfo();
     }, []);
 
     const handleGetDepartment = async () => {
@@ -102,15 +101,15 @@ const EmployeePage = () => {
         }
     };
 
-    const handleGetZaloUser = async () => {
+    const handleGetZaloAPIInfo = async () => {
         try {
             setLoading(true);
 
-            const response = await axios.get(`${URL}/api/zalo/user`);
+            const response = await axios.get(`${URL}/api/zalo/info`);
 
             const arrData = response.data.map(item => ({ ...item, key: item.id }));
 
-            setDataSourceZaloUser(arrData);
+            setDataSourceZaloAPIInfo(arrData);
         } catch (error) {
             console.error(error);
         } finally {
@@ -138,7 +137,7 @@ const EmployeePage = () => {
         try {
             const response = await axios.post(`${URL}/api/leave/user`, values);
 
-            setModalForm({ open: false });
+            setModalMain({ open: false });
 
             setModalSuccess({
                 message: response.data.message,
@@ -159,7 +158,7 @@ const EmployeePage = () => {
         try {
             const response = await axios.put(`${URL}/api/leave/user/${values.id}`, values);
 
-            setModalForm({ open: false });
+            setModalMain({ open: false });
 
             setModalSuccess({
                 message: response.data.message,
@@ -232,7 +231,7 @@ const EmployeePage = () => {
                                         birthday: dayjs(record.birthday),
                                     });
 
-                                    setModalForm({ open: true, title: 'SỬA NHÂN VIÊN' });
+                                    setModalMain({ open: true, title: 'SỬA NHÂN VIÊN' });
                                 },
                                 style: { color: '#faad14' },
                             },
@@ -247,7 +246,7 @@ const EmployeePage = () => {
                                         message: (
                                             <Space direction="vertical" align="center">
                                                 Bạn có chắc muốn xóa nhân viên?
-                                                <b>{record.userName}</b>
+                                                <b>{record.name}</b>
                                                 khỏi CSDL không?
                                                 <Alert
                                                     message="Thao tác này không thể hoàn tác!"
@@ -281,12 +280,12 @@ const EmployeePage = () => {
         },
         {
             title: 'Tên nhân viên',
-            dataIndex: 'userName',
-            key: 'userName',
+            dataIndex: 'name',
+            key: 'name',
             ellipsis: true,
             filterSearch: true,
             filters: getUniqueName(dataSourceEmployee),
-            onFilter: (value, record) => record.userName.includes(value),
+            onFilter: (value, record) => record.name.includes(value),
             render: record => <Text strong>{record}</Text>,
         },
         {
@@ -354,19 +353,19 @@ const EmployeePage = () => {
     const columnsZaloUser = [
         {
             title: '#',
-            dataIndex: 'userId',
-            key: 'userId',
+            dataIndex: 'id',
+            key: 'id',
             ellipsis: true,
-            sorter: (a, b) => a.userId - b.userId,
+            sorter: (a, b) => a.id - b.id,
         },
         {
             title: 'Tên nhân viên',
-            dataIndex: 'userName',
-            key: 'userName',
+            dataIndex: 'name',
+            key: 'name',
             ellipsis: true,
             filterSearch: true,
-            filters: getUniqueName(dataSourceZaloUser),
-            onFilter: (value, record) => record.userName.includes(value),
+            filters: getUniqueName(dataSourceZaloAPIInfo),
+            onFilter: (value, record) => record.name.includes(value),
             render: record => <Text strong>{record}</Text>,
         },
         {
@@ -388,9 +387,14 @@ const EmployeePage = () => {
             ellipsis: true,
             render: record =>
                 record === 0 ? (
-                    <>
-                        <Spin size={'small'} /> Waiting...
-                    </>
+                    <Tag
+                        bordered={false}
+                        color="processing"
+                        icon={<SyncOutlined spin />}
+                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                    >
+                        Waiting...
+                    </Tag>
                 ) : (
                     record
                 ),
@@ -515,7 +519,7 @@ const EmployeePage = () => {
                                                 />
                                             }
                                             onClick={() => {
-                                                setModalForm({
+                                                setModalMain({
                                                     open: true,
                                                     title: 'THÊM NHÂN VIÊN',
                                                 });
@@ -560,7 +564,7 @@ const EmployeePage = () => {
                                     <Table
                                         bordered
                                         columns={columnsZaloUser}
-                                        dataSource={dataSourceZaloUser}
+                                        dataSource={dataSourceZaloAPIInfo}
                                         loading={loading}
                                         scroll={{ x: true }}
                                         showSorterTooltip={false}
@@ -580,10 +584,10 @@ const EmployeePage = () => {
                 forceRender
                 okButtonProps={{ style: { borderRadius: 20 } }}
                 okText="Đồng Ý"
-                onCancel={() => setModalForm({ open: false })}
+                onCancel={() => setModalMain({ open: false })}
                 onOk={() => form.submit()}
-                open={modalForm.open}
-                title={modalForm.title}
+                open={modalMain.open}
+                title={modalMain.title}
                 styles={{
                     header: { paddingBottom: 20, textAlign: 'center' },
                     footer: { paddingTop: 20, textAlign: 'center' },

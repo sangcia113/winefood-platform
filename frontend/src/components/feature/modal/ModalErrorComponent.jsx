@@ -22,9 +22,9 @@ const ModalErrorComponent = ({ onOk, open, title, message }) => (
                 </Text>
             </Space>
         }
-        width={440}
+        width={460}
         styles={{
-            header: { textAlign: 'center' },
+            header: { paddingBottom: 20, textAlign: 'center' },
             footer: { paddingTop: 20, textAlign: 'center' },
         }}
     >

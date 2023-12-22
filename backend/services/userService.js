@@ -14,7 +14,19 @@ const userService = {
         roleId
     ) => {
         // Truy vấn SQL để thêm
-        const sql = `INSERT INTO user (code, name, birthday, gender, numberPhone, password, departmentId, superiorId, roleId, createdDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const sql = `INSERT INTO 
+                        user (
+                            code, 
+                            name, 
+                            birthday, 
+                            gender, 
+                            numberPhone, 
+                            password, 
+                            departmentId, 
+                            superiorId, 
+                            roleId, 
+                            createdDate) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [
@@ -35,17 +47,16 @@ const userService = {
     read: async () => {
         // Truy vấn SQL để đọc
         const sql = `SELECT
-                    l.*,
-                    l.id userId,
-                    l.name userName,
-                    za.zaloUserId
-                FROM
-                    leave.user l
-                LEFT JOIN zalo_api.user za
-                ON
-                    za.zaloNumberPhone = l.numberPhone AND za.zaloNumberPhone != ''
-                ORDER BY
-                    l.id ASC`;
+                        l.*,
+                        zaloUserId
+                    FROM
+                        leave.user AS l
+                    INNER JOIN
+                        zalo_api.user AS za
+                    ON
+                        za.zaloNumberPhone = l.numberPhone AND za.zaloNumberPhone != ''
+                    ORDER BY
+                        l.id ASC`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql);
@@ -54,20 +65,15 @@ const userService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    readInfoLeader: async id => {
+    readInfoSuperior: async id => {
         // Truy vấn SQL để đọc
         const sql = `SELECT
-                        l.name,
-                        l.gender,
-                        l.roleId,
-                        r.name role,
-                        za.zaloUserId
+                        l.name superiorName,
+                        l.gender superiorGender,
+                        l.roleId superiorRoleId,
+                        za.zaloUserId superiorZaloUID
                     FROM
                         leave.user l
-                    LEFT JOIN
-                        leave.role r
-                    ON
-                        r.id = l.roleId
                     LEFT JOIN
                         zalo_api.user za
                     ON
@@ -79,8 +85,7 @@ const userService = {
                         FROM 
                             leave.user l
                         WHERE
-                            l.id = ?
-                    )`;
+                            l.id = ?)`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, [id]);
@@ -102,7 +107,20 @@ const userService = {
         id
     ) => {
         // Truy vấn SQL để cập nhật
-        const sql = `UPDATE user SET code= ?, name = ?, birthday = ?, gender = ?, numberPhone = ?, password = ?, departmentId = ?, superiorId = ?, roleId = ? WHERE id = ?`;
+        const sql = `UPDATE 
+                        user 
+                    SET 
+                        code= ?, 
+                        name = ?, 
+                        birthday = ?, 
+                        gender = ?, 
+                        numberPhone = ?, 
+                        password = ?, 
+                        departmentId = ?, 
+                        superiorId = ?, 
+                        roleId = ? 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [
@@ -122,10 +140,31 @@ const userService = {
     // Xóa khỏi cơ sở dữ liệu.
     delete: async id => {
         // Truy vấn SQL để xoá
-        const sql = 'DELETE FROM user WHERE id = ?';
+        const sql = `DELETE FROM 
+                        user 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [id]);
+    },
+
+    // Đọc trong cơ sở dữ liệu.
+    checkIsExist: async (code, numberPhone) => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT 
+                        * 
+                    FROM 
+                        user 
+                    WHERE 
+                        code = ?
+                    OR
+                        numberPhone = ?`;
+
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, [code, numberPhone]);
+
+        return results;
     },
 };
 

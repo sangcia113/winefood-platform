@@ -4,17 +4,17 @@ const leaveListService = {
     // Tạo mới trong cơ sở dữ liệu.
     create: async (userId, bookLeaveTypeId, bookLeaveDay, bookFromDate, bookToDate, reason) => {
         // Truy vấn SQL để thêm
-        const sql = `INSERT INTO list(
-                    userId,
-                    bookLeaveTypeId,
-                    bookLeaveDay,
-                    bookFromDate,
-                    bookToDate,
-                    reason,
-                    requestDate,
-                    tracking
-                )
-                VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
+        const sql = `INSERT INTO 
+                        list (
+                            userId,
+                            bookLeaveTypeId,
+                            bookLeaveDay,
+                            bookFromDate,
+                            bookToDate,
+                            reason,
+                            requestDate,
+                            tracking)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [
@@ -34,31 +34,30 @@ const leaveListService = {
 
         // Truy vấn SQL để đọc
         let sql = `SELECT
-                    l.*,
-                    u.name AS userName,
-                    d.name AS department,
-                    bt.nameVN AS bookLeaveType,
-                    at.nameVN AS actualLeaveType
-                FROM list AS
-                    l
-                LEFT JOIN user AS u
-                ON
-                    u.id = l.userId
-                LEFT JOIN department AS d
-                ON
-                    d.id = u.departmentId
-                LEFT JOIN type AS bt
-                ON
-                    bt.id = l.bookLeaveTypeId
-                LEFT JOIN type AS at
-                ON 
-                    at.id = l.actualLeaveTypeID
-                WHERE
-                    deleted IS NULL 
-                AND (
-                    superiorId IN (SELECT id FROM user WHERE roleId IN (1, 2))
-                    OR leaderApproved = 1
-                )`;
+                        l.*,
+                        u.name AS userName,
+                        d.name AS department,
+                        bt.nameVN AS bookLeaveType,
+                        at.nameVN AS actualLeaveType
+                    FROM list AS
+                        l
+                    LEFT JOIN user AS u
+                    ON
+                        u.id = l.userId
+                    LEFT JOIN department AS d
+                    ON
+                        d.id = u.departmentId
+                    LEFT JOIN type AS bt
+                    ON
+                        bt.id = l.bookLeaveTypeId
+                    LEFT JOIN type AS at
+                    ON 
+                        at.id = l.actualLeaveTypeID
+                    WHERE
+                        deleted IS NULL 
+                    AND (
+                        superiorId IN (SELECT id FROM user WHERE roleId IN (1, 2))
+                        OR leaderApproved = 1 )`;
 
         if (startDate && endDate) {
             sql +=
@@ -82,30 +81,30 @@ const leaveListService = {
 
         // Truy vấn SQL để đọc
         let sql = `SELECT
-                    l.id,
-                    userId,
-                    u.name AS userName,
-                    d.name AS department,
-                    nameVN AS bookLeaveType,
-                    bookLeaveDay,
-                    bookFromDate,
-                    bookToDate,
-                    reason,
-                    requestDate,
-                    deleted
-                FROM
-                    list AS l
-                LEFT JOIN user AS u
-                ON
-                    u.id = l.userId
-                LEFT JOIN department AS d
-                ON
-                    d.id = u.departmentId
-                LEFT JOIN type AS t
-                ON
-                    t.id = l.bookLeaveTypeId
-                WHERE 
-                    leaderApproved IS NULL AND managerApproved IS NULL`;
+                        l.id,
+                        userId,
+                        u.name AS userName,
+                        d.name AS department,
+                        nameVN AS bookLeaveType,
+                        bookLeaveDay,
+                        bookFromDate,
+                        bookToDate,
+                        reason,
+                        requestDate,
+                        deleted
+                    FROM
+                        list AS l
+                    LEFT JOIN user AS u
+                    ON
+                        u.id = l.userId
+                    LEFT JOIN department AS d
+                    ON
+                        d.id = u.departmentId
+                    LEFT JOIN type AS t
+                    ON
+                        t.id = l.bookLeaveTypeId
+                    WHERE 
+                        leaderApproved IS NULL AND managerApproved IS NULL`;
 
         if (startDate && endDate) {
             sql +=
@@ -135,11 +134,19 @@ const leaveListService = {
                     (
                     SELECT
                         userId,
-                        CASE WHEN actualLeaveDay IS NOT NULL THEN actualLeaveDay ELSE bookLeaveDay
-                END AS numberLeave
-                FROM list
-                WHERE
-                    managerApproved = 1 AND deleteRequest IS NULL`;
+                        CASE WHEN 
+                            actualLeaveDay IS NOT NULL 
+                        THEN 
+                            actualLeaveDay 
+                        ELSE 
+                            bookLeaveDay
+                        END AS numberLeave
+                        FROM 
+                            list
+                        WHERE
+                            managerApproved = 1 
+                        AND 
+                            deleteRequest IS NULL`;
 
         if (startDate && endDate) {
             sql +=
@@ -151,13 +158,15 @@ const leaveListService = {
         }
 
         sql += ` ) AS t
-    LEFT JOIN user AS u
-    ON
-        u.id = t.userID
-    GROUP BY
-        userId
-    ORDER BY
-        userId ASC`;
+                    LEFT JOIN 
+                        user AS u
+                    ON
+                        u.id = t.userID
+                    GROUP BY
+                        userId
+                    ORDER BY
+                        userId 
+                    ASC`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, params);
@@ -168,7 +177,22 @@ const leaveListService = {
     // Đọc trong cơ sở dữ liệu.
     checkIsExist: async (userID, bookLeaveDay, bookFromDate, bookToDate) => {
         // Truy vấn SQL để đọc
-        const sql = `SELECT * FROM list WHERE userId = ? AND bookLeaveDay = ? AND bookFromDate = ? AND bookToDate = ? AND deleted IS NULL AND deleteRequest IS NULL`;
+        const sql = `SELECT 
+                        * 
+                    FROM 
+                        list 
+                    WHERE 
+                        userId = ? 
+                    AND 
+                        bookLeaveDay = ? 
+                    AND 
+                        bookFromDate = ? 
+                    AND 
+                        bookToDate = ? 
+                    AND 
+                        deleted IS NULL 
+                    AND 
+                        deleteRequest IS NULL`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, [userID, bookLeaveDay, bookFromDate, bookToDate]);
@@ -179,7 +203,12 @@ const leaveListService = {
     // Đọc trong cơ sở dữ liệu.
     checkStatus: async id => {
         // Truy vấn SQL để đọc
-        const sql = `SELECT managerApproved FROM list WHERE id = ?`;
+        const sql = `SELECT 
+                        managerApproved 
+                    FROM 
+                        list 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, [id]);
@@ -190,7 +219,13 @@ const leaveListService = {
     // Đọc trong cơ sở dữ liệu.
     checkStatusLeaveType: async id => {
         // Truy vấn SQL để đọc
-        const sql = `SELECT actualLeaveTypeID, managerApprovedLeaveType FROM list WHERE id = ?`;
+        const sql = `SELECT 
+                        actualLeaveTypeID, 
+                        managerApprovedLeaveType 
+                    FROM 
+                        list 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, [id]);
@@ -201,7 +236,13 @@ const leaveListService = {
     // Đọc trong cơ sở dữ liệu.
     checkStatusLeaveDay: async id => {
         // Truy vấn SQL để đọc
-        const sql = `SELECT actualLeaveDay, managerApprovedLeaveDay FROM list WHERE id = ?`;
+        const sql = `SELECT 
+                        actualLeaveDay, 
+                        managerApprovedLeaveDay 
+                    FROM 
+                        list 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, [id]);
@@ -212,7 +253,13 @@ const leaveListService = {
     // Đọc trong cơ sở dữ liệu.
     checkStatusRequestDelete: async id => {
         // Truy vấn SQL để đọc
-        const sql = `SELECT deleteRequest, managerApprovedDelete FROM list WHERE id = ?`;
+        const sql = `SELECT 
+                        deleteRequest, 
+                        managerApprovedDelete 
+                    FROM 
+                        list 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, [id]);
@@ -224,13 +271,13 @@ const leaveListService = {
     updateApproved: async id => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
-                    list 
-                SET 
-                    managerApproved = ?, 
-                    managerRejectReason = ?, 
-                    managerApprovedDate = ? 
-                WHERE 
-                    id = ?`;
+                        list 
+                    SET 
+                        managerApproved = ?, 
+                        managerRejectReason = ?, 
+                        managerApprovedDate = ? 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [1, '', new Date(), id]);
@@ -240,13 +287,13 @@ const leaveListService = {
     updateRejected: async (id, reason) => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
-                    list 
-                SET 
-                    managerApproved = ?, 
-                    managerRejectReason = ?, 
-                    managerApprovedDate = ? 
-                WHERE 
-                    id = ?`;
+                        list 
+                    SET 
+                        managerApproved = ?, 
+                        managerRejectReason = ?, 
+                        managerApprovedDate = ? 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [0, reason, new Date(), id]);
@@ -256,12 +303,12 @@ const leaveListService = {
     updateApprovedLeaveType: async id => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
-                    list 
-                SET 
-                    managerApprovedLeaveType = ?, 
-                    managerApprovedLeaveTypeDate = ?, 
-                WHERE 
-                    id = ?`;
+                        list 
+                    SET 
+                        managerApprovedLeaveType = ?, 
+                        managerApprovedLeaveTypeDate = ?, 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [1, new Date(), id]);
@@ -271,12 +318,12 @@ const leaveListService = {
     updateApprovedLeaveDay: async id => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
-                    list 
-                SET 
-                    managerApprovedLeaveDay = ?, 
-                    managerApprovedLeaveDayDate = ?, 
-                WHERE 
-                    id = ?`;
+                        list 
+                    SET 
+                        managerApprovedLeaveDay = ?, 
+                        managerApprovedLeaveDayDate = ?, 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [1, new Date(), id]);
@@ -286,12 +333,12 @@ const leaveListService = {
     updateApprovedRequestDelete: async id => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
-                    list 
-                SET 
-                    managerApprovedDelete = ?, 
-                    managerApprovedLeaveDayDate = ?, 
-                WHERE 
-                    id = ?`;
+                        list 
+                    SET 
+                        managerApprovedDelete = ?, 
+                        managerApprovedLeaveDayDate = ?, 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [1, new Date(), id]);

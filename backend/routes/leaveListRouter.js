@@ -6,7 +6,7 @@ const { leaveListController } = require('../controllers/leaveListController');
 const { leaveListMiddleWare } = require('../middleWares/leaveListMiddleWare');
 
 // End point POST
-router.post('/', leaveListMiddleWare.checkIsExisted, leaveListController.createHandler);
+router.post('/', leaveListMiddleWare.checkBody, leaveListController.createHandler);
 
 // End point GET
 router.get('/', leaveListController.readHandler);
@@ -37,6 +37,8 @@ router.get(
 // End point PUT
 router.put(
     '/approved/:id',
+    leaveListMiddleWare.checkParam,
+    leaveListMiddleWare.checkBody,
     leaveListMiddleWare.checkApproved,
     leaveListController.updateApprovedHandler
 );
@@ -44,6 +46,7 @@ router.put(
 // End point PUT
 router.put(
     '/rejected/:id',
+    leaveListMiddleWare.checkParam,
     leaveListMiddleWare.checkRejected,
     leaveListController.updateRejectedHandler
 );
@@ -51,6 +54,7 @@ router.put(
 // End point PUT
 router.put(
     '/approved-leave-type/:id',
+    leaveListMiddleWare.checkParam,
     leaveListMiddleWare.checkApprovedLeaveType,
     leaveListController.updateApprovedLeaveTypeHandler
 );
@@ -58,6 +62,7 @@ router.put(
 // End point PUT
 router.put(
     '/approved-leave-day/:id',
+    leaveListMiddleWare.checkParam,
     leaveListMiddleWare.checkApprovedLeaveDay,
     leaveListController.updateApprovedLeaveDayHandler
 );
@@ -65,6 +70,7 @@ router.put(
 // End point PUT
 router.put(
     '/approved-request-delete/:id',
+    leaveListMiddleWare.checkParam,
     leaveListMiddleWare.checkApprovedRequestDelete,
     leaveListController.updateApprovedRequestDeleteHandler
 );

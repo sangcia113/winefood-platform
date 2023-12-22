@@ -1,12 +1,12 @@
-import { SmileFilled } from '@ant-design/icons';
+import { SafetyCertificateFilled } from '@ant-design/icons';
 import { Form, Input, Modal, Space, Typography } from 'antd';
 import React from 'react';
 
 const { Text } = Typography;
 
-const { TextArea } = Input;
+const { Password } = Input;
 
-const ModalReasonComponent = ({ afterClose, onCancel, onOk, open, form, onFinish }) => (
+const ModalPasswordComponent = ({ afterClose, onCancel, onOk, open, form, onFinish }) => (
     <Modal
         afterClose={afterClose}
         cancelButtonProps={{ style: { borderRadius: 20 } }}
@@ -20,9 +20,9 @@ const ModalReasonComponent = ({ afterClose, onCancel, onOk, open, form, onFinish
         open={open}
         title={
             <Space direction="vertical" size="large">
-                <SmileFilled style={{ color: '#1677ff', fontSize: 60 }} />
+                <SafetyCertificateFilled style={{ color: '#1677ff', fontSize: 60 }} />
                 <Text strong style={{ fontSize: 32 }}>
-                    VUI LÒNG NHẬP LÝ DO
+                    VUI LÒNG NHẬP MẬT KHẨU
                 </Text>
             </Space>
         }
@@ -33,11 +33,14 @@ const ModalReasonComponent = ({ afterClose, onCancel, onOk, open, form, onFinish
         }}
     >
         <Form form={form} onFinish={onFinish}>
-            <Form.Item name={'reason'} rules={[{ message: 'Bạn chưa nhập lý do', required: true }]}>
-                <TextArea rows={3} placeholder="Vui lòng nhập lý do" />
+            <Form.Item
+                name={'password'}
+                rules={[{ message: 'Bạn chưa nhập mật khẩu', required: true }]}
+            >
+                <Password placeholder="Vui lòng nhập mật khẩu" visibilityToggle />
             </Form.Item>
         </Form>
     </Modal>
 );
 
-export default ModalReasonComponent;
+export default ModalPasswordComponent;

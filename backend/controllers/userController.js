@@ -16,23 +16,6 @@ const userController = {
             roleId,
         } = req.body;
 
-        // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-        if (
-            !(
-                code &&
-                name &&
-                birthday &&
-                gender &&
-                numberPhone &&
-                password &&
-                departmentId &&
-                superiorId &&
-                roleId
-            )
-        ) {
-            return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
-        }
-
         try {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
             await userService.create(
@@ -49,9 +32,7 @@ const userController = {
 
             res.json({ error: 0, message: 'Thêm dữ liệu thành công!' });
         } catch (err) {
-            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-
-            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!' });
         }
     },
 
@@ -63,8 +44,6 @@ const userController = {
 
             res.json(results);
         } catch (err) {
-            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-
             res.status(500).json({ error: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
         }
     },
@@ -87,24 +66,6 @@ const userController = {
             roleId,
         } = req.body;
 
-        // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-        if (
-            !(
-                code &&
-                name &&
-                birthday &&
-                (gender === 0 || gender === 1) &&
-                numberPhone &&
-                password &&
-                departmentId &&
-                superiorId &&
-                roleId &&
-                id
-            )
-        ) {
-            return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
-        }
-
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await userService.update(
@@ -124,7 +85,7 @@ const userController = {
         } catch (err) {
             console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
 
-            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!' });
         }
     },
 
@@ -132,11 +93,6 @@ const userController = {
     deleteHandler: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
-
-        // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-        if (!id) {
-            return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ' });
-        }
 
         try {
             // Gọi hàm service để xoá dữ liệu
@@ -146,7 +102,7 @@ const userController = {
         } catch (err) {
             console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
 
-            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!' });
         }
     },
 };

@@ -1,4 +1,4 @@
-const { default: axios } = require('axios');
+const axios = require('axios');
 const { zaloAPIService } = require('../services/zaloAPIService');
 
 const ZALO_API_URL = 'https://openapi.zalo.me/v3.0/oa/message/cs';

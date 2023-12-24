@@ -8,7 +8,7 @@ const express = require('express');
 const cors = require('cors');
 
 // Import router chính từ file routes/index.js
-const router = require('./routes/index');
+const router = require('./src/routes/index');
 
 // Khởi tạo ứng dụng Express
 const app = express();

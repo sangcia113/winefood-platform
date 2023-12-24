@@ -44,7 +44,7 @@ const items = [
         ),
         children: [
             { key: 'manager', label: 'Quản lý nghỉ phép', icon: <PersonHeart size={20} /> },
-            { key: 'employee', label: 'Quản lý nhân viên', icon: <PeopleFill size={20} /> },
+            { key: 'user', label: 'Quản lý nhân viên', icon: <PeopleFill size={20} /> },
         ],
     },
 ];

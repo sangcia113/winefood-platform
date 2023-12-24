@@ -1,12 +1,12 @@
-const getUniqueName = data => {
-    // Sắp xếp mảng theo userId trước khi tạo Set
-    const sortedDataSource = [...data].sort((a, b) => a.id - b.id);
+const getUniqueName = (data, idField, nameField) => {
+    // Sắp xếp mảng theo trường id trước khi tạo Set
+    const sortedDataSource = [...data].sort((a, b) => a[idField] - b[idField]);
 
     // Tạo Set từ mảng đã sắp xếp
-    const uniqueNames = Array.from(new Set(sortedDataSource.map(item => item.name)));
+    const uniqueValues = Array.from(new Set(sortedDataSource.map(item => item[nameField])));
 
     // Trả về danh sách giá trị duy nhất
-    return uniqueNames.map(name => ({ text: name, value: name }));
+    return uniqueValues.map(value => ({ text: value, value }));
 };
 
-export { getUniqueName };
+export default getUniqueName;

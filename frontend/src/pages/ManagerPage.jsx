@@ -1,3 +1,19 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import ReactApexChart from 'react-apexcharts';
+
+import { PencilFill, ThreeDotsVertical } from 'react-bootstrap-icons';
+import {
+    CheckCircleFilled,
+    CloseCircleFilled,
+    ReadFilled,
+    StopFilled,
+    SyncOutlined,
+    TagFilled,
+    UnlockFilled,
+} from '@ant-design/icons';
+
 import {
     Avatar,
     Card,
@@ -15,42 +31,28 @@ import {
     Typography,
 } from 'antd';
 
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import {
-    CheckCircleFilled,
-    CloseCircleFilled,
-    ReadFilled,
-    StopFilled,
-    SyncOutlined,
-    TagFilled,
-    UnlockFilled,
-} from '@ant-design/icons';
-import ReactApexChart from 'react-apexcharts';
-
 import { URL } from '../configs/urlConfig';
-import dayjs from 'dayjs';
 import { getUniqueName } from '../utils';
-import { PencilFill, ThreeDotsVertical } from 'react-bootstrap-icons';
 import {
     ModalConfirmComponent,
     ModalErrorComponent,
+    ModalErrorOtherComponet,
     ModalSuccessComponent,
     ModalReasonComponent,
 } from '../components';
-const { RangePicker } = DatePicker;
 
+const { RangePicker } = DatePicker;
 const { Content } = Layout;
-const { Paragraph, Text } = Typography;
+const { Text } = Typography;
 
 const ManagerPage = () => {
     console.log('Run ManagerPage...');
 
     const [loading, setLoading] = useState(false);
-    const [dataSourceLeaveList, setDataSourceLeaveList] = useState([]);
-    const [dataSourceLeaveListOther, setDataSourceLeaveListOther] = useState([]);
-    const [dataSourceLeaveListStatistics, setDataSourceLeaveListStatistics] = useState([]);
-    const [totalWaitManager, setTotalWaitManager] = useState(0);
+    const [leaveList, setLeaveList] = useState([]);
+    const [leaveListOther, setLeaveListOther] = useState([]);
+    const [leaveListStatistics, setLeaveListStatistics] = useState([]);
+    const [totalWaiting, setTotalWaiting] = useState(0);
 
     const [modalConfirm, setModalConfirm] = useState({
         onOk: () => {},
@@ -59,6 +61,11 @@ const ManagerPage = () => {
     });
 
     const [modalError, setModalError] = useState({
+        open: false,
+        error: '',
+    });
+
+    const [modalErrorOther, setModalErrorOther] = useState({
         open: false,
         title: '',
         message: '',
@@ -84,107 +91,76 @@ const ManagerPage = () => {
         handleGetLeaveListStatistics();
     }, []);
 
-    const handleGetLeaveList = async (startDate, endDate) => {
+    const handleGetDataSource = async (url, params = {}, setDataSource) => {
         try {
             setLoading(true);
 
-            const API_URL =
-                startDate && endDate ? `${URL}/api/leave/list/search` : `${URL}/api/leave/list`;
-
-            const response = await axios.get(API_URL, {
-                params: {
-                    startDate: dayjs(startDate).format('YYYY-MM-DD'),
-                    endDate: dayjs(endDate).format('YYYY-MM-DD'),
-                },
-            });
+            const response = await axios.get(url, { params });
 
             const arrData = response.data.map(item => ({
                 ...item,
                 key: item.id,
             }));
 
-            setDataSourceLeaveList(arrData);
-
-            handleGetTotalWaitManager();
+            setDataSource(arrData);
         } catch (error) {
-            setModalError({
-                message: `Mã Lỗi: ${error.response.data.error}`,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ open: true, error });
         } finally {
             setLoading(false);
         }
     };
 
-    const handleGetLeaveListOther = async (startDate, endDate) => {
-        try {
-            setLoading(true);
+    const handleGetLeaveList = async () => {
+        await handleGetDataSource(`${URL}/api/leave/list`, {}, setLeaveList);
 
-            const API_URL =
-                startDate && endDate
-                    ? `${URL}/api/leave/list/other/search`
-                    : `${URL}/api/leave/list/other`;
-
-            const response = await axios.get(API_URL, {
-                params: {
-                    startDate: dayjs(startDate).format('YYYY-MM-DD'),
-                    endDate: dayjs(endDate).format('YYYY-MM-DD'),
-                },
-            });
-
-            const arrData = response.data.map(item => ({
-                ...item,
-                key: item.id,
-            }));
-
-            setDataSourceLeaveListOther(arrData);
-        } catch (error) {
-            setModalError({
-                message: `Mã Lỗi: ${error.response.data.error}`,
-                open: true,
-                title: 'THẤT BẠI',
-            });
-        } finally {
-            setLoading(false);
-        }
+        handleGetTotalWaiting();
     };
 
-    const handleGetLeaveListStatistics = async (startDate, endDate) => {
-        try {
-            setLoading(true);
+    const handleGetLeaveListByDate = async (startDate, endDate) => {
+        await handleGetDataSource(
+            `${URL}/api/leave/list/search`,
+            {
+                startDate: dayjs(startDate).format('YYYY-MM-DD'),
+                endDate: dayjs(endDate).format('YYYY-MM-DD'),
+            },
+            setLeaveList
+        );
 
-            const API_URL =
-                startDate && endDate
-                    ? `${URL}/api/leave/list/statistics/search`
-                    : `${URL}/api/leave/list/statistics`;
-
-            const response = await axios.get(API_URL, {
-                params: {
-                    startDate: dayjs(startDate).format('YYYY-MM-DD'),
-                    endDate: dayjs(endDate).format('YYYY-MM-DD'),
-                },
-            });
-
-            const arrData = response.data.map(item => ({
-                ...item,
-                key: item.id,
-            }));
-
-            setDataSourceLeaveListStatistics(arrData);
-        } catch (error) {
-            setModalError({
-                message: `Mã Lỗi: ${error.response.data.error}`,
-                open: true,
-                title: 'THẤT BẠI',
-            });
-        } finally {
-            setLoading(false);
-        }
+        handleGetTotalWaiting();
     };
 
-    const handleGetTotalWaitManager = () => {
-        const total = dataSourceLeaveList.reduce(
+    const handleGetLeaveListOther = async () => {
+        await handleGetDataSource(`${URL}/api/leave/list/other`, {}, setLeaveListOther);
+    };
+
+    const handleGetLeaveListOtherByDate = async (startDate, endDate) => {
+        await handleGetDataSource(
+            `${URL}/api/leave/list/other/search`,
+            {
+                startDate: dayjs(startDate).format('YYYY-MM-DD'),
+                endDate: dayjs(endDate).format('YYYY-MM-DD'),
+            },
+            setLeaveListOther
+        );
+    };
+
+    const handleGetLeaveListStatistics = async () => {
+        await handleGetDataSource(`${URL}/api/leave/list/statistics`, {}, setLeaveListStatistics);
+    };
+
+    const handleGetLeaveListStatisticsByDate = async (startDate, endDate) => {
+        await handleGetDataSource(
+            `${URL}/api/leave/list/statistics/search`,
+            {
+                startDate: dayjs(startDate).format('YYYY-MM-DD'),
+                endDate: dayjs(endDate).format('YYYY-MM-DD'),
+            },
+            setLeaveListStatistics
+        );
+    };
+
+    const handleGetTotalWaiting = () => {
+        const total = leaveList.reduce(
             (accumulator, currentValue) =>
                 currentValue.managerApproved === null && currentValue.deleteRequest === null
                     ? accumulator + 1
@@ -192,7 +168,7 @@ const ManagerPage = () => {
             0
         );
 
-        setTotalWaitManager(total);
+        setTotalWaiting(total);
     };
 
     const handleApproved = async id => {
@@ -210,11 +186,7 @@ const ManagerPage = () => {
         } catch (error) {
             setModalConfirm({ open: false });
 
-            setModalError({
-                message: `Mã Lỗi: ${error.response.data.error}`,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ open: true, error });
         }
     };
 
@@ -233,11 +205,7 @@ const ManagerPage = () => {
         } catch (error) {
             setModalReason({ open: false });
 
-            setModalError({
-                message: `Mã Lỗi: ${error.response.data.error}`,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ open: true, error });
         }
     };
 
@@ -254,11 +222,7 @@ const ManagerPage = () => {
         } catch (error) {
             setModalConfirm({ open: false });
 
-            setModalError({
-                message: `Mã Lỗi: ${error.response.data.error}`,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ open: true, error });
         }
     };
 
@@ -275,11 +239,7 @@ const ManagerPage = () => {
         } catch (error) {
             setModalConfirm({ open: false });
 
-            setModalError({
-                message: `Mã Lỗi: ${error.response.data.error}`,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ open: true, error });
         }
     };
 
@@ -296,11 +256,7 @@ const ManagerPage = () => {
         } catch (error) {
             setModalConfirm({ open: false });
 
-            setModalError({
-                message: `Mã Lỗi: ${error.response.data.error}`,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ open: true, error });
         }
     };
 
@@ -321,18 +277,16 @@ const ManagerPage = () => {
                                 icon: <PencilFill />,
                                 onClick: () => {
                                     if (record.managerApproved === 1) {
-                                        setModalError({
-                                            open: true,
+                                        setModalErrorOther({
                                             message: (
-                                                <Paragraph>
-                                                    <ul>
-                                                        <li>
-                                                            <b>Bạn đã phê duyệt</b> yêu cầu nghỉ
-                                                            phép này.
-                                                        </li>
-                                                    </ul>
-                                                </Paragraph>
+                                                <ul>
+                                                    <li>
+                                                        <b>Bạn đã phê duyệt</b> yêu cầu nghỉ phép
+                                                        này.
+                                                    </li>
+                                                </ul>
                                             ),
+                                            open: true,
                                             title: 'KHÔNG THỂ PHÊ DUYỆT',
                                         });
                                     } else {
@@ -356,18 +310,15 @@ const ManagerPage = () => {
                                 icon: <StopFilled />,
                                 onClick: () => {
                                     if (record.managerApproved === 0) {
-                                        setModalError({
-                                            open: true,
+                                        setModalErrorOther({
                                             message: (
-                                                <Paragraph>
-                                                    <ul>
-                                                        <li>
-                                                            <b>Bạn đã từ chối</b> yêu cầu nghỉ phép
-                                                            này.
-                                                        </li>
-                                                    </ul>
-                                                </Paragraph>
+                                                <ul>
+                                                    <li>
+                                                        <b>Bạn đã từ chối</b> yêu cầu nghỉ phép này.
+                                                    </li>
+                                                </ul>
                                             ),
+                                            open: true,
                                             title: 'KHÔNG THỂ TỪ CHỐI',
                                         });
                                     } else {
@@ -394,24 +345,20 @@ const ManagerPage = () => {
                                                 record.actualLeaveTypeID === null ||
                                                 record.managerApprovedLeaveType === 1
                                             ) {
-                                                setModalError({
-                                                    open: true,
+                                                setModalErrorOther({
                                                     message: (
-                                                        <Paragraph>
-                                                            <ul>
-                                                                <li>
-                                                                    Không có yêu cầu điều chỉnh{' '}
-                                                                    <b>loại nghỉ phép thực tế.</b>
-                                                                </li>
-                                                                <li>
-                                                                    <b>
-                                                                        Bạn đã xác nhận điều chỉnh
-                                                                    </b>{' '}
-                                                                    loại nghỉ phép thực tế này.
-                                                                </li>
-                                                            </ul>
-                                                        </Paragraph>
+                                                        <ul>
+                                                            <li>
+                                                                Không có yêu cầu điều chỉnh{' '}
+                                                                <b>loại nghỉ phép thực tế.</b>
+                                                            </li>
+                                                            <li>
+                                                                <b>Bạn đã xác nhận điều chỉnh</b>{' '}
+                                                                loại nghỉ phép thực tế này.
+                                                            </li>
+                                                        </ul>
                                                     ),
+                                                    open: true,
                                                     title: 'KHÔNG THỂ XÁC NHẬN',
                                                 });
                                             } else {
@@ -438,26 +385,20 @@ const ManagerPage = () => {
                                                 record.actualLeaveDay === null ||
                                                 record.managerApprovedLeaveDay === 1
                                             ) {
-                                                setModalError({
-                                                    open: true,
+                                                setModalErrorOther({
                                                     message: (
-                                                        <Paragraph>
-                                                            <ul>
-                                                                <li>
-                                                                    Không có yêu cầu điều chỉnh{' '}
-                                                                    <b>
-                                                                        số ngày nghỉ phép thực tế.
-                                                                    </b>
-                                                                </li>
-                                                                <li>
-                                                                    <b>
-                                                                        Bạn đã xác nhận điều chỉnh
-                                                                    </b>{' '}
-                                                                    số ngày nghỉ phép thực tế này.
-                                                                </li>
-                                                            </ul>
-                                                        </Paragraph>
+                                                        <ul>
+                                                            <li>
+                                                                Không có yêu cầu điều chỉnh{' '}
+                                                                <b>số ngày nghỉ phép thực tế.</b>
+                                                            </li>
+                                                            <li>
+                                                                <b>Bạn đã xác nhận điều chỉnh</b> số
+                                                                ngày nghỉ phép thực tế này.
+                                                            </li>
+                                                        </ul>
                                                     ),
+                                                    open: true,
                                                     title: 'KHÔNG THỂ XÁC NHẬN',
                                                 });
                                             } else {
@@ -485,22 +426,18 @@ const ManagerPage = () => {
                                                 record.deleteRequest === null ||
                                                 record.managerApprovedDelete === 1
                                             ) {
-                                                setModalError({
-                                                    open: true,
+                                                setModalErrorOther({
                                                     message: (
-                                                        <Paragraph>
-                                                            <ul>
-                                                                <li>
-                                                                    Không có yêu cầu{' '}
-                                                                    <b>hủy phép.</b>
-                                                                </li>
-                                                                <li>
-                                                                    <b>Bạn đã xác nhận hủy phép</b>{' '}
-                                                                    này.
-                                                                </li>
-                                                            </ul>
-                                                        </Paragraph>
+                                                        <ul>
+                                                            <li>
+                                                                Không có yêu cầu <b>hủy phép.</b>
+                                                            </li>
+                                                            <li>
+                                                                <b>Bạn đã xác nhận hủy phép</b> này.
+                                                            </li>
+                                                        </ul>
                                                     ),
+                                                    open: true,
                                                     title: 'KHÔNG THỂ XÁC NHẬN',
                                                 });
                                             } else {
@@ -636,7 +573,7 @@ const ManagerPage = () => {
             dataIndex: 'userName',
             key: 'userName',
             ellipsis: true,
-            filters: getUniqueName(dataSourceLeaveList),
+            filters: getUniqueName(leaveList, 'userId', 'userName'),
             filterSearch: true,
             onFilter: (value, record) => record.userName.includes(value),
             render: (_, record) => {
@@ -820,7 +757,7 @@ const ManagerPage = () => {
             dataIndex: 'userName',
             key: 'userName',
             ellipsis: true,
-            filters: getUniqueName(dataSourceLeaveListOther),
+            filters: getUniqueName(leaveListOther, 'userId', 'userName'),
             filterSearch: true,
             onFilter: (value, record) => record.userName.includes(value),
             render: (_, record) =>
@@ -904,13 +841,13 @@ const ManagerPage = () => {
                             label: (
                                 <>
                                     Danh Sách Nghỉ Phép{' '}
-                                    {totalWaitManager !== 0 && (
+                                    {totalWaiting !== 0 && (
                                         <Avatar
                                             style={{
                                                 backgroundColor: '#f50',
                                             }}
                                         >
-                                            {totalWaitManager}
+                                            {totalWaiting}
                                         </Avatar>
                                     )}
                                 </>
@@ -925,7 +862,7 @@ const ManagerPage = () => {
                                                 const [startDate, endDate] = dates || [];
 
                                                 if (startDate && endDate) {
-                                                    handleGetLeaveList(startDate, endDate);
+                                                    handleGetLeaveListByDate(startDate, endDate);
                                                 } else if (!startDate && !endDate) {
                                                     handleGetLeaveList();
                                                 }
@@ -935,7 +872,7 @@ const ManagerPage = () => {
                                     <Table
                                         bordered
                                         columns={columnsLeaveList}
-                                        dataSource={dataSourceLeaveList}
+                                        dataSource={leaveList}
                                         loading={loading}
                                         scroll={{ x: true }}
                                         showSorterTooltip={false}
@@ -956,7 +893,10 @@ const ManagerPage = () => {
                                                 const [startDate, endDate] = dates || [];
 
                                                 if (startDate && endDate) {
-                                                    handleGetLeaveListOther(startDate, endDate);
+                                                    handleGetLeaveListOtherByDate(
+                                                        startDate,
+                                                        endDate
+                                                    );
                                                 } else if (!startDate && !endDate) {
                                                     handleGetLeaveListOther();
                                                 }
@@ -966,7 +906,7 @@ const ManagerPage = () => {
                                     <Table
                                         bordered
                                         columns={columnsLeaveListOther}
-                                        dataSource={dataSourceLeaveListOther}
+                                        dataSource={leaveListOther}
                                         loading={loading}
                                         scroll={{ x: true }}
                                         showSorterTooltip={false}
@@ -987,7 +927,7 @@ const ManagerPage = () => {
                                                 const [startDate, endDate] = dates || [];
 
                                                 if (startDate && endDate) {
-                                                    handleGetLeaveListStatistics(
+                                                    handleGetLeaveListStatisticsByDate(
                                                         startDate,
                                                         endDate
                                                     );
@@ -1047,7 +987,7 @@ const ManagerPage = () => {
                                         series={[
                                             {
                                                 name: 'Tổng số ngày nghỉ: ',
-                                                data: dataSourceLeaveListStatistics.map(item => ({
+                                                data: leaveListStatistics.map(item => ({
                                                     x: item.name,
                                                     y: item.totalLeave,
                                                 })),
@@ -1072,8 +1012,13 @@ const ManagerPage = () => {
             <ModalErrorComponent
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
-                message={modalError.message}
-                title={modalError.title}
+                error={modalError.error}
+            />
+            <ModalErrorOtherComponet
+                onOk={() => setModalErrorOther({ open: false })}
+                open={modalErrorOther.open}
+                title={modalErrorOther.title}
+                message={modalErrorOther.message}
             />
             <ModalReasonComponent
                 afterClose={() => form.resetFields()}

@@ -20,7 +20,6 @@ import {
     Modal,
     Select,
     Space,
-    Spin,
     Table,
     Tabs,
     Tag,
@@ -29,22 +28,23 @@ import {
 
 // Local imports
 import { URL } from '../configs/urlConfig';
-import FormComponent from '../components/feature/FormComponent';
+import { FormComponent } from '../components';
 import { getUniqueName } from '../utils';
 import { ModalConfirmComponent, ModalErrorComponent, ModalSuccessComponent } from '../components';
 
 // Ant Design Layout
+const { Password } = Input;
 const { Content } = Layout;
 const { Text } = Typography;
 
-const EmployeePage = () => {
-    console.log('Run EmployeePage');
+const UserPage = () => {
+    console.log('Run UserPage');
 
+    const [department, setDepartment] = useState([]);
+    const [role, setRole] = useState([]);
+    const [zaloAPIInfo, setZaloAPIInfo] = useState([]);
+    const [user, setUser] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [dataSourceEmployee, setDataSourceEmployee] = useState([]);
-    const [dataSourceDepartment, setDataSourceDepartment] = useState([]);
-    const [dataSourceRole, setDataSourceRole] = useState([]);
-    const [dataSourceZaloAPIInfo, setDataSourceZaloAPIInfo] = useState([]);
 
     const [modalMain, setModalMain] = useState({
         open: false,
@@ -73,19 +73,21 @@ const EmployeePage = () => {
     useEffect(() => {
         handleGetDepartment();
         handleGetRole();
-        handleGetEmployee();
         handleGetZaloAPIInfo();
+        handleGetUser();
     }, []);
 
     const handleGetDepartment = async () => {
         try {
             const response = await axios.get(`${URL}/api/leave/department`);
 
-            const arrData = response.data.map(item => ({ ...item, key: item.id }));
-
-            setDataSourceDepartment(arrData);
+            setDepartment(response.data);
         } catch (error) {
-            console.log(error);
+            setModalError({
+                message: error.response.data.message,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         }
     };
 
@@ -93,11 +95,13 @@ const EmployeePage = () => {
         try {
             const response = await axios.get(`${URL}/api/leave/role`);
 
-            const arrData = response.data.map(item => ({ ...item, key: item.id }));
-
-            setDataSourceRole(arrData);
+            setRole(response.data);
         } catch (error) {
-            console.log(error);
+            setModalError({
+                message: error.response.data.message,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         }
     };
 
@@ -107,33 +111,37 @@ const EmployeePage = () => {
 
             const response = await axios.get(`${URL}/api/zalo/info`);
 
-            const arrData = response.data.map(item => ({ ...item, key: item.id }));
-
-            setDataSourceZaloAPIInfo(arrData);
+            setZaloAPIInfo(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
-            console.error(error);
+            setModalError({
+                message: error.response.data.message,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         } finally {
             setLoading(false);
         }
     };
 
-    const handleGetEmployee = async () => {
+    const handleGetUser = async () => {
         try {
             setLoading(true);
 
             const response = await axios.get(`${URL}/api/leave/user`);
 
-            const arrData = response.data.map(item => ({ ...item, key: item.id }));
-
-            setDataSourceEmployee(arrData);
+            setUser(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
-            console.error(error);
+            setModalError({
+                message: error.response.data.message,
+                open: true,
+                title: 'THẤT BẠI',
+            });
         } finally {
             setLoading(false);
         }
     };
 
-    const handleInsertEmployee = async values => {
+    const handleInsertUser = async values => {
         try {
             const response = await axios.post(`${URL}/api/leave/user`, values);
 
@@ -144,7 +152,7 @@ const EmployeePage = () => {
                 open: true,
             });
 
-            handleGetEmployee();
+            handleGetUser();
         } catch (error) {
             setModalError({
                 message: error.response.data.message,
@@ -154,7 +162,7 @@ const EmployeePage = () => {
         }
     };
 
-    const handleUpdateEmployee = async values => {
+    const handleUpdateUser = async values => {
         try {
             const response = await axios.put(`${URL}/api/leave/user/${values.id}`, values);
 
@@ -165,7 +173,7 @@ const EmployeePage = () => {
                 open: true,
             });
 
-            handleGetEmployee();
+            handleGetUser();
         } catch (error) {
             setModalError({
                 message: error.response.data.error,
@@ -175,7 +183,7 @@ const EmployeePage = () => {
         }
     };
 
-    const handleDeleteEmployee = async id => {
+    const handleDeleteUser = async id => {
         try {
             const response = await axios.delete(`${URL}/api/leave/user/${id}`);
 
@@ -188,7 +196,7 @@ const EmployeePage = () => {
                 open: true,
             });
 
-            handleGetEmployee();
+            handleGetUser();
         } catch (error) {
             setModalError({
                 message: error.response.data.message,
@@ -200,17 +208,17 @@ const EmployeePage = () => {
 
     const onFinish = async values => {
         values.id
-            ? handleUpdateEmployee({
+            ? handleUpdateUser({
                   ...values,
                   birthday: dayjs(values.birthday).format('YYYY-MM-DD'),
               })
-            : handleInsertEmployee({
+            : handleInsertUser({
                   ...values,
                   birthday: dayjs(values.birthday).format('YYYY-MM-DD'),
               });
     };
 
-    const columnsEmployee = [
+    const columnsUser = [
         {
             title: '',
             dataIndex: 'action',
@@ -241,7 +249,7 @@ const EmployeePage = () => {
                                 icon: <DeleteFilled />,
                                 onClick: () =>
                                     setModalConfirm({
-                                        onOk: () => handleDeleteEmployee(record.id),
+                                        onOk: () => handleDeleteUser(record.id),
                                         open: true,
                                         message: (
                                             <Space direction="vertical" align="center">
@@ -250,7 +258,11 @@ const EmployeePage = () => {
                                                 khỏi CSDL không?
                                                 <Alert
                                                     message="Thao tác này không thể hoàn tác!"
-                                                    type="error"
+                                                    type="danger"
+                                                    style={{
+                                                        backgroundColor: '#ff4d4f',
+                                                        color: 'white',
+                                                    }}
                                                 />
                                             </Space>
                                         ),
@@ -284,7 +296,7 @@ const EmployeePage = () => {
             key: 'name',
             ellipsis: true,
             filterSearch: true,
-            filters: getUniqueName(dataSourceEmployee),
+            filters: getUniqueName(user, 'id', 'name'),
             onFilter: (value, record) => record.name.includes(value),
             render: record => <Text strong>{record}</Text>,
         },
@@ -308,20 +320,21 @@ const EmployeePage = () => {
             dataIndex: 'departmentId',
             key: 'departmentId',
             ellipsis: true,
-            render: record => dataSourceDepartment.find(item => item.id === record)?.name,
+            render: record => department.find(item => item.id === record)?.name,
         },
         {
             title: 'Chức vụ',
             dataIndex: 'roleId',
             key: 'roleId',
             ellipsis: true,
-            render: record => dataSourceRole.find(item => item.id === record)?.name,
+            render: record => role.find(item => item.id === record)?.name,
         },
         {
-            title: 'ID cấp trên',
+            title: 'Cấp trên',
             dataIndex: 'superiorId',
             key: 'superiorId',
             ellipsis: true,
+            render: record => user.find(item => item.id === record)?.name,
         },
         {
             title: 'Mật khẩu',
@@ -340,6 +353,8 @@ const EmployeePage = () => {
             dataIndex: 'zaloUserId',
             key: 'zaloUserId',
             ellipsis: true,
+            render: (_, record) =>
+                zaloAPIInfo.find(item => item.zaloNumberPhone === record.numberPhone)?.zaloUserId,
         },
         {
             title: 'Ngày tạo',
@@ -364,7 +379,7 @@ const EmployeePage = () => {
             key: 'name',
             ellipsis: true,
             filterSearch: true,
-            filters: getUniqueName(dataSourceZaloAPIInfo),
+            filters: getUniqueName(zaloAPIInfo, 'id', 'name'),
             onFilter: (value, record) => record.name.includes(value),
             render: record => <Text strong>{record}</Text>,
         },
@@ -412,27 +427,38 @@ const EmployeePage = () => {
         {
             label: 'Mã nhân viên',
             name: 'code',
-            rules: [{ required: true, message: 'Vui lòng nhập mã nhân viên' }],
-            typeInput: <Input allowClear maxLength={10} showCount />,
+            rules: [{ required: true, message: 'Bạn chưa nhập mã nhân viên' }],
+            typeInput: (
+                <Input allowClear maxLength={10} placeholder="Nhập mã nhân viên" showCount />
+            ),
         },
         {
             label: 'Tên nhân viên',
             name: 'name',
-            rules: [{ required: true, message: 'Vui lòng nhập tên nhân viên' }],
-            typeInput: <Input allowClear maxLength={50} showCount />,
+            rules: [{ required: true, message: 'Bạn chưa nhập tên nhân viên' }],
+            typeInput: (
+                <Input allowClear maxLength={50} placeholder="Nhập tên nhân viên" showCount />
+            ),
         },
         {
             label: 'Ngày sinh',
             name: 'birthday',
-            rules: [{ required: true, message: 'Vui lòng chọn ngày sinh' }],
-            typeInput: <DatePicker allowClear format={'DD/MM/YYYY'} style={{ width: '100%' }} />,
+            rules: [{ required: true, message: 'Bạn chưa chọn ngày sinh' }],
+            typeInput: (
+                <DatePicker
+                    allowClear
+                    format={'DD/MM/YYYY'}
+                    placeholder="Chọn ngày sinh"
+                    style={{ width: '100%' }}
+                />
+            ),
         },
         {
             label: 'Giới tính',
             name: 'gender',
-            rules: [{ required: true, message: 'Vui lòng chọn giới tính' }],
+            rules: [{ required: true, message: 'Bạn chưa chọn giới tính' }],
             typeInput: (
-                <Select allowClear>
+                <Select allowClear placeholder="Chọn giới tính">
                     <Select.Option value={1}>Nam</Select.Option>
                     <Select.Option value={0}>Nữ</Select.Option>
                 </Select>
@@ -443,8 +469,8 @@ const EmployeePage = () => {
             name: 'departmentId',
             rules: [{ required: true, message: 'Vui lòng chọn bộ phận' }],
             typeInput: (
-                <Select allowClear>
-                    {dataSourceDepartment.map(item => (
+                <Select allowClear placeholder="Chọn bộ phận">
+                    {department.map(item => (
                         <Select.Option key={item.id} value={item.id}>
                             {item.name}
                         </Select.Option>
@@ -457,8 +483,8 @@ const EmployeePage = () => {
             name: 'roleId',
             rules: [{ required: true, message: 'Vui lòng chọn chức vụ' }],
             typeInput: (
-                <Select allowClear>
-                    {dataSourceRole.map(item => (
+                <Select allowClear placeholder="Chọn chức vụ">
+                    {role.map(item => (
                         <Select.Option key={item.id} value={item.id}>
                             {item.name}
                         </Select.Option>
@@ -467,22 +493,35 @@ const EmployeePage = () => {
             ),
         },
         {
-            label: 'ID Cấp trên',
+            label: 'Cấp trên',
             name: 'superiorId',
-            rules: [{ required: true, message: 'Vui lòng đặt mật khẩu' }],
-            typeInput: <Input allowClear maxLength={50} showCount />,
+            rules: [{ required: true, message: 'Vui lòng chọn cấp trên' }],
+            typeInput: (
+                <Select allowClear placeholder="Chọn cấp trên">
+                    {user.map(
+                        item =>
+                            item.roleId !== 5 && (
+                                <Select.Option key={item.id} value={item.id}>
+                                    {item.name}
+                                </Select.Option>
+                            )
+                    )}
+                </Select>
+            ),
         },
         {
             label: 'Mật khẩu',
             name: 'password',
             rules: [{ required: true, message: 'Vui lòng đặt mật khẩu' }],
-            typeInput: <Input allowClear maxLength={50} showCount />,
+            typeInput: <Password allowClear maxLength={50} placeholder="Nhập mật khẩu" showCount />,
         },
         {
             label: 'Số điện thoại',
             name: 'numberPhone',
             rules: [{ required: true, message: 'Vui lòng nhập số điện thoại' }],
-            typeInput: <Input allowClear maxLength={11} showCount />,
+            typeInput: (
+                <Input allowClear maxLength={11} placeholder="Nhập số điện thoại" showCount />
+            ),
         },
     ];
 
@@ -530,8 +569,8 @@ const EmployeePage = () => {
                                     </Flex>
                                     <Table
                                         bordered
-                                        columns={columnsEmployee}
-                                        dataSource={dataSourceEmployee}
+                                        columns={columnsUser}
+                                        dataSource={user}
                                         loading={loading}
                                         scroll={{ x: true }}
                                         showSorterTooltip={false}
@@ -564,7 +603,7 @@ const EmployeePage = () => {
                                     <Table
                                         bordered
                                         columns={columnsZaloUser}
-                                        dataSource={dataSourceZaloAPIInfo}
+                                        dataSource={zaloAPIInfo}
                                         loading={loading}
                                         scroll={{ x: true }}
                                         showSorterTooltip={false}
@@ -616,4 +655,4 @@ const EmployeePage = () => {
     );
 };
 
-export default EmployeePage;
+export default UserPage;

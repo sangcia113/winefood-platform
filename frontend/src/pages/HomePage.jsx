@@ -1,26 +1,34 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import { URL } from '../configs/urlConfig';
+
 import {
     Button,
     Card,
     DatePicker,
     Flex,
     Form,
+    Input,
     InputNumber,
     Layout,
     Select,
     Spin,
     Typography,
 } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { URL } from '../configs/urlConfig';
-import dayjs from 'dayjs';
-import { ModalErrorComponent, ModalSuccessComponent } from '../components';
-import ModalWarningComponent from '../components/feature/modal/ModalWarningComponent';
-import ModalPasswordComponent from '../components/feature/modal/ModalPasswordComponent';
-import { SyncOutlined } from '@ant-design/icons';
+
+import {
+    ModalErrorComponent,
+    ModalErrorOtherComponet,
+    ModalPasswordComponent,
+    ModalSuccessComponent,
+    ModalWarningComponent,
+} from '../components';
+
+const { TextArea } = Input;
 const { Content } = Layout;
 const { Link, Text } = Typography;
+
 const HomePage = () => {
     console.log('Run Home...');
 
@@ -30,6 +38,11 @@ const HomePage = () => {
     const [loading, setLoading] = useState(false);
 
     const [modalError, setModalError] = useState({
+        open: false,
+        error: '',
+    });
+
+    const [modalErrorOther, setModalErrorOther] = useState({
         open: false,
         title: '',
         message: '',
@@ -61,39 +74,30 @@ const HomePage = () => {
     const handleGetDepartment = async () => {
         try {
             const response = await axios.get(`${URL}/api/leave/department`);
+
             setDepartment(response.data);
         } catch (error) {
-            setModalError({
-                message: error.response.data.message,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ open: true, error });
         }
     };
 
     const handleGetUser = async () => {
         try {
             const response = await axios.get(`${URL}/api/leave/user`);
+
             setUser(response.data);
         } catch (error) {
-            setModalError({
-                message: error.response.data.message,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ open: true, error });
         }
     };
 
     const handleGetLeaveType = async () => {
         try {
             const response = await axios.get(`${URL}/api/leave/type`);
+
             setLeaveType(response.data);
         } catch (error) {
-            setModalError({
-                message: error.response.data.message,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ open: true, error });
         }
     };
 
@@ -103,7 +107,9 @@ const HomePage = () => {
 
             const response = await axios.post(`${URL}/api/leave/list`, values);
 
-            setModalSuccess({
+            setModalErrorOther({
+                open: true,
+                title: 'THẤT BẠI',
                 message: (
                     <Text style={{ textAlign: 'center' }}>
                         Đã gửi yêu cầu lên cấp trên
@@ -113,11 +119,13 @@ const HomePage = () => {
                         qua <b>Zalo</b>
                     </Text>
                 ),
-                open: true,
             });
         } catch (error) {
+            console.log(error);
             if (error.response.data.error === -904) {
-                setModalError({
+                setModalErrorOther({
+                    open: true,
+                    title: 'THẤT BẠI',
                     message: (
                         <Text>
                             Đơn xin nghỉ phép của bạn đã
@@ -129,11 +137,11 @@ const HomePage = () => {
                             phê duyệt!
                         </Text>
                     ),
-                    open: true,
-                    title: 'THẤT BẠI',
                 });
             } else if (error === -230) {
-                setModalError({
+                setModalErrorOther({
+                    open: true,
+                    title: 'THẤT BẠI',
                     message: (
                         <Text>
                             Gửi thông báo qua Zalo <b>thất bại!</b>
@@ -149,25 +157,9 @@ const HomePage = () => {
                             Bạn có thể yên tâm!
                         </Text>
                     ),
-                    open: true,
-                    title: 'THẤT BẠI',
                 });
             } else {
-                setModalError({
-                    message: (
-                        <Text>
-                            Mã lỗi: {error.response.data.error}
-                            <br />
-                            Vui lòng liên hệ{' '}
-                            <Link href="https://zalo.me/0972868740" target="_blank">
-                                Mr.Sang
-                            </Link>{' '}
-                            để được hỗ trợ!
-                        </Text>
-                    ),
-                    open: true,
-                    title: 'THẤT BẠI',
-                });
+                setModalError({ open: true, error });
             }
         } finally {
             setLoading(false);
@@ -181,7 +173,7 @@ const HomePage = () => {
     const onFinish = values => {
         const { fromDate, toDate } = values;
 
-        if (fromDate < toDate) {
+        if (fromDate <= toDate) {
             if (
                 dayjs(fromDate).hour() >= 7 &&
                 dayjs(fromDate).minute() >= 30 &&
@@ -192,9 +184,9 @@ const HomePage = () => {
                     ...values,
                     fromDate: dayjs(fromDate).format('YYYY-MM-DD HH:mm'),
                     toDate: dayjs(toDate).format('YYYY-MM-DD HH:mm'),
-                    userName: user.find(u => u.id === values.userId)?.name,
+                    name: user.find(u => u.id === values.id)?.name,
                     department: department.find(
-                        d => d.id === user.find(u => u.id === values.userId)?.departmentId
+                        d => d.id === user.find(u => u.id === values.id)?.departmentId
                     )?.name,
                     leaveType: leaveType.find(lt => lt.id === values.leaveTypeId)?.nameVN,
                 });
@@ -457,8 +449,13 @@ const HomePage = () => {
             <ModalErrorComponent
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
-                message={modalError.message}
-                title={modalError.title}
+                error={modalError.error}
+            />
+            <ModalErrorOtherComponet
+                onOk={() => setModalErrorOther({ open: false })}
+                open={modalErrorOther.open}
+                title={modalErrorOther.title}
+                message={modalErrorOther.message}
             />
             <ModalPasswordComponent
                 afterClose={() => formPassword.resetFields()}

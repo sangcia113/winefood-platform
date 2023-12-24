@@ -46,17 +46,13 @@ const userService = {
     // Đọc trong cơ sở dữ liệu.
     read: async () => {
         // Truy vấn SQL để đọc
-        const sql = `SELECT
-                        l.*,
-                        zaloUserId
-                    FROM
-                        leave.user AS l
-                    INNER JOIN
-                        zalo_api.user AS za
-                    ON
-                        za.zaloNumberPhone = l.numberPhone AND za.zaloNumberPhone != ''
-                    ORDER BY
-                        l.id ASC`;
+        const sql = `SELECT 
+                        * 
+                    FROM 
+                        user 
+                    ORDER BY 
+                        id 
+                    ASC`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql);

@@ -1,6 +1,6 @@
-import { ConfigProvider, Layout } from 'antd';
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { ConfigProvider, Layout } from 'antd';
 import { FooterComponent, HeaderComponent, SiderComponent } from './components/index';
 import { HomePage, LoginPage, ManagerPage, NotExistPage, UserPage } from './pages/index';
 
@@ -21,48 +21,24 @@ const App = () => {
             >
                 <Routes>
                     <Route path="*" element={<NotExistPage />} />
+                    <Route path="/login" element={<LoginPage />} />
                     <Route
-                        path="/"
                         element={
                             <Layout style={{ minHeight: '100vh' }}>
                                 <HeaderComponent />
-                                <Layout>
-                                    <SiderComponent defaultSelectedKeys={''} />
-                                    <HomePage />
-                                </Layout>
+                                {/* <Layout> */}
+                                {/* <SiderComponent defaultSelectedKeys={''} /> */}
+                                <Outlet />
+                                {/* </Layout> */}
                                 <FooterComponent />
                             </Layout>
                         }
-                    />
-                    <Route
-                        path="/manager"
-                        element={
-                            <Layout style={{ minHeight: '100vh' }}>
-                                <HeaderComponent />
-                                <Layout>
-                                    <SiderComponent defaultSelectedKeys={''} />
-                                    <Routes>
-                                        <Route path="/" element={<ManagerPage />} />
-                                    </Routes>
-                                </Layout>
-                                <FooterComponent />
-                            </Layout>
-                        }
-                    />
+                    >
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/manager" element={<ManagerPage />} />
+                        <Route path="/user" element={<UserPage />} />
+                    </Route>
                 </Routes>
-                {/* <Layout style={{ minHeight: '100vh' }}>
-                    <HeaderComponent />
-                    <Layout>
-                        <SiderComponent defaultSelectedKeys={''} />
-                        <Routes>
-                            <Route path="/" element={<HomePage />} />
-                            <Route path="/manager" element={<ManagerPage />} />
-                            <Route path="/user" element={<UserPage />} />
-                            <Route path="/login" element={<LoginPage />} />
-                        </Routes>
-                    </Layout>
-                    <FooterComponent />
-                </Layout> */}
             </ConfigProvider>
         </BrowserRouter>
     );

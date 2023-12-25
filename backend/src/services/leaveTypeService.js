@@ -41,12 +41,13 @@ const leaveTypeService = {
                     SET 
                         code= ?, 
                         nameVN = ?, 
-                        nameEN = ? 
+                        nameEN = ?,
+                        updatedDate = ? 
                     WHERE 
                         id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
-        await db.query(sql, [code, nameVN, nameEN, id]);
+        await db.query(sql, [code, nameVN, nameEN, new Date(), id]);
     },
 
     // Xóa khỏi cơ sở dữ liệu.

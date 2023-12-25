@@ -114,7 +114,8 @@ const userService = {
                         password = ?, 
                         departmentId = ?, 
                         superiorId = ?, 
-                        roleId = ? 
+                        roleId = ?,
+                        updatedDate = ? 
                     WHERE 
                         id = ?`;
 
@@ -129,6 +130,7 @@ const userService = {
             departmentId,
             superiorId,
             roleId,
+            new Date(),
             id,
         ]);
     },

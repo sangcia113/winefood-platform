@@ -39,12 +39,13 @@ const departmentService = {
                     department 
                 SET 
                     code= ?, 
-                    name = ? 
+                    name = ?,
+                    updatedDate = ? 
                 WHERE 
                     id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
-        await db.query(sql, [code, name, id]);
+        await db.query(sql, [code, name, new Date(), id]);
     },
 
     // Xóa khỏi cơ sở dữ liệu.

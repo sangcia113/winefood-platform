@@ -109,7 +109,7 @@ const UserPage = () => {
         try {
             setLoading(true);
 
-            const response = await axios.get(`${URL}/api/zalo/info`);
+            const response = await axios.get(`${URL}/api/zalo/user`);
 
             setZaloAPIInfo(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
@@ -378,10 +378,14 @@ const UserPage = () => {
             dataIndex: 'name',
             key: 'name',
             ellipsis: true,
-            filterSearch: true,
-            filters: getUniqueName(zaloAPIInfo, 'id', 'name'),
-            onFilter: (value, record) => record.name.includes(value),
-            render: record => <Text strong>{record}</Text>,
+            render: (_, record) =>
+                record.zaloNumberPhone ? (
+                    <Text strong>
+                        {user.find(item => item.numberPhone === record.zaloNumberPhone)?.name}
+                    </Text>
+                ) : (
+                    ''
+                ),
         },
         {
             title: 'Zalo ID',

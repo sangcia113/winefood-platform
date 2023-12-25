@@ -27,7 +27,7 @@ import {
 
 const { TextArea } = Input;
 const { Content } = Layout;
-const { Link, Text } = Typography;
+const { Text } = Typography;
 
 const HomePage = () => {
     console.log('Run Home...');
@@ -38,78 +38,58 @@ const HomePage = () => {
     const [loading, setLoading] = useState(false);
 
     const [modalError, setModalError] = useState({
-        open: false,
         error: '',
+        open: false,
     });
 
     const [modalErrorOther, setModalErrorOther] = useState({
+        message: '',
         open: false,
         title: '',
-        message: '',
     });
 
     const [modalPassword, setModalPassword] = useState({
+        onFinish: () => {},
+        onOk: () => {},
         open: false,
     });
 
     const [modalSuccess, setModalSuccess] = useState({
-        open: false,
         message: '',
+        open: false,
     });
 
     const [modalWarning, setModalWarning] = useState({
-        open: false,
         message: '',
+        open: false,
     });
 
     const [formMain] = Form.useForm();
     const [formPassword] = Form.useForm();
 
     useEffect(() => {
-        handleGetDepartment();
-        handleGetUser();
-        handleGetLeaveType();
+        getDataSource('department', setDepartment);
+        getDataSource('user', setUser);
+        getDataSource('type', setLeaveType);
     }, []);
 
-    const handleGetDepartment = async () => {
+    const getDataSource = async (table, setDataSource) => {
         try {
-            const response = await axios.get(`${URL}/api/leave/department`);
+            const response = await axios.get(`${URL}/api/leave/${table}`);
 
-            setDepartment(response.data);
+            setDataSource(response.data);
         } catch (error) {
             setModalError({ open: true, error });
         }
     };
 
-    const handleGetUser = async () => {
-        try {
-            const response = await axios.get(`${URL}/api/leave/user`);
-
-            setUser(response.data);
-        } catch (error) {
-            setModalError({ open: true, error });
-        }
-    };
-
-    const handleGetLeaveType = async () => {
-        try {
-            const response = await axios.get(`${URL}/api/leave/type`);
-
-            setLeaveType(response.data);
-        } catch (error) {
-            setModalError({ open: true, error });
-        }
-    };
-
-    const handleInsertData = async values => {
+    const insertData = async values => {
         try {
             setLoading(true);
 
             const response = await axios.post(`${URL}/api/leave/list`, values);
 
-            setModalErrorOther({
-                open: true,
-                title: 'THẤT BẠI',
+            setModalSuccess({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
                         Đã gửi yêu cầu lên cấp trên
@@ -119,10 +99,10 @@ const HomePage = () => {
                         qua <b>Zalo</b>
                     </Text>
                 ),
+                open: true,
             });
         } catch (error) {
-            console.log(error);
-            if (error.response.data.error === -904) {
+            if (error?.response?.data?.error === -904) {
                 setModalErrorOther({
                     open: true,
                     title: 'THẤT BẠI',
@@ -138,7 +118,7 @@ const HomePage = () => {
                         </Text>
                     ),
                 });
-            } else if (error === -230) {
+            } else if (error?.response?.data?.error === -230) {
                 setModalErrorOther({
                     open: true,
                     title: 'THẤT BẠI',
@@ -166,64 +146,74 @@ const HomePage = () => {
         }
     };
 
-    const handlePassword = values => {
-        console.log(values);
-    };
-
     const onFinish = values => {
-        const { fromDate, toDate } = values;
+        setModalPassword({
+            open: true,
+            onFinish: passField => {
+                const password = user.find(item => item.id === values.userId)?.password;
+                if (passField.password === password) {
+                    const { fromDate, toDate } = values;
+                    if (fromDate <= toDate) {
+                        if (
+                            dayjs(fromDate).hour() >= 7 &&
+                            dayjs(fromDate).minute() >= 30 &&
+                            dayjs(toDate).hour() <= 16 &&
+                            dayjs(toDate).minute() <= 30
+                        ) {
+                            insertData({
+                                ...values,
+                                fromDate: dayjs(fromDate).format('YYYY-MM-DD HH:mm'),
+                                toDate: dayjs(toDate).format('YYYY-MM-DD HH:mm'),
+                                userName: user.find(u => u.id === values.userId)?.name,
+                                department: department.find(
+                                    d =>
+                                        d.id ===
+                                        user.find(u => u.id === values.userId)?.departmentId
+                                )?.name,
+                                leaveType: leaveType.find(lt => lt.id === values.leaveTypeId)
+                                    ?.nameVN,
+                            });
+                        } else {
+                            setModalWarning({
+                                message: (
+                                    <Text style={{ textAlign: 'center' }}>
+                                        Giờ bắt đầu & kết thúc phải nằm trong khoảng từ
+                                        <br />
+                                        <b>07:30</b> đến <b>16:30</b>
+                                        <br />
+                                        Giờ bắt đầu của bạn là:{' '}
+                                        <Text strong type="danger">
+                                            {dayjs(fromDate).format('HH:mm')}
+                                        </Text>
+                                        <br />
+                                        Giờ kết thúc của bạn là:{' '}
+                                        <Text strong type="danger">
+                                            {dayjs(toDate).format('HH:mm')}
+                                        </Text>
+                                    </Text>
+                                ),
+                                open: true,
+                            });
+                        }
+                    } else {
+                        setModalWarning({
+                            message: (
+                                <Text style={{ textAlign: 'center' }}>
+                                    Ngày/ giờ kết thúc phải <b>lớn hơn</b>
+                                    <br />
+                                    ngày/ giờ bắt đầu!
+                                </Text>
+                            ),
+                            open: true,
+                        });
+                    }
+                } else {
+                    setModalPassword({ open: false });
 
-        if (fromDate <= toDate) {
-            if (
-                dayjs(fromDate).hour() >= 7 &&
-                dayjs(fromDate).minute() >= 30 &&
-                dayjs(toDate).hour() <= 16 &&
-                dayjs(toDate).minute() <= 30
-            ) {
-                handleInsertData({
-                    ...values,
-                    fromDate: dayjs(fromDate).format('YYYY-MM-DD HH:mm'),
-                    toDate: dayjs(toDate).format('YYYY-MM-DD HH:mm'),
-                    name: user.find(u => u.id === values.id)?.name,
-                    department: department.find(
-                        d => d.id === user.find(u => u.id === values.id)?.departmentId
-                    )?.name,
-                    leaveType: leaveType.find(lt => lt.id === values.leaveTypeId)?.nameVN,
-                });
-            } else {
-                setModalWarning({
-                    message: (
-                        <Text style={{ textAlign: 'center' }}>
-                            Giờ bắt đầu & kết thúc phải nằm trong khoảng từ
-                            <br />
-                            <b>07:30</b> đến <b>16:30</b>
-                            <br />
-                            Giờ bắt đầu của bạn là:{' '}
-                            <Text strong type="danger">
-                                {dayjs(fromDate).format('HH:mm')}
-                            </Text>
-                            <br />
-                            Giờ kết thúc của bạn là:{' '}
-                            <Text strong type="danger">
-                                {dayjs(toDate).format('HH:mm')}
-                            </Text>
-                        </Text>
-                    ),
-                    open: true,
-                });
-            }
-        } else {
-            setModalWarning({
-                message: (
-                    <Text style={{ textAlign: 'center' }}>
-                        Ngày/ giờ kết thúc phải <b>lớn hơn</b>
-                        <br />
-                        ngày/ giờ bắt đầu!
-                    </Text>
-                ),
-                open: true,
-            });
-        }
+                    setModalErrorOther({ message: 'SAI MAT KHAU', open: true, title: 'THAT BAI' });
+                }
+            },
+        });
     };
 
     return (
@@ -290,6 +280,7 @@ const HomePage = () => {
                                 <Select.OptGroup key={d.id} label={d.name}>
                                     {user.map(
                                         u =>
+                                            u.id !== 1 &&
                                             u.departmentId === d.id && (
                                                 <Select.Option key={u.id} value={u.id}>
                                                     {u.name}
@@ -461,7 +452,7 @@ const HomePage = () => {
                 afterClose={() => formPassword.resetFields()}
                 form={formPassword}
                 onCancel={() => setModalPassword({ open: false })}
-                onFinish={handlePassword}
+                onFinish={modalPassword.onFinish}
                 onOk={() => formPassword.submit()}
                 open={modalPassword.open}
             />

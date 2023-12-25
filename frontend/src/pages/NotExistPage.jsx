@@ -10,7 +10,7 @@ const NotExistPage = () => {
             title="404"
             subTitle="Xin lỗi, trang mà bạn đang truy cập không tồn tại!"
             extra={
-                <Button type="primary" onClick={() => navigate('/home')}>
+                <Button type="primary" onClick={() => navigate('/')}>
                     Back Home
                 </Button>
             }

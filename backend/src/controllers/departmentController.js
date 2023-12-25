@@ -2,7 +2,7 @@ const { departmentService } = require('../services/departmentService');
 
 const departmentController = {
     // Xử lý yêu cầu đọc dữ liệu.
-    readHandler: async (req, res) => {
+    read: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
             const results = await departmentService.read();

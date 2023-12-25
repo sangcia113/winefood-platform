@@ -6,32 +6,28 @@ const { leaveListController } = require('../controllers/leaveListController');
 const { leaveListMiddleWare } = require('../middleWares/leaveListMiddleWare');
 
 // End point POST
-router.post('/', leaveListMiddleWare.checkBody, leaveListController.createHandler);
+router.post('/', leaveListMiddleWare.checkBody, leaveListController.create);
 
 // End point GET
-router.get('/', leaveListController.readHandler);
+router.get('/', leaveListController.read);
 
 // End point GET
-router.get('/search', leaveListMiddleWare.checkDate, leaveListController.readByDateHandler);
+router.get('/search', leaveListMiddleWare.checkDate, leaveListController.readByDate);
 
 // End point GET
-router.get('/other', leaveListController.readOtherHandler);
+router.get('/other', leaveListController.readOther);
 
 // End point GET
-router.get(
-    '/other/search',
-    leaveListMiddleWare.checkDate,
-    leaveListController.readOtherByDateHandler
-);
+router.get('/other/search', leaveListMiddleWare.checkDate, leaveListController.readOtherByDate);
 
 // End point GET
-router.get('/statistics', leaveListController.readStatisticsHandler);
+router.get('/statistics', leaveListController.readStatistics);
 
 // End point GET
 router.get(
     '/statistics/search',
     leaveListMiddleWare.checkDate,
-    leaveListController.readStatisticsByDateHandler
+    leaveListController.readStatisticsByDate
 );
 
 // End point PUT
@@ -40,7 +36,7 @@ router.put(
     leaveListMiddleWare.checkParam,
     leaveListMiddleWare.checkBody,
     leaveListMiddleWare.checkApproved,
-    leaveListController.updateApprovedHandler
+    leaveListController.updateApproved
 );
 
 // End point PUT
@@ -48,7 +44,7 @@ router.put(
     '/rejected/:id',
     leaveListMiddleWare.checkParam,
     leaveListMiddleWare.checkRejected,
-    leaveListController.updateRejectedHandler
+    leaveListController.updateRejected
 );
 
 // End point PUT
@@ -56,7 +52,7 @@ router.put(
     '/approved-leave-type/:id',
     leaveListMiddleWare.checkParam,
     leaveListMiddleWare.checkApprovedLeaveType,
-    leaveListController.updateApprovedLeaveTypeHandler
+    leaveListController.updateApprovedLeaveType
 );
 
 // End point PUT
@@ -64,7 +60,7 @@ router.put(
     '/approved-leave-day/:id',
     leaveListMiddleWare.checkParam,
     leaveListMiddleWare.checkApprovedLeaveDay,
-    leaveListController.updateApprovedLeaveDayHandler
+    leaveListController.updateApprovedLeaveDay
 );
 
 // End point PUT
@@ -72,7 +68,7 @@ router.put(
     '/approved-request-delete/:id',
     leaveListMiddleWare.checkParam,
     leaveListMiddleWare.checkApprovedRequestDelete,
-    leaveListController.updateApprovedRequestDeleteHandler
+    leaveListController.updateApprovedRequestDelete
 );
 
 // Xuất router để sử dụng trong module khác index.js

@@ -20,7 +20,7 @@ const readZaloAPIInfo = async () => {
 
 const zaloController = {
     // Xử lý yêu cầu đọc dữ liệu.
-    readHandler: async (req, res) => {
+    read: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
             const results = await zaloAPIService.read();
@@ -32,7 +32,7 @@ const zaloController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readAllZaloAPIInfoHandler: async (req, res) => {
+    readAllZaloAPIInfo: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
             const results = await zaloAPIService.readAllZaloAPIInfo();
@@ -43,7 +43,7 @@ const zaloController = {
         }
     },
 
-    updateHandler: async (req, res) => {
+    update: async (req, res) => {
         try {
             const { accessToken, refreshToken } = req.query;
 
@@ -55,7 +55,7 @@ const zaloController = {
         }
     },
 
-    refreshTokenHandler: async (req, res) => {
+    refreshToken: async (req, res) => {
         try {
             const { refreshToken, secretKey, appId } = await readZaloAPIInfo();
 
@@ -84,7 +84,7 @@ const zaloController = {
         }
     },
 
-    sendMessageHandler: async (req, res) => {
+    sendMessage: async (req, res) => {
         try {
             const { accessToken } = await readZaloAPIInfo();
 

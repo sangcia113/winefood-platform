@@ -79,19 +79,18 @@ const ManagerPage = () => {
 
     const [modalSuccess, setModalSuccess] = useState({
         open: false,
-        title: '',
         message: '',
     });
 
     const [form] = Form.useForm();
 
     useEffect(() => {
-        handleGetLeaveList();
-        handleGetLeaveListOther();
-        handleGetLeaveListStatistics();
+        getLeaveList();
+        getLeaveListOther();
+        getLeaveListStatistics();
     }, []);
 
-    const handleGetDataSource = async (url, params = {}, setDataSource) => {
+    const getDataSource = async (url, params = {}, setDataSource) => {
         try {
             setLoading(true);
 
@@ -110,14 +109,14 @@ const ManagerPage = () => {
         }
     };
 
-    const handleGetLeaveList = async () => {
-        await handleGetDataSource(`${URL}/api/leave/list`, {}, setLeaveList);
+    const getLeaveList = async () => {
+        await getDataSource(`${URL}/api/leave/list`, {}, setLeaveList);
 
-        handleGetTotalWaiting();
+        getTotalWaiting();
     };
 
-    const handleGetLeaveListByDate = async (startDate, endDate) => {
-        await handleGetDataSource(
+    const getLeaveListByDate = async (startDate, endDate) => {
+        await getDataSource(
             `${URL}/api/leave/list/search`,
             {
                 startDate: dayjs(startDate).format('YYYY-MM-DD'),
@@ -126,15 +125,15 @@ const ManagerPage = () => {
             setLeaveList
         );
 
-        handleGetTotalWaiting();
+        getTotalWaiting();
     };
 
-    const handleGetLeaveListOther = async () => {
-        await handleGetDataSource(`${URL}/api/leave/list/other`, {}, setLeaveListOther);
+    const getLeaveListOther = async () => {
+        await getDataSource(`${URL}/api/leave/list/other`, {}, setLeaveListOther);
     };
 
-    const handleGetLeaveListOtherByDate = async (startDate, endDate) => {
-        await handleGetDataSource(
+    const getLeaveListOtherByDate = async (startDate, endDate) => {
+        await getDataSource(
             `${URL}/api/leave/list/other/search`,
             {
                 startDate: dayjs(startDate).format('YYYY-MM-DD'),
@@ -144,12 +143,12 @@ const ManagerPage = () => {
         );
     };
 
-    const handleGetLeaveListStatistics = async () => {
-        await handleGetDataSource(`${URL}/api/leave/list/statistics`, {}, setLeaveListStatistics);
+    const getLeaveListStatistics = async () => {
+        await getDataSource(`${URL}/api/leave/list/statistics`, {}, setLeaveListStatistics);
     };
 
-    const handleGetLeaveListStatisticsByDate = async (startDate, endDate) => {
-        await handleGetDataSource(
+    const getLeaveListStatisticsByDate = async (startDate, endDate) => {
+        await getDataSource(
             `${URL}/api/leave/list/statistics/search`,
             {
                 startDate: dayjs(startDate).format('YYYY-MM-DD'),
@@ -159,7 +158,7 @@ const ManagerPage = () => {
         );
     };
 
-    const handleGetTotalWaiting = () => {
+    const getTotalWaiting = () => {
         const total = leaveList.reduce(
             (accumulator, currentValue) =>
                 currentValue.managerApproved === null && currentValue.deleteRequest === null
@@ -171,7 +170,7 @@ const ManagerPage = () => {
         setTotalWaiting(total);
     };
 
-    const handleApproved = async id => {
+    const approveLeave = async id => {
         try {
             const response = await axios.put(`${URL}/api/leave/list/approved/${id}`);
 
@@ -182,7 +181,7 @@ const ManagerPage = () => {
                 open: true,
             });
 
-            handleGetLeaveList();
+            getLeaveList();
         } catch (error) {
             setModalConfirm({ open: false });
 
@@ -190,7 +189,7 @@ const ManagerPage = () => {
         }
     };
 
-    const handleRejected = async (id, reason) => {
+    const rejectLeave = async (id, reason) => {
         try {
             const response = await axios.put(`${URL}/api/leave/list/rejected/${id}`, reason);
 
@@ -201,7 +200,7 @@ const ManagerPage = () => {
                 open: true,
             });
 
-            handleGetLeaveList();
+            getLeaveList();
         } catch (error) {
             setModalReason({ open: false });
 
@@ -209,7 +208,7 @@ const ManagerPage = () => {
         }
     };
 
-    const handleApprovedLeaveType = async id => {
+    const approveLeaveType = async id => {
         try {
             const response = await axios.put(`${URL}/api/leave/list/approved-leave-type/${id}`);
 
@@ -226,7 +225,7 @@ const ManagerPage = () => {
         }
     };
 
-    const handleApprovedLeaveDay = async id => {
+    const approveLeaveDay = async id => {
         try {
             const response = await axios.put(`${URL}/api/leave/list/approved-leave-day/${id}`);
 
@@ -243,7 +242,7 @@ const ManagerPage = () => {
         }
     };
 
-    const handleApprovedRequestDelete = async id => {
+    const approveRequestDelete = async id => {
         try {
             const response = await axios.put(`${URL}/api/leave/list/approved-request-delete/${id}`);
 
@@ -297,7 +296,7 @@ const ManagerPage = () => {
                                                     <b>{record.userName}</b>
                                                 </Space>
                                             ),
-                                            onOk: () => handleApproved(record.id),
+                                            onOk: () => approveLeave(record.id),
                                             open: true,
                                         });
                                     }
@@ -324,7 +323,7 @@ const ManagerPage = () => {
                                     } else {
                                         setModalReason({
                                             open: true,
-                                            onFinish: reason => handleRejected(record.id, reason),
+                                            onFinish: reason => rejectLeave(record.id, reason),
                                         });
                                     }
                                 },
@@ -369,7 +368,7 @@ const ManagerPage = () => {
                                                             <b>{record.userName}</b>
                                                         </Space>
                                                     ),
-                                                    onOk: () => handleApprovedLeaveType(record.id),
+                                                    onOk: () => approveLeaveType(record.id),
                                                     open: true,
                                                 });
                                             }
@@ -410,7 +409,7 @@ const ManagerPage = () => {
                                                             <b>{record.userName}</b>
                                                         </Space>
                                                     ),
-                                                    onOk: () => handleApprovedLeaveDay(record.id),
+                                                    onOk: () => approveLeaveDay(record.id),
                                                     open: true,
                                                 });
                                             }
@@ -449,8 +448,7 @@ const ManagerPage = () => {
                                                             <b>{record.userName}</b>
                                                         </Space>
                                                     ),
-                                                    onOk: () =>
-                                                        handleApprovedRequestDelete(record.id),
+                                                    onOk: () => approveRequestDelete(record.id),
                                                     open: true,
                                                 });
                                             }
@@ -862,9 +860,9 @@ const ManagerPage = () => {
                                                 const [startDate, endDate] = dates || [];
 
                                                 if (startDate && endDate) {
-                                                    handleGetLeaveListByDate(startDate, endDate);
+                                                    getLeaveListByDate(startDate, endDate);
                                                 } else if (!startDate && !endDate) {
-                                                    handleGetLeaveList();
+                                                    getLeaveList();
                                                 }
                                             }}
                                         />
@@ -893,12 +891,9 @@ const ManagerPage = () => {
                                                 const [startDate, endDate] = dates || [];
 
                                                 if (startDate && endDate) {
-                                                    handleGetLeaveListOtherByDate(
-                                                        startDate,
-                                                        endDate
-                                                    );
+                                                    getLeaveListOtherByDate(startDate, endDate);
                                                 } else if (!startDate && !endDate) {
-                                                    handleGetLeaveListOther();
+                                                    getLeaveListOther();
                                                 }
                                             }}
                                         />
@@ -927,12 +922,12 @@ const ManagerPage = () => {
                                                 const [startDate, endDate] = dates || [];
 
                                                 if (startDate && endDate) {
-                                                    handleGetLeaveListStatisticsByDate(
+                                                    getLeaveListStatisticsByDate(
                                                         startDate,
                                                         endDate
                                                     );
                                                 } else if (!startDate && !endDate) {
-                                                    handleGetLeaveListStatistics();
+                                                    getLeaveListStatistics();
                                                 }
                                             }}
                                         />

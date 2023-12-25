@@ -31,7 +31,7 @@ const ModalErrorComponent = ({ onOk, open, error }) => (
         <Alert
             message={
                 <Text>
-                    Mã lỗi: {error && error.response.data.error}
+                    Mã lỗi: {error?.response?.data?.error}
                     <br />
                     Vui lòng liên hệ{' '}
                     <Link href="https://zalo.me/0972868740" target="_blank">

@@ -1,6 +1,7 @@
-import UserPage from './UserPage';
 import HomePage from './HomePage';
+import LoginPage from './LoginPage';
 import ManagerPage from './ManagerPage';
 import NotExistPage from './NotExistPage';
+import UserPage from './UserPage';
 
-export { UserPage, ManagerPage, HomePage, NotExistPage };
+export { HomePage, LoginPage, ManagerPage, NotExistPage, UserPage };

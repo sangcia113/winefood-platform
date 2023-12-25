@@ -1,4 +1,4 @@
-import { ExclamationCircleFilled } from '@ant-design/icons';
+import { WarningFilled } from '@ant-design/icons';
 import { Flex, Modal, Space, Typography } from 'antd';
 import React from 'react';
 
@@ -15,7 +15,7 @@ const ModalWarningComponent = ({ onOk, open, message }) => (
         open={open}
         title={
             <Space direction="vertical" size="large">
-                <ExclamationCircleFilled style={{ color: '#faad14', fontSize: 60 }} />
+                <WarningFilled style={{ color: '#faad14', fontSize: 60 }} />
                 <Text strong style={{ fontSize: 32 }}>
                     CẢNH BÁO
                 </Text>

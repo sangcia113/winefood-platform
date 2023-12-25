@@ -4,7 +4,7 @@ const router = require('express').Router();
 const { departmentController } = require('../controllers/departmentController');
 
 // End point GET
-router.get('/', departmentController.readHandler);
+router.get('/', departmentController.read);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

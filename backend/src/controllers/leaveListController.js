@@ -5,7 +5,7 @@ const { userService } = require('../services/userService');
 const { sendZaloNotificationV3 } = require('../utils/handleZaloAPI');
 
 const leaveListController = {
-    createHandler: async (req, res) => {
+    create: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const {
             userId,
@@ -72,7 +72,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readHandler: async (req, res) => {
+    read: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
             const results = await leaveListService.read();
@@ -84,7 +84,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readByDateHandler: async (req, res) => {
+    readByDate: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { startDate, endDate } = req.query;
 
@@ -99,7 +99,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readOtherHandler: async (req, res) => {
+    readOther: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
             const results = await leaveListService.readOther();
@@ -111,7 +111,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readOtherByDateHandler: async (req, res) => {
+    readOtherByDate: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { startDate, endDate } = req.query;
 
@@ -126,7 +126,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readStatisticsHandler: async (req, res) => {
+    readStatistics: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
             const results = await leaveListService.readStatistics();
@@ -138,7 +138,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readStatisticsByDateHandler: async (req, res) => {
+    readStatisticsByDate: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { startDate, endDate } = req.query;
 
@@ -153,7 +153,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updateApprovedHandler: async (req, res) => {
+    updateApproved: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
@@ -168,7 +168,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updateRejectedHandler: async (req, res) => {
+    updateRejected: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
@@ -186,7 +186,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updateApprovedLeaveTypeHandler: async (req, res) => {
+    updateApprovedLeaveType: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
@@ -201,7 +201,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updateApprovedLeaveDayHandler: async (req, res) => {
+    updateApprovedLeaveDay: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
@@ -216,7 +216,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updateApprovedRequestDeleteHandler: async (req, res) => {
+    updateApprovedRequestDelete: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 

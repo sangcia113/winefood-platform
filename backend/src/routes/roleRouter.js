@@ -4,7 +4,7 @@ const router = require('express').Router();
 const { roleController } = require('../controllers/roleController');
 
 // End point GET
-router.get('/', roleController.readHandler);
+router.get('/', roleController.read);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

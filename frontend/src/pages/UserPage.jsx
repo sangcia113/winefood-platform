@@ -28,8 +28,8 @@ import {
 
 // Local imports
 import { URL } from '../configs/urlConfig';
-import { FormComponent } from '../components';
 import { getUniqueName } from '../utils';
+import { FormComponent } from '../components';
 import { ModalConfirmComponent, ModalErrorComponent, ModalSuccessComponent } from '../components';
 
 // Ant Design Layout
@@ -71,13 +71,13 @@ const UserPage = () => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        handleGetDepartment();
-        handleGetRole();
-        handleGetZaloAPIInfo();
-        handleGetUser();
+        getDepartment();
+        getRole();
+        getZaloAPIInfo();
+        getUser();
     }, []);
 
-    const handleGetDepartment = async () => {
+    const getDepartment = async () => {
         try {
             const response = await axios.get(`${URL}/api/leave/department`);
 
@@ -91,7 +91,7 @@ const UserPage = () => {
         }
     };
 
-    const handleGetRole = async () => {
+    const getRole = async () => {
         try {
             const response = await axios.get(`${URL}/api/leave/role`);
 
@@ -105,7 +105,7 @@ const UserPage = () => {
         }
     };
 
-    const handleGetZaloAPIInfo = async () => {
+    const getZaloAPIInfo = async () => {
         try {
             setLoading(true);
 
@@ -123,7 +123,7 @@ const UserPage = () => {
         }
     };
 
-    const handleGetUser = async () => {
+    const getUser = async () => {
         try {
             setLoading(true);
 
@@ -141,7 +141,7 @@ const UserPage = () => {
         }
     };
 
-    const handleInsertUser = async values => {
+    const insertUser = async values => {
         try {
             const response = await axios.post(`${URL}/api/leave/user`, values);
 
@@ -152,7 +152,7 @@ const UserPage = () => {
                 open: true,
             });
 
-            handleGetUser();
+            getUser();
         } catch (error) {
             setModalError({
                 message: error.response.data.message,
@@ -162,7 +162,7 @@ const UserPage = () => {
         }
     };
 
-    const handleUpdateUser = async values => {
+    const updateUser = async values => {
         try {
             const response = await axios.put(`${URL}/api/leave/user/${values.id}`, values);
 
@@ -173,7 +173,7 @@ const UserPage = () => {
                 open: true,
             });
 
-            handleGetUser();
+            getUser();
         } catch (error) {
             setModalError({
                 message: error.response.data.error,
@@ -183,7 +183,7 @@ const UserPage = () => {
         }
     };
 
-    const handleDeleteUser = async id => {
+    const deleteUser = async id => {
         try {
             const response = await axios.delete(`${URL}/api/leave/user/${id}`);
 
@@ -196,7 +196,7 @@ const UserPage = () => {
                 open: true,
             });
 
-            handleGetUser();
+            getUser();
         } catch (error) {
             setModalError({
                 message: error.response.data.message,
@@ -208,11 +208,11 @@ const UserPage = () => {
 
     const onFinish = async values => {
         values.id
-            ? handleUpdateUser({
+            ? updateUser({
                   ...values,
                   birthday: dayjs(values.birthday).format('YYYY-MM-DD'),
               })
-            : handleInsertUser({
+            : insertUser({
                   ...values,
                   birthday: dayjs(values.birthday).format('YYYY-MM-DD'),
               });
@@ -249,7 +249,7 @@ const UserPage = () => {
                                 icon: <DeleteFilled />,
                                 onClick: () =>
                                     setModalConfirm({
-                                        onOk: () => handleDeleteUser(record.id),
+                                        onOk: () => deleteUser(record.id),
                                         open: true,
                                         message: (
                                             <Space direction="vertical" align="center">

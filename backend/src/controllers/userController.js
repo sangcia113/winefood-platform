@@ -2,7 +2,7 @@ const { userService } = require('../services/userService');
 
 const userController = {
     // Xử lý yêu cầu thêm mới dữ liệu.
-    createHandler: async (req, res) => {
+    create: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const {
             code,
@@ -37,7 +37,7 @@ const userController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readHandler: async (req, res) => {
+    read: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
             const results = await userService.read();
@@ -49,7 +49,7 @@ const userController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updateHandler: async (req, res) => {
+    update: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
@@ -90,7 +90,7 @@ const userController = {
     },
 
     // Xử lý yêu cầu xoá dữ liệu.
-    deleteHandler: async (req, res) => {
+    delete: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 

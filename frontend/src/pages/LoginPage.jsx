@@ -4,6 +4,8 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
 const { Link, Text } = Typography;
 
+const videoSource = require(`../assets/images/video.mp4`);
+
 const LoginPage = ({ onFinish }) => {
     const [form] = Form.useForm();
 
@@ -25,11 +27,11 @@ const LoginPage = ({ onFinish }) => {
                 style={{
                     backgroundColor: '#fff',
                     width: '80vw',
-                    height: '80vh', // Thêm chiều cao 50vh
+                    height: '80vh',
                     maxWidth: 680,
                     maxHeight: 460,
                     boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-                    // display: 'flex',
+                    display: 'flex',
                 }}
             >
                 <Row>
@@ -37,13 +39,27 @@ const LoginPage = ({ onFinish }) => {
                         xs={24}
                         md={12}
                         style={{
-                            backgroundImage: `url(${require('../assets/images/bg20.jpg')})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            backgroundRepeat: 'no-repeat',
                             flex: 1,
+                            overflow: 'hidden', // Tránh tràn video ra ngoài
+                            position: 'relative', // Để thiết lập tuyệt đối cho video
                         }}
-                    />
+                    >
+                        <video
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            className="background-video"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                            }}
+                        >
+                            <source src={videoSource} type="video/mp4" />
+                            Trình duyệt của bạn không hỗ trợ phát video này!
+                        </video>
+                    </Col>
                     <Col
                         xs={24}
                         md={12}

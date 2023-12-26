@@ -1,19 +1,22 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Breadcrumb, Image, Layout, Menu, Typography } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Drawer, Image, Layout, Menu, Typography } from 'antd';
 import {
     BookFill,
     ChatFill,
     HouseFill,
     KeyFill,
+    List,
     PeopleFill,
     PersonCheckFill,
     PersonHeart,
     Search,
 } from 'react-bootstrap-icons';
-const imgSrc = require('../../assets/images/logo.png');
+
+const imgSrc = require('../../assets/images/logoWFC.png');
+
 const { Text } = Typography;
-const { Header, Content, Footer } = Layout;
+const { Header } = Layout;
 
 const items = [
     { key: '', label: 'Trang chủ', icon: <HouseFill size={20} /> },
@@ -24,11 +27,11 @@ const items = [
     {
         key: '6',
         type: 'group',
-        // label: (
-        //     <Text strong style={{ color: '#007bff' }}>
-        //         Leader
-        //     </Text>
-        // ),
+        label: (
+            <Text strong style={{ color: '#007bff' }}>
+                Dành cho Leader
+            </Text>
+        ),
         children: [
             { key: 'leader', label: 'Duyệt nghỉ phép', icon: <PersonCheckFill size={20} /> },
         ],
@@ -36,44 +39,65 @@ const items = [
     {
         key: '8',
         type: 'group',
-        // label: (
-        //     <Text strong style={{ color: '#dc3545' }}>
-        //         Manager
-        //     </Text>
-        // ),
+        label: (
+            <Text strong style={{ color: '#dc3545' }}>
+                Dành cho Manager
+            </Text>
+        ),
         children: [
             { key: 'manager', label: 'Quản lý nghỉ phép', icon: <PersonHeart size={20} /> },
             { key: 'user', label: 'Quản lý nhân viên', icon: <PeopleFill size={20} /> },
         ],
     },
 ];
+
 const HeaderComponent = () => {
+    const [openDrawer, setOpenDraw] = useState(false);
+
+    const navigate = useNavigate();
+
+    const handleMenuClick = useCallback(e => navigate(`./${e.key}`), [navigate]);
+
+    const handleOpenDraw = useCallback(() => setOpenDraw(prevOpen => !prevOpen), []);
+
     return (
-        <Layout>
-            <Header
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    backgroundColor: 'white',
-                }}
+        <Header
+            style={{
+                alignItems: 'center',
+                backgroundColor: 'white',
+                display: 'flex',
+                justifyContent: 'space-between',
+                padding: '0px 20px ',
+            }}
+        >
+            <Link to="/">
+                <Image alt="Logo WineFood" preview={false} src={imgSrc} width={270} />
+            </Link>
+            <List style={{ cursor: 'pointer', fontSize: 36 }} onClick={handleOpenDraw} />
+            <Drawer
+                footer={
+                    <Text style={{ fontSize: 16 }}>
+                        Version <b>1.0.0</b>
+                    </Text>
+                }
+                onClose={handleOpenDraw}
+                open={openDrawer}
+                placement="right"
+                title="Menu"
+                width={320}
+                styles={{ footer: { textAlign: 'center' } }}
             >
-                <Link to="/">
-                    <Image alt="Logo WineFood" preview={false} src={imgSrc} width={270} />
-                </Link>
                 <Menu
-                    expandIcon={<HouseFill />}
-                    defaultSelectedKeys={['2']}
+                    defaultSelectedKeys={''}
                     items={items}
-                    mode="horizontal"
-                    style={{
-                        flex: 1,
-                        minWidth: 0,
-                    }}
-                ></Menu>
-            </Header>
-        </Layout>
+                    mode="inline"
+                    onClick={handleMenuClick}
+                />
+            </Drawer>
+        </Header>
     );
 };
+
 export default HeaderComponent;
 
 // import { Alert, Col, Image, Row, Typography } from 'antd';

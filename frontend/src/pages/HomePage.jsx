@@ -220,7 +220,7 @@ const HomePage = () => {
         <Content
             style={{
                 padding: 20,
-                backgroundImage: `url(${require('../assets/images/bg11.jpg')})`,
+                backgroundImage: `url(${require('../assets/images/bg24.jpg')})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
             }}

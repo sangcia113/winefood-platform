@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { ConfigProvider, Layout } from 'antd';
-import { FooterComponent, HeaderComponent, SiderComponent } from './components/index';
+import { FooterComponent, HeaderComponent } from './components/index';
 import { HomePage, LoginPage, ManagerPage, NotExistPage, UserPage } from './pages/index';
 
 const App = () => {

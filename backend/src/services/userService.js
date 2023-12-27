@@ -89,21 +89,6 @@ const userService = {
         return results;
     },
 
-    readUserLogin: async username => {
-        // Truy vấn SQL để đọc
-        const sql = `SELECT 
-                        * 
-                    FROM 
-                        user 
-                    WHERE 
-                        username = ?`;
-
-        // Thực hiện truy vấn SQL và trả về kết quả
-        const [results] = await db.query(sql, [username]);
-
-        return results;
-    },
-
     // Cập nhật trong cơ sở dữ liệu.
     update: async (
         code,
@@ -176,6 +161,21 @@ const userService = {
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, [code, numberPhone]);
+
+        return results;
+    },
+
+    checkUserIsExist: async username => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT 
+                        * 
+                    FROM 
+                        user 
+                    WHERE 
+                        username = ?`;
+
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, [username]);
 
         return results;
     },

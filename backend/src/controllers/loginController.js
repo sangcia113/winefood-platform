@@ -15,7 +15,7 @@ const loginController = {
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await userService.readUserLogin(username);
+            const results = await userService.checkUserIsExist(username);
 
             if (!results.length)
                 return res

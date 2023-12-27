@@ -39,7 +39,7 @@ const userMiddleWare = {
                 roleId
             )
         )
-            return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ!' });
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
 
         next();
     },

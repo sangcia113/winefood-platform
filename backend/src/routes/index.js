@@ -1,40 +1,44 @@
 const router = require('express').Router();
 
 // Import các route và xử lý liên quan từ file userRouter.js
-const userRouter = require('./userRouter');
+const loginRoute = require('./loginRoute');
+
+// Import các route và xử lý liên quan từ file userRouter.js
+const userRoute = require('./userRoute');
 
 // Import các route và xử lý liên quan từ file roleRouter.js
-const roleRouter = require('./roleRouter');
+const roleRoute = require('./roleRoute');
 
 // Import các route và xử lý liên quan từ file departmentRouter.js
-const departmentRouter = require('./departmentRouter');
+const departmentRoute = require('./departmentRoute');
 
 // Import các route và xử lý liên quan từ file departmentRouter.js
-const leaveTypeRouter = require('./leaveTypeRouter');
+const leaveTypeRoute = require('./leaveTypeRoute');
 
 // Import các route và xử lý liên quan từ file leaveListRouter.js
-const leaveListRouter = require('./leaveListRouter');
+const leaveListRoute = require('./leaveListRoute');
 
 // Import các route và xử lý liên quan từ file leaveListRouter.js
-const zaloAPIRouter = require('./zaloAPIRouter');
+const zaloAPIRoute = require('./zaloAPIRoute');
 
 /**
  * Sử dụng router con 'userRouter' với tiền tố '/user'.
  * Mọi route trong 'userRouter' sẽ được thêm tiền tố '/user'.
  * Ví dụ: /user/, /user/:id, /user/update, ...
  */
+router.use('/leave/login', loginRoute);
 
-router.use('/leave/user', userRouter);
+router.use('/leave/user', userRoute);
 
-router.use('/leave/role', roleRouter);
+router.use('/leave/role', roleRoute);
 
-router.use('/leave/department', departmentRouter);
+router.use('/leave/department', departmentRoute);
 
-router.use('/leave/type', leaveTypeRouter);
+router.use('/leave/type', leaveTypeRoute);
 
-router.use('/leave/list', leaveListRouter);
+router.use('/leave/list', leaveListRoute);
 
-router.use('/zalo', zaloAPIRouter);
+router.use('/zalo', zaloAPIRoute);
 
 router.use('/webhook', (req, res) => {
     console.log('Webhook ok!');

@@ -1,5 +1,7 @@
 const { userService } = require('../services/userService');
 
+const { encodePassword, decodePassword } = require('../utils');
+
 const userController = {
     // Xử lý yêu cầu thêm mới dữ liệu.
     create: async (req, res) => {
@@ -16,6 +18,8 @@ const userController = {
             roleId,
         } = req.body;
 
+        const hashedPassword = encodePassword(password);
+
         try {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
             await userService.create(
@@ -24,7 +28,7 @@ const userController = {
                 birthday,
                 gender,
                 numberPhone,
-                password,
+                hashedPassword,
                 departmentId,
                 superiorId,
                 roleId
@@ -66,6 +70,8 @@ const userController = {
             roleId,
         } = req.body;
 
+        const hashedPassword = encodePassword(password);
+
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await userService.update(
@@ -74,7 +80,7 @@ const userController = {
                 birthday,
                 gender,
                 numberPhone,
-                password,
+                hashedPassword,
                 departmentId,
                 superiorId,
                 roleId,

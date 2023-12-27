@@ -59,8 +59,7 @@ const UserPage = () => {
 
     const [modalError, setModalError] = useState({
         open: false,
-        title: '',
-        message: '',
+        error: '',
     });
 
     const [modalSuccess, setModalSuccess] = useState({
@@ -83,11 +82,7 @@ const UserPage = () => {
 
             setDepartment(response.data);
         } catch (error) {
-            setModalError({
-                message: error.response.data.message,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ error, open: true });
         }
     };
 
@@ -97,11 +92,7 @@ const UserPage = () => {
 
             setRole(response.data);
         } catch (error) {
-            setModalError({
-                message: error.response.data.message,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ error, open: true });
         }
     };
 
@@ -113,11 +104,7 @@ const UserPage = () => {
 
             setZaloAPIInfo(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
-            setModalError({
-                message: error.response.data.message,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ error, open: true });
         } finally {
             setLoading(false);
         }
@@ -131,11 +118,7 @@ const UserPage = () => {
 
             setUser(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
-            setModalError({
-                message: error.response.data.message,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ error, open: true });
         } finally {
             setLoading(false);
         }
@@ -154,11 +137,7 @@ const UserPage = () => {
 
             getUser();
         } catch (error) {
-            setModalError({
-                message: error.response.data.message,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ error, open: true });
         }
     };
 
@@ -175,11 +154,7 @@ const UserPage = () => {
 
             getUser();
         } catch (error) {
-            setModalError({
-                message: error.response.data.error,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ error, open: true });
         }
     };
 
@@ -198,11 +173,7 @@ const UserPage = () => {
 
             getUser();
         } catch (error) {
-            setModalError({
-                message: error.response.data.message,
-                open: true,
-                title: 'THẤT BẠI',
-            });
+            setModalError({ error, open: true });
         }
     };
 
@@ -517,7 +488,9 @@ const UserPage = () => {
             label: 'Mật khẩu',
             name: 'password',
             rules: [{ required: true, message: 'Vui lòng đặt mật khẩu' }],
-            typeInput: <Password allowClear maxLength={50} placeholder="Nhập mật khẩu" showCount />,
+            typeInput: (
+                <Password allowClear maxLength={100} placeholder="Nhập mật khẩu" showCount />
+            ),
         },
         {
             label: 'Số điện thoại',
@@ -647,8 +620,7 @@ const UserPage = () => {
             <ModalErrorComponent
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
-                message={modalError.message}
-                title={modalError.title}
+                error={modalError.error}
             />
             <ModalSuccessComponent
                 onOk={() => setModalSuccess({ open: false })}

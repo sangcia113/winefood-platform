@@ -1,119 +1,122 @@
 import React, { useState } from 'react';
-import { Button, Checkbox, Col, Flex, Form, Input, Layout, Row, Space, Typography } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Button, Card, Checkbox, Flex, Form, Input, Layout, Space, Typography } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { ModalConfirmComponent } from '../components';
+import { ModalConfirmComponent, ModalErrorComponent } from '../components';
 
-const { Link, Text } = Typography;
+import { URL } from '../configs/urlConfig';
 
 const videoSource = require(`../assets/images/video.mp4`);
 
-const LoginPage = ({ onFinish }) => {
+const { Item } = Form;
+
+const { Password } = Input;
+
+const { Link, Text } = Typography;
+
+const LoginPage = () => {
+    console.log('Run LoginPage');
+
+    const navigate = useNavigate();
+
     const [modalConfirm, setModalConfirm] = useState({
         open: false,
     });
 
+    const [modalError, setModalError] = useState({
+        open: false,
+        error: '',
+    });
+
     const [form] = Form.useForm();
 
+    const handleLogin = async values => {
+        try {
+            const response = await axios.post(`${URL}/api/leave/login`, values);
+
+            navigate('/');
+        } catch (error) {
+            setModalError({ error, open: true });
+        }
+    };
+
+    const onFinish = values => {
+        console.log(values);
+        handleLogin(values);
+    };
+
     return (
-        <Layout
-            style={{
-                backgroundImage: `url(${require('../assets/images/bg24.jpg')})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                height: '100vh',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}
-        >
-            <Row
+        <Layout style={{ height: '100vh' }}>
+            <video
+                autoPlay
+                muted
+                loop
+                playsInline
                 style={{
-                    backgroundColor: '#fff',
-                    boxShadow: '10px 10px 40px rgba(0, 0, 0, 0.4)',
-                    width: '80vw',
-                    height: '80vh',
-                    maxWidth: 700,
-                    maxHeight: 460,
+                    width: '100vw',
+                    height: '100vh',
+                    objectFit: 'cover',
                 }}
             >
-                <Col
-                    xs={24}
-                    md={12}
-                    style={{
-                        flex: 1,
-                        overflow: 'hidden', // Tránh tràn video ra ngoài
-                        position: 'relative', // Để thiết lập tuyệt đối cho video
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                    }}
-                >
-                    <video
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        className="background-video"
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                        }}
+                <source src={videoSource} type="video/mp4" />
+                Trình duyệt của bạn không hỗ trợ phát video này!
+            </video>
+            <Card
+                bordered={false}
+                style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                    backdropFilter: 'blur(4px)',
+                    minWidth: 300,
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                }}
+            >
+                <Flex justify="center">
+                    <Text strong style={{ fontSize: 48, padding: '16px 0 32px 0' }}>
+                        L O G I N
+                    </Text>
+                </Flex>
+
+                <Form form={form} onFinish={onFinish}>
+                    <Item
+                        name="username"
+                        rules={[{ required: true, message: 'Bạn chưa nhập tài khoản!' }]}
                     >
-                        <source src={videoSource} type="video/mp4" />
-                        Trình duyệt của bạn không hỗ trợ phát video này!
-                    </video>
-                </Col>
-                <Col xs={24} md={12} style={{ padding: '42px 24px' }}>
-                    <Flex align="center" gap={42} vertical style={{ overflow: 'hidden' }}>
-                        <Text strong style={{ fontSize: 40 }}>
-                            LOGIN
-                        </Text>
-                        <Form form={form} onFinish={onFinish} style={{ flex: 1 }}>
-                            <Form.Item
-                                name="username"
-                                rules={[{ required: true, message: 'Bạn chưa nhập tài khoản!' }]}
-                            >
-                                <Input
-                                    allowClear
-                                    prefix={<UserOutlined />}
-                                    placeholder="U s e r n a m e"
-                                />
-                            </Form.Item>
+                        <Input allowClear prefix={<UserOutlined />} placeholder="Username" />
+                    </Item>
 
-                            <Form.Item
-                                name="password"
-                                rules={[{ required: true, message: 'Bạn chưa nhập mật khẩu!' }]}
-                            >
-                                <Input.Password
-                                    allowClear
-                                    prefix={<LockOutlined />}
-                                    placeholder="P a s s w o r d"
-                                />
-                            </Form.Item>
+                    <Item
+                        name="password"
+                        rules={[{ required: true, message: 'Bạn chưa nhập mật khẩu!' }]}
+                    >
+                        <Password allowClear prefix={<LockOutlined />} placeholder="Password" />
+                    </Item>
 
-                            <Form.Item name="remember">
-                                <Checkbox style={{ fontSize: 18 }}>Nhớ mật khẩu</Checkbox>
-                            </Form.Item>
+                    <Item name="remember" valuePropName="remember">
+                        <Checkbox style={{ fontSize: 18 }}>Nhớ mật khẩu</Checkbox>
+                    </Item>
 
-                            <Form.Item>
-                                <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-                                    Đăng Nhập
-                                </Button>
-                            </Form.Item>
+                    <Item>
+                        <Button
+                            htmlType="submit"
+                            onClick={() => console.log('ok')}
+                            type="primary"
+                            style={{ width: '100%' }}
+                        >
+                            Đăng Nhập
+                        </Button>
+                    </Item>
+                </Form>
 
-                            <Flex justify="flex-end">
-                                <Link
-                                    style={{ fontSize: 16 }}
-                                    onClick={() => setModalConfirm({ open: true })}
-                                >
-                                    Quên mật khẩu ?
-                                </Link>
-                            </Flex>
-                        </Form>
-                    </Flex>
-                </Col>
-            </Row>
+                <Flex justify="flex-end">
+                    <Link style={{ fontSize: 18 }} onClick={() => setModalConfirm({ open: true })}>
+                        Quên mật khẩu ?
+                    </Link>
+                </Flex>
+            </Card>
             <ModalConfirmComponent
                 onCancel={() => setModalConfirm({ open: false })}
                 onOk={() => setModalConfirm({ open: false })}
@@ -131,6 +134,11 @@ const LoginPage = ({ onFinish }) => {
                         </>
                     </Space>
                 }
+            />
+            <ModalErrorComponent
+                onOk={() => setModalError({ open: false })}
+                open={modalError.open}
+                error={modalError.error}
             />
         </Layout>
     );

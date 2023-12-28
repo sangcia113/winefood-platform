@@ -33,16 +33,30 @@ const LoginPage = () => {
 
     const handleLogin = async values => {
         try {
-            const response = await axios.post(`${URL}/api/leave/login`, values);
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axios.post(
+                `${URL}/api/leave/login/verify`,
+                {},
+                {
+                    headers: {
+                        Authorization: accessToken,
+                    },
+                }
+            );
 
-            navigate('/');
+            console.log(response.data.decoded);
+            // const { accessToken } = response.data;
+
+            // localStorage.setItem('accessToken', accessToken);
+
+            // navigate('/');
         } catch (error) {
+            console.log(error);
             setModalError({ error, open: true });
         }
     };
 
     const onFinish = values => {
-        console.log(values);
         handleLogin(values);
     };
 
@@ -66,7 +80,7 @@ const LoginPage = () => {
                 bordered={false}
                 style={{
                     backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                    backdropFilter: 'blur(4px)',
+                    backdropFilter: 'blur(2px)',
                     minWidth: 300,
                     position: 'absolute',
                     top: '50%',
@@ -85,14 +99,24 @@ const LoginPage = () => {
                         name="username"
                         rules={[{ required: true, message: 'Bạn chưa nhập tài khoản!' }]}
                     >
-                        <Input allowClear prefix={<UserOutlined />} placeholder="Username" />
+                        <Input
+                            allowClear
+                            prefix={<UserOutlined />}
+                            placeholder="Username"
+                            style={{ borderRadius: 30, height: 50 }}
+                        />
                     </Item>
 
                     <Item
                         name="password"
                         rules={[{ required: true, message: 'Bạn chưa nhập mật khẩu!' }]}
                     >
-                        <Password allowClear prefix={<LockOutlined />} placeholder="Password" />
+                        <Password
+                            allowClear
+                            prefix={<LockOutlined />}
+                            placeholder="Password"
+                            style={{ borderRadius: 30, height: 50 }}
+                        />
                     </Item>
 
                     <Item name="remember" valuePropName="remember">
@@ -100,14 +124,15 @@ const LoginPage = () => {
                     </Item>
 
                     <Item>
-                        <Button
-                            htmlType="submit"
-                            onClick={() => console.log('ok')}
-                            type="primary"
-                            style={{ width: '100%' }}
-                        >
-                            Đăng Nhập
-                        </Button>
+                        <Flex justify="center">
+                            <Button
+                                onClick={() => form.submit()}
+                                type="primary"
+                                style={{ borderRadius: 30, height: 50, width: '100%' }}
+                            >
+                                Đăng Nhập
+                            </Button>
+                        </Flex>
                     </Item>
                 </Form>
 

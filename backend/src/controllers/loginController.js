@@ -25,12 +25,11 @@ const loginController = {
             if (!decodePassword(password, results[0].password))
                 return res.status(400).json({ error: -1081, message: 'Sai mật khẩu!' });
 
-            const token = jwt.sign(
-                { username: results[0].username, roleId: results[0].roleId },
-                process.env.PRIVATE_KEY
-            );
+            const payload = { username: results[0].username, roleId: results[0].roleId };
 
-            res.json({ error: 0, message: 'Đăng nhập thành công!', token });
+            const accessToken = jwt.sign(payload, process.env.PRIVATE_KEY);
+
+            res.json({ error: 0, message: 'Đăng nhập thành công!', accessToken });
         } catch (error) {
             res.status(500).json({ error: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
         }

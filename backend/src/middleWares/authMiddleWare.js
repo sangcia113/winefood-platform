@@ -1,28 +1,40 @@
 const jwt = require('jsonwebtoken');
 
 const authMiddleWare = {
-    verifyToken: async (req, res, next) => {
-        const token = req.headers.authorization;
+    verifyToken: async (req, res) => {
+        const accessToken = req.headers.authorization;
 
-        if (!token)
+        if (!accessToken)
             return res
                 .status(400)
                 .json({ error: -1082, message: 'Không có Token nào được cung cấp!' });
 
-        console.log(token);
-        console.log(process.env.PRIVATE_KEY);
+        jwt.verify(accessToken, process.env.PRIVATE_KEY, (err, decoded) => {
+            if (err) return res.status(400).json({ message: 'Không thể xác thực Token!' });
+            return res.json({ decoded });
+        });
 
-        const fields = token.split(' ');
+        // jwt.verify(accessToken, process.env.PRIVATE_KEY, (err, decoded) => {
+        //     if (err) {
+        //         console.error(err);
+        //         return res.status(400).json({ message: 'Không thể xác thực Token!' });
+        //     }
 
-        if (fields.length !== 2) {
-            throw new CustomErr('Method auth is not support', 403);
-        }
+        //     console.log(decoded);
 
-        const token1 = fields[1];
+        //     return decoded;
+        // });
 
-        const decoded = jwt.verify(token1, process.env.PRIVATE_KEY);
-        console.log(decoded);
-        next();
+        // const fields = accessToken.split(' ');
+
+        // if (fields.length !== 2) {
+        //     throw new CustomErr('Method auth is not support', 403);
+        // }
+
+        // const accessToken = fields[1];
+
+        // const decoded = jwt.verify(accessToken, process.env.PRIVATE_KEY);
+        // console.log(decoded);
     },
 };
 

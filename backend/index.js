@@ -4,6 +4,8 @@ require('dotenv').config();
 // Import thư viện Express
 const express = require('express');
 
+const cookieParser = require('cookie-parser');
+
 // Import thư viện Cors để xử lý vấn đề Cross-Origin Resource Sharing (CORS)
 const cors = require('cors');
 
@@ -12,6 +14,8 @@ const router = require('./src/routes/index');
 
 // Khởi tạo ứng dụng Express
 const app = express();
+
+app.use(cookieParser());
 
 // Sử dụng middleware Cors để xử lý vấn đề CORS
 app.use(cors());

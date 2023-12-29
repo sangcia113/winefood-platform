@@ -5,7 +5,7 @@ const { userService } = require('../services/userService');
 const { encodePassword, decodePassword } = require('../utils');
 
 const loginController = {
-    handleLogin: async (req, res) => {
+    read: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { username, password } = req.body;
 

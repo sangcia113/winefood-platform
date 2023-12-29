@@ -4,7 +4,7 @@ const router = require('express').Router();
 const { loginController } = require('../controllers/loginController');
 const { authMiddleWare } = require('../middleWares/authMiddleWare');
 
-router.post('/', loginController.handleLogin);
+router.post('/', loginController.read);
 
 router.post('/verify', authMiddleWare.verifyToken);
 

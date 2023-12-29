@@ -31,33 +31,18 @@ const LoginPage = () => {
 
     const [form] = Form.useForm();
 
-    const handleLogin = async values => {
+    const onFinish = async values => {
         try {
-            const accessToken = localStorage.getItem('accessToken');
-            const response = await axios.post(
-                `${URL}/api/leave/login/verify`,
-                {},
-                {
-                    headers: {
-                        Authorization: accessToken,
-                    },
-                }
-            );
+            const response = await axios.post(`${URL}/api/leave/login`, values);
 
-            console.log(response.data.decoded);
-            // const { accessToken } = response.data;
+            const { accessToken } = response.data;
 
-            // localStorage.setItem('accessToken', accessToken);
+            if (values.remember) localStorage.setItem('accessToken', accessToken);
 
-            // navigate('/');
+            sessionStorage.setItem('accessToken', accessToken);
         } catch (error) {
-            console.log(error);
             setModalError({ error, open: true });
         }
-    };
-
-    const onFinish = values => {
-        handleLogin(values);
     };
 
     return (
@@ -103,7 +88,7 @@ const LoginPage = () => {
                             allowClear
                             prefix={<UserOutlined />}
                             placeholder="Username"
-                            style={{ borderRadius: 30, height: 50 }}
+                            style={{ borderRadius: 24, height: 48 }}
                         />
                     </Item>
 
@@ -115,20 +100,20 @@ const LoginPage = () => {
                             allowClear
                             prefix={<LockOutlined />}
                             placeholder="Password"
-                            style={{ borderRadius: 30, height: 50 }}
+                            style={{ borderRadius: 24, height: 48 }}
                         />
                     </Item>
 
-                    <Item name="remember" valuePropName="remember">
+                    <Item name="remember" valuePropName="checked">
                         <Checkbox style={{ fontSize: 18 }}>Nhớ mật khẩu</Checkbox>
                     </Item>
 
                     <Item>
                         <Flex justify="center">
                             <Button
-                                onClick={() => form.submit()}
+                                htmlType="submit"
                                 type="primary"
-                                style={{ borderRadius: 30, height: 50, width: '100%' }}
+                                style={{ borderRadius: 24, height: 48, width: '100%' }}
                             >
                                 Đăng Nhập
                             </Button>

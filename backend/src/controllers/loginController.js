@@ -23,7 +23,7 @@ const loginController = {
                     .json({ error: -1080, message: 'Tài khoản không tồn tại trong hệ thống!' });
 
             if (!decodePassword(password, results[0].password))
-                return res.status(400).json({ error: -1081, message: 'Sai mật khẩu!' });
+                return res.status(403).json({ error: -1081, message: 'Sai mật khẩu!' });
 
             const payload = { username: results[0].username, roleId: results[0].roleId };
 

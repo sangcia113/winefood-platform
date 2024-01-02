@@ -37,9 +37,13 @@ const LoginPage = () => {
 
             const { accessToken } = response.data;
 
-            if (values.remember) localStorage.setItem('accessToken', accessToken);
+            if (values.remember) {
+                localStorage.setItem('accessToken', accessToken);
+            } else {
+                sessionStorage.setItem('accessToken', accessToken);
+            }
 
-            sessionStorage.setItem('accessToken', accessToken);
+            navigate('/');
         } catch (error) {
             setModalError({ error, open: true });
         }

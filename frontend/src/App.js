@@ -2,7 +2,16 @@ import React from 'react';
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { ConfigProvider, Layout } from 'antd';
 import { FooterComponent, HeaderComponent } from './components/index';
-import { HomePage, LoginPage, ManagerPage, NotExistPage, UserPage } from './pages/index';
+import {
+    HistoryPage,
+    HomePage,
+    LeaderPage,
+    LoginPage,
+    ManagerPage,
+    NotExistPage,
+    PrivatePage,
+    UserPage,
+} from './pages/index';
 
 const App = () => {
     console.log('App run.....');
@@ -34,9 +43,28 @@ const App = () => {
                             </Layout>
                         }
                     >
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/manager" element={<ManagerPage />} />
-                        <Route path="/user" element={<UserPage />} />
+                        <Route
+                            path="/"
+                            element={<PrivatePage element={<HomePage />} roles={[1, 2, 3, 4, 5]} />}
+                        />
+                        <Route
+                            path="/history"
+                            element={
+                                <PrivatePage element={<HistoryPage />} roles={[1, 2, 3, 4, 5]} />
+                            }
+                        />
+                        <Route
+                            path="/leader"
+                            element={<PrivatePage element={<LeaderPage />} roles={[1, 2, 3, 4]} />}
+                        />
+                        <Route
+                            path="/manager"
+                            element={<PrivatePage element={<ManagerPage />} roles={[1, 2, 3]} />}
+                        />
+                        <Route
+                            path="/user"
+                            element={<PrivatePage element={<UserPage />} roles={[1, 2, 3]} />}
+                        />
                     </Route>
                 </Routes>
             </ConfigProvider>

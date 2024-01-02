@@ -4,20 +4,20 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button, Result } from 'antd';
 
-const NotExistPage = () => {
+const NotAuthorizedPage = () => {
     const navigate = useNavigate();
 
     return (
         <Result
-            status="404"
-            title="404"
-            subTitle="Xin lỗi, trang mà bạn đang truy cập không tồn tại!"
+            status="403"
+            title="403"
+            subTitle="Xin lỗi! Bạn không có quyền truy cập vào trang này."
             extra={
-                <Button type="primary" onClick={() => navigate('/')}>
+                <Button type="primary" onClick={() => navigate('/login')}>
                     Back Home
                 </Button>
             }
         />
     );
 };
-export default NotExistPage;
+export default NotAuthorizedPage;

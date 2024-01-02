@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Drawer, Image, Layout, Menu, Typography } from 'antd';
+import { Drawer, Flex, Image, Layout, Menu, Typography } from 'antd';
 import {
     BookFill,
     ChatFill,
@@ -12,6 +12,7 @@ import {
     PersonHeart,
     Search,
 } from 'react-bootstrap-icons';
+import { LogoutOutlined } from '@ant-design/icons';
 
 const imgSrc = require('../../assets/images/logoWFC.png');
 
@@ -76,9 +77,21 @@ const HeaderComponent = () => {
             <List style={{ cursor: 'pointer', fontSize: 36 }} onClick={handleOpenDraw} />
             <Drawer
                 footer={
-                    <Text style={{ fontSize: 16 }}>
-                        Version <b>1.0.0</b>
-                    </Text>
+                    <Flex justify="space-between">
+                        <Link
+                            onClick={() => {
+                                sessionStorage.removeItem('accessToken');
+                                localStorage.removeItem('accessToken');
+                            }}
+                            to="/login"
+                            style={{ fontSize: 16 }}
+                        >
+                            <LogoutOutlined /> Logout
+                        </Link>
+                        <Text style={{ fontSize: 16 }}>
+                            Version <b>1.0.0</b>
+                        </Text>
+                    </Flex>
                 }
                 onClose={handleOpenDraw}
                 open={openDrawer}

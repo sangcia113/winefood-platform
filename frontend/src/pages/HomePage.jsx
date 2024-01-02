@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { URL } from '../configs/urlConfig';
 
 import {
     Button,
@@ -24,6 +23,8 @@ import {
     ModalSuccessComponent,
     ModalWarningComponent,
 } from '../components';
+
+const URL = process.env.REACT_APP_API_URL;
 
 const { TextArea } = Input;
 const { Content } = Layout;

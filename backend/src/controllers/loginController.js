@@ -31,7 +31,7 @@ const loginController = {
 
             res.json({ error: 0, message: 'Đăng nhập thành công!', accessToken });
         } catch (error) {
-            res.status(500).json({ error: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({ error: `Lỗi truy vấn cơ sở dữ liệu: ${error.message}` });
         }
     },
 };

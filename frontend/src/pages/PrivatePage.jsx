@@ -1,11 +1,10 @@
 import { jwtDecode } from 'jwt-decode';
-
 import NotAuthorizedPage from './NotAuthorizedPage';
 
 const PrivatePage = ({ roles, element }) => {
     console.log('Run PrivatePage...');
 
-    const checkJwt = () => {
+    const checkToken = () => {
         const accessToken =
             localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
@@ -14,19 +13,15 @@ const PrivatePage = ({ roles, element }) => {
         try {
             const decodedToken = jwtDecode(accessToken);
 
-            const { roleId } = decodedToken;
+            const roleId = decodedToken?.roleId;
 
-            if (roles.includes(roleId)) return element;
-
-            return <NotAuthorizedPage />;
+            return roles.includes(roleId) ? element : <NotAuthorizedPage />;
         } catch (error) {
-            console.log('Không thể xác thực Token!', error);
-
             return <NotAuthorizedPage />;
         }
     };
 
-    return checkJwt();
+    return checkToken();
 };
 
 export default PrivatePage;

@@ -5,9 +5,9 @@ import { Button, Card, Checkbox, Flex, Form, Input, Layout, Space, Typography } 
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { ModalConfirmComponent, ModalErrorComponent } from '../components';
 
-import { URL } from '../configs/urlConfig';
-
 const videoSource = require(`../assets/images/video.mp4`);
+
+const URL = process.env.REACT_APP_API_URL;
 
 const { Item } = Form;
 

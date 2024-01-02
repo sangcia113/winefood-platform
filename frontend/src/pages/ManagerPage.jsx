@@ -31,7 +31,6 @@ import {
     Typography,
 } from 'antd';
 
-import { URL } from '../configs/urlConfig';
 import { getUniqueName } from '../utils';
 import {
     ModalConfirmComponent,
@@ -42,6 +41,7 @@ import {
 } from '../components';
 
 const { RangePicker } = DatePicker;
+const URL = process.env.REACT_APP_API_URL;
 const { Content } = Layout;
 const { Text } = Typography;
 

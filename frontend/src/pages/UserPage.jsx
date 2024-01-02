@@ -27,10 +27,11 @@ import {
 } from 'antd';
 
 // Local imports
-import { URL } from '../configs/urlConfig';
 import { getUniqueName } from '../utils';
 import { FormComponent } from '../components';
 import { ModalConfirmComponent, ModalErrorComponent, ModalSuccessComponent } from '../components';
+
+const URL = process.env.REACT_APP_API_URL;
 
 // Ant Design Layout
 const { Password } = Input;

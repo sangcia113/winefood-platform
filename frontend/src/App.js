@@ -32,80 +32,55 @@ const App = () => {
                     <Route path="*" element={<NotExistPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route
-                        path="/"
                         element={
-                            <PrivatePage
-                                element={
-                                    <Layout style={{ minHeight: '100vh' }}>
-                                        <HeaderComponent />
-                                        <HomePage />
-                                        <FooterComponent />
-                                    </Layout>
-                                }
-                                roles={[1, 2, 3, 4, 5]}
-                            />
+                            <Layout style={{ minHeight: '100vh' }}>
+                                <HeaderComponent />
+                                <Outlet />
+                                <FooterComponent />
+                            </Layout>
                         }
-                    />
-                    <Route
-                        path="/history"
-                        element={
-                            <PrivatePage
-                                element={
-                                    <Layout style={{ minHeight: '100vh' }}>
-                                        <HeaderComponent />
-                                        <HistoryPage />
-                                        <FooterComponent />
-                                    </Layout>
-                                }
-                                roles={[1, 2, 3, 4, 5]}
-                            />
-                        }
-                    />
-                    <Route
-                        path="/leader"
-                        element={
-                            <PrivatePage
-                                element={
-                                    <Layout style={{ minHeight: '100vh' }}>
-                                        <HeaderComponent />
-                                        <LeaderPage />
-                                        <FooterComponent />
-                                    </Layout>
-                                }
-                                roles={[1, 2, 3, 4]}
-                            />
-                        }
-                    />
-                    <Route
-                        path="/manager"
-                        element={
-                            <PrivatePage
-                                element={
-                                    <Layout style={{ minHeight: '100vh' }}>
-                                        <HeaderComponent />
-                                        <ManagerPage />
-                                        <FooterComponent />
-                                    </Layout>
-                                }
-                                roles={[1, 2, 3]}
-                            />
-                        }
-                    />
-                    <Route
-                        path="/user"
-                        element={
-                            <PrivatePage
-                                element={
-                                    <Layout style={{ minHeight: '100vh' }}>
-                                        <HeaderComponent />
-                                        <UserPage />
-                                        <FooterComponent />
-                                    </Layout>
-                                }
-                                roles={[1, 2, 3]}
-                            />
-                        }
-                    />
+                    >
+                        <Route
+                            path="/"
+                            element={
+                                <PrivatePage roles={[1, 2, 3, 4, 5]}>
+                                    <HomePage />
+                                </PrivatePage>
+                            }
+                        />
+                        <Route
+                            path="/history"
+                            element={
+                                <PrivatePage roles={[1, 2, 3, 4, 5]}>
+                                    <HistoryPage />
+                                </PrivatePage>
+                            }
+                        />
+                        <Route
+                            path="/leader"
+                            element={
+                                <PrivatePage roles={[1, 2, 3, 4]}>
+                                    <LeaderPage />
+                                </PrivatePage>
+                            }
+                        />
+                        <Route
+                            path="/manager"
+                            element={
+                                <PrivatePage roles={[1, 2, 3]}>
+                                    <ManagerPage />
+                                </PrivatePage>
+                            }
+                        />
+                        <Route
+                            path="/user"
+                            element={
+                                <PrivatePage roles={[1, 2, 3]}>
+                                    <UserPage />
+                                </PrivatePage>
+                            }
+                        />
+                    </Route>
                 </Routes>
             </ConfigProvider>
         </BrowserRouter>

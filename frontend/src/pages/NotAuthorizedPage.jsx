@@ -13,8 +13,8 @@ const NotAuthorizedPage = () => {
             title="403"
             subTitle="Xin lỗi! Bạn không có quyền truy cập vào trang này."
             extra={
-                <Button type="primary" onClick={() => navigate('/login')}>
-                    Back Home
+                <Button type="primary" onClick={() => navigate('/')}>
+                    Trang chủ
                 </Button>
             }
         />

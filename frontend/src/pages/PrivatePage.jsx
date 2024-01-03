@@ -1,27 +1,38 @@
-import { jwtDecode } from 'jwt-decode';
-import NotAuthorizedPage from './NotAuthorizedPage';
+import { useEffect } from 'react';
 
-const PrivatePage = ({ roles, element }) => {
+import { useNavigate } from 'react-router-dom';
+
+import { jwtDecode } from 'jwt-decode';
+
+import { NotAuthorizedPage } from './';
+
+const PrivatePage = ({ roles, children }) => {
     console.log('Run PrivatePage...');
 
-    const checkToken = () => {
-        const accessToken =
-            localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    const navigate = useNavigate();
 
-        if (!accessToken) return <NotAuthorizedPage />;
+    useEffect(() => {
+        const decodeToken = () => {
+            const accessToken =
+                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
-        try {
-            const decodedToken = jwtDecode(accessToken);
+            if (!accessToken) return navigate('/login');
 
-            const roleId = decodedToken?.roleId;
+            try {
+                const decodedToken = jwtDecode(accessToken);
 
-            return roles.includes(roleId) ? element : <NotAuthorizedPage />;
-        } catch (error) {
-            return <NotAuthorizedPage />;
-        }
-    };
+                const roleId = decodedToken?.roleId;
 
-    return checkToken();
+                return roles.includes(roleId) ? children : <NotAuthorizedPage />;
+            } catch (error) {
+                console.log(error);
+
+                return navigate('/login');
+            }
+        };
+
+        decodeToken();
+    });
 };
 
 export default PrivatePage;

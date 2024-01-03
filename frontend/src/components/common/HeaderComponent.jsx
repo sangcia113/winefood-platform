@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Drawer, Flex, Image, Layout, Menu, Typography } from 'antd';
+import { Avatar, Drawer, Dropdown, Flex, Image, Layout, Menu, Typography } from 'antd';
 import {
     BookFill,
     ChatFill,
@@ -21,12 +21,8 @@ const { Header } = Layout;
 
 const items = [
     { key: '', label: 'Trang chủ', icon: <HouseFill size={20} /> },
-    { key: 'password', label: 'Đổi mật khẩu', icon: <KeyFill size={20} /> },
-    { key: 'feedback', label: 'Góp ý - Báo lỗi', icon: <ChatFill size={18} /> },
-    { key: 'manual', label: 'Hướng dẫn sử dụng', icon: <BookFill size={18} /> },
     { key: 'history', label: 'Lịch sử nghỉ phép', icon: <Search size={18} /> },
     {
-        key: '6',
         type: 'group',
         label: (
             <Text strong style={{ color: '#007bff' }}>
@@ -38,7 +34,6 @@ const items = [
         ],
     },
     {
-        key: '8',
         type: 'group',
         label: (
             <Text strong style={{ color: '#dc3545' }}>
@@ -74,24 +69,44 @@ const HeaderComponent = () => {
             <Link to="/">
                 <Image alt="Logo WineFood" preview={false} src={imgSrc} width={270} />
             </Link>
-            <List style={{ cursor: 'pointer', fontSize: 36 }} onClick={handleOpenDraw} />
+            <Flex justify="space-between" gap={8}>
+                <Dropdown
+                    menu={{
+                        items: [
+                            { key: 'password', label: 'Đổi mật khẩu', icon: <KeyFill size={20} /> },
+
+                            {
+                                key: 'feedback',
+                                label: 'Góp ý - Báo lỗi',
+                                icon: <ChatFill size={18} />,
+                            },
+                            {
+                                key: 'manual',
+                                label: 'Hướng dẫn sử dụng',
+                                icon: <BookFill size={18} />,
+                            },
+                            {
+                                key: 'logout',
+                                label: 'Đăng xuất',
+                                icon: <LogoutOutlined size={20} />,
+                                onClick: () => {
+                                    sessionStorage.removeItem('accessToken');
+                                    localStorage.removeItem('accessToken');
+                                    navigate('/login');
+                                },
+                            },
+                        ],
+                    }}
+                >
+                    <Avatar style={{ backgroundColor: '#52c41a' }}>SANG</Avatar>
+                </Dropdown>
+                <List style={{ cursor: 'pointer', fontSize: 36 }} onClick={handleOpenDraw} />
+            </Flex>
             <Drawer
                 footer={
-                    <Flex justify="space-between">
-                        <Link
-                            onClick={() => {
-                                sessionStorage.removeItem('accessToken');
-                                localStorage.removeItem('accessToken');
-                            }}
-                            to="/login"
-                            style={{ fontSize: 16 }}
-                        >
-                            <LogoutOutlined /> Logout
-                        </Link>
-                        <Text style={{ fontSize: 16 }}>
-                            Version <b>1.0.0</b>
-                        </Text>
-                    </Flex>
+                    <Text style={{ fontSize: 16 }}>
+                        Version <b>1.0.0</b>
+                    </Text>
                 }
                 onClose={handleOpenDraw}
                 open={openDrawer}

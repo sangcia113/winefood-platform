@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Button, Card, Checkbox, Flex, Form, Input, Layout, Space, Typography } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { ModalConfirmComponent, ModalErrorComponent } from '../components';
+import { checkToken } from '../utils';
 
 const videoSource = require(`../assets/images/video.mp4`);
 
@@ -30,6 +31,12 @@ const LoginPage = () => {
     });
 
     const [form] = Form.useForm();
+
+    useEffect(() => {
+        const decodedToken = checkToken();
+
+        if (decodedToken) return navigate('/');
+    }, []);
 
     const onFinish = async values => {
         try {

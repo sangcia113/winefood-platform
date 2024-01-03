@@ -226,7 +226,7 @@ const HomePage = () => {
                 backgroundPosition: 'center',
             }}
         >
-            <Spin fullscreen size={'large'} spinning={loading} tip="Vui lòng đợi..." />
+            <Spin fullscreen size={'large'} spinning={loading} />
             <Card
                 bordered={false}
                 style={{

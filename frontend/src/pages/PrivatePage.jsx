@@ -1,38 +1,21 @@
-import { useEffect } from 'react';
-
 import { useNavigate } from 'react-router-dom';
 
-import { jwtDecode } from 'jwt-decode';
-
 import { NotAuthorizedPage } from './';
+
+import { checkToken } from '../utils';
 
 const PrivatePage = ({ roles, children }) => {
     console.log('Run PrivatePage...');
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const decodeToken = () => {
-            const accessToken =
-                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    const decodedToken = checkToken();
 
-            if (!accessToken) return navigate('/login');
+    if (!decodedToken) return navigate('/login');
 
-            try {
-                const decodedToken = jwtDecode(accessToken);
+    const roleId = decodedToken?.roleId;
 
-                const roleId = decodedToken?.roleId;
-
-                return roles.includes(roleId) ? children : <NotAuthorizedPage />;
-            } catch (error) {
-                console.log(error);
-
-                return navigate('/login');
-            }
-        };
-
-        decodeToken();
-    });
+    return roles.includes(roleId) ? children : <NotAuthorizedPage />;
 };
 
 export default PrivatePage;

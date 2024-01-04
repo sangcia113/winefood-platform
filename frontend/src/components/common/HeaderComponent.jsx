@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, Drawer, Dropdown, Flex, Image, Layout, Menu, Typography } from 'antd';
+import { Avatar, Button, Drawer, Dropdown, Flex, Image, Layout, Menu, Typography } from 'antd';
 import {
     BookFill,
     ChatFill,
@@ -47,14 +47,10 @@ const items = [
     },
 ];
 
-const HeaderComponent = () => {
+const HeaderComponent = ({ userName }) => {
     const [openDrawer, setOpenDraw] = useState(false);
 
     const navigate = useNavigate();
-
-    const handleMenuClick = useCallback(e => navigate(`./${e.key}`), [navigate]);
-
-    const handleOpenDraw = useCallback(() => setOpenDraw(prevOpen => !prevOpen), []);
 
     return (
         <Header
@@ -70,37 +66,50 @@ const HeaderComponent = () => {
                 <Image alt="Logo WineFood" preview={false} src={imgSrc} width={270} />
             </Link>
             <Flex justify="space-between" gap={8}>
-                <Dropdown
-                    menu={{
-                        items: [
-                            { key: 'password', label: 'Đổi mật khẩu', icon: <KeyFill size={20} /> },
-
-                            {
-                                key: 'feedback',
-                                label: 'Góp ý - Báo lỗi',
-                                icon: <ChatFill size={18} />,
-                            },
-                            {
-                                key: 'manual',
-                                label: 'Hướng dẫn sử dụng',
-                                icon: <BookFill size={18} />,
-                            },
-                            {
-                                key: 'logout',
-                                label: 'Đăng xuất',
-                                icon: <LogoutOutlined size={20} />,
-                                onClick: () => {
-                                    sessionStorage.removeItem('accessToken');
-                                    localStorage.removeItem('accessToken');
-                                    navigate('/login');
+                {userName ? (
+                    <Dropdown
+                        menu={{
+                            items: [
+                                {
+                                    key: 'password',
+                                    label: 'Đổi mật khẩu',
+                                    icon: <KeyFill size={20} />,
                                 },
-                            },
-                        ],
-                    }}
-                >
-                    <Avatar style={{ backgroundColor: '#52c41a' }}>SANG</Avatar>
-                </Dropdown>
-                <List style={{ cursor: 'pointer', fontSize: 36 }} onClick={handleOpenDraw} />
+
+                                {
+                                    key: 'feedback',
+                                    label: 'Góp ý - Báo lỗi',
+                                    icon: <ChatFill size={18} />,
+                                },
+                                {
+                                    key: 'manual',
+                                    label: 'Hướng dẫn sử dụng',
+                                    icon: <BookFill size={18} />,
+                                },
+                                {
+                                    key: 'logout',
+                                    label: 'Đăng xuất',
+                                    icon: <LogoutOutlined size={20} />,
+                                    onClick: () => {
+                                        sessionStorage.removeItem('accessToken');
+                                        localStorage.removeItem('accessToken');
+                                        navigate('/login');
+                                    },
+                                },
+                            ],
+                        }}
+                    >
+                        <Avatar style={{ backgroundColor: '#00822d' }}>{userName}</Avatar>
+                    </Dropdown>
+                ) : (
+                    <Button onClick={() => navigate('/login')} type="link">
+                        Login
+                    </Button>
+                )}
+                <List
+                    style={{ cursor: 'pointer', fontSize: 36 }}
+                    onClick={() => setOpenDraw(prevOpen => !prevOpen)}
+                />
             </Flex>
             <Drawer
                 footer={
@@ -108,7 +117,7 @@ const HeaderComponent = () => {
                         Version <b>1.0.0</b>
                     </Text>
                 }
-                onClose={handleOpenDraw}
+                onClose={() => setOpenDraw(prevOpen => !prevOpen)}
                 open={openDrawer}
                 placement="right"
                 title="Menu"
@@ -119,7 +128,7 @@ const HeaderComponent = () => {
                     defaultSelectedKeys={''}
                     items={items}
                     mode="inline"
-                    onClick={handleMenuClick}
+                    onClick={e => navigate(`/${e.key}`)}
                 />
             </Drawer>
         </Header>

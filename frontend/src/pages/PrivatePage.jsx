@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { NotAuthorizedPage } from './';
 
@@ -7,13 +7,9 @@ import { checkToken } from '../utils';
 const PrivatePage = ({ roles, children }) => {
     console.log('Run PrivatePage...');
 
-    const navigate = useNavigate();
+    const roleId = checkToken()?.roleId;
 
-    const decodedToken = checkToken();
-
-    if (!decodedToken) return navigate('/login');
-
-    const roleId = decodedToken?.roleId;
+    if (!roleId) return <Navigate to="/login" />;
 
     return roles.includes(roleId) ? children : <NotAuthorizedPage />;
 };

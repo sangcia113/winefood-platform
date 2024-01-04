@@ -8,7 +8,7 @@ import {
     LeaderPage,
     LoginPage,
     ManagerPage,
-    NotExistPage,
+    NotExistedPage,
     PrivatePage,
     UserPage,
 } from './pages/index';
@@ -29,7 +29,7 @@ const App = () => {
                 }}
             >
                 <Routes>
-                    <Route path="*" element={<NotExistPage />} />
+                    <Route path="*" element={<NotExistedPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route
                         element={

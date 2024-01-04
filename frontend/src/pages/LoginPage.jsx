@@ -33,9 +33,7 @@ const LoginPage = () => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        const decodedToken = checkToken();
-
-        if (decodedToken) return navigate('/');
+        if (checkToken()) navigate('/');
     }, []);
 
     const onFinish = async values => {

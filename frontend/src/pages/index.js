@@ -4,7 +4,7 @@ import LeaderPage from './LeaderPage';
 import LoginPage from './LoginPage';
 import ManagerPage from './ManagerPage';
 import NotAuthorizedPage from './NotAuthorizedPage';
-import NotExistPage from './NotExistPage';
+import NotExistedPage from './NotExistedPage';
 import PrivatePage from './PrivatePage';
 import UserPage from './UserPage';
 
@@ -15,7 +15,7 @@ export {
     LoginPage,
     ManagerPage,
     NotAuthorizedPage,
-    NotExistPage,
+    NotExistedPage,
     PrivatePage,
     UserPage,
 };

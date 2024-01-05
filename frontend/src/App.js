@@ -1,7 +1,6 @@
 import React from 'react';
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
-import { ConfigProvider, Layout } from 'antd';
-import { FooterComponent, HeaderComponent } from './components/index';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { ConfigProvider } from 'antd';
 import {
     HistoryPage,
     HomePage,
@@ -32,55 +31,45 @@ const App = () => {
                     <Route path="*" element={<NotExistedPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route
+                        path="/"
                         element={
-                            <Layout style={{ minHeight: '100vh' }}>
-                                <HeaderComponent />
-                                <Outlet />
-                                <FooterComponent />
-                            </Layout>
+                            <PrivatePage roles={[1, 2, 3, 4, 5, 6]}>
+                                <HomePage />
+                            </PrivatePage>
                         }
-                    >
-                        <Route
-                            path="/"
-                            element={
-                                <PrivatePage roles={[1, 2, 3, 4, 5]}>
-                                    <HomePage />
-                                </PrivatePage>
-                            }
-                        />
-                        <Route
-                            path="/history"
-                            element={
-                                <PrivatePage roles={[1, 2, 3, 4, 5]}>
-                                    <HistoryPage />
-                                </PrivatePage>
-                            }
-                        />
-                        <Route
-                            path="/leader"
-                            element={
-                                <PrivatePage roles={[1, 2, 3, 4]}>
-                                    <LeaderPage />
-                                </PrivatePage>
-                            }
-                        />
-                        <Route
-                            path="/manager"
-                            element={
-                                <PrivatePage roles={[1, 2, 3]}>
-                                    <ManagerPage />
-                                </PrivatePage>
-                            }
-                        />
-                        <Route
-                            path="/user"
-                            element={
-                                <PrivatePage roles={[1, 2, 3]}>
-                                    <UserPage />
-                                </PrivatePage>
-                            }
-                        />
-                    </Route>
+                    />
+                    <Route
+                        path="/history"
+                        element={
+                            <PrivatePage roles={[1, 2, 3, 4, 5, 6]}>
+                                <HistoryPage />
+                            </PrivatePage>
+                        }
+                    />
+                    <Route
+                        path="/leader"
+                        element={
+                            <PrivatePage roles={[1, 2, 3, 4, 5]}>
+                                <LeaderPage />
+                            </PrivatePage>
+                        }
+                    />
+                    <Route
+                        path="/manager"
+                        element={
+                            <PrivatePage roles={[1, 2, 3, 4]}>
+                                <ManagerPage />
+                            </PrivatePage>
+                        }
+                    />
+                    <Route
+                        path="/user"
+                        element={
+                            <PrivatePage roles={[1, 2, 3, 4]}>
+                                <UserPage />
+                            </PrivatePage>
+                        }
+                    />
                 </Routes>
             </ConfigProvider>
         </BrowserRouter>

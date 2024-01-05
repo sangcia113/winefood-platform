@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, Button, Drawer, Dropdown, Flex, Image, Layout, Menu, Typography } from 'antd';
+import { Avatar, Drawer, Dropdown, Flex, Image, Layout, Menu, Typography } from 'antd';
 import {
     BookFill,
     ChatFill,
@@ -47,7 +47,7 @@ const items = [
     },
 ];
 
-const HeaderComponent = ({ userName }) => {
+const HeaderComponent = ({ name }) => {
     const [openDrawer, setOpenDraw] = useState(false);
 
     const navigate = useNavigate();
@@ -59,15 +59,16 @@ const HeaderComponent = ({ userName }) => {
                 backgroundColor: 'white',
                 display: 'flex',
                 justifyContent: 'space-between',
-                padding: '0px 20px ',
+                padding: '0px 4px ',
             }}
         >
             <Link to="/">
                 <Image alt="Logo WineFood" preview={false} src={imgSrc} width={270} />
             </Link>
             <Flex justify="space-between" gap={8}>
-                {userName ? (
+                {name && (
                     <Dropdown
+                        arrow
                         menu={{
                             items: [
                                 {
@@ -98,13 +99,12 @@ const HeaderComponent = ({ userName }) => {
                                 },
                             ],
                         }}
+                        placement="bottomLeft"
                     >
-                        <Avatar style={{ backgroundColor: '#00822d' }}>{userName}</Avatar>
+                        <Avatar style={{ backgroundColor: '#00822d' }}>
+                            {name.split(' ').pop()}
+                        </Avatar>
                     </Dropdown>
-                ) : (
-                    <Button onClick={() => navigate('/login')} type="link">
-                        Login
-                    </Button>
                 )}
                 <List
                     style={{ cursor: 'pointer', fontSize: 36 }}
@@ -128,6 +128,7 @@ const HeaderComponent = ({ userName }) => {
                     defaultSelectedKeys={''}
                     items={items}
                     mode="inline"
+                    // Nếu navigate ./ thì sẽ đi vào route con
                     onClick={e => navigate(`/${e.key}`)}
                 />
             </Drawer>
@@ -136,46 +137,3 @@ const HeaderComponent = ({ userName }) => {
 };
 
 export default HeaderComponent;
-
-// import { Alert, Col, Image, Row, Typography } from 'antd';
-
-// import React from 'react';
-
-// import { Link } from 'react-router-dom';
-// import Marquee from 'react-fast-marquee';
-// const { Text } = Typography;
-// const imgSrc = require('../../assets/images/logo.png');
-// const HeaderComponent = () => (
-//     <Row>
-//         <Col xs={24} sm={10} md={8} lg={6}>
-//             <Link to="/">
-//                 <Image alt="Logo WineFood" preview={false} src={imgSrc} width={270} />
-//             </Link>
-//         </Col>
-//         <Col xs={24} sm={14} md={16} lg={18}>
-//             <Alert
-//                 banner
-//                 message={
-//                     <Marquee gradient={false} pauseOnHover>
-//                         <Text style={{ color: '#007bff' }}>
-//                             Nhằm cải thiện{' '}
-//                             <b>
-//                                 <i>Phần mềm nghỉ phép</i>
-//                             </b>{' '}
-//                             được tốt hơn. Mong mọi người đóng góp ý kiến vào phần{' '}
-//                             <b>
-//                                 <i>Góp ý - Báo lỗi (chức năng này nằm trong Menu)</i>
-//                             </b>
-//                             . Xin cảm ơn.
-//                         </Text>
-//                     </Marquee>
-//                 }
-//                 showIcon={false}
-//                 type={'info'}
-//                 style={{ height: 60, margin: '10px 20px 10px 10px' }}
-//             />
-//         </Col>
-//     </Row>
-// );
-
-// export default HeaderComponent;

@@ -10,13 +10,11 @@ import { DeleteFilled, SyncOutlined } from '@ant-design/icons';
 import {
     Alert,
     Button,
-    Card,
     DatePicker,
     Dropdown,
     Flex,
     Form,
     Input,
-    Layout,
     Modal,
     Select,
     Space,
@@ -28,14 +26,13 @@ import {
 
 // Local imports
 import { getUniqueName } from '../utils';
-import { FormComponent } from '../components';
+import { ContentComponent, FormComponent } from '../components';
 import { ModalConfirmComponent, ModalErrorComponent, ModalSuccessComponent } from '../components';
 
 const URL = process.env.REACT_APP_API_URL;
 
 // Ant Design Layout
 const { Password } = Input;
-const { Content } = Layout;
 const { Text } = Typography;
 
 const UserPage = () => {
@@ -504,95 +501,74 @@ const UserPage = () => {
     ];
 
     return (
-        <Content
-            style={{
-                padding: 20,
-                backgroundImage: `url(${require('../assets/images/bg24.jpg')})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-            }}
-        >
-            <Card
-                bordered={false}
-                style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                    backdropFilter: 'blur(4px)',
-                }}
-            >
-                <Tabs
-                    centered
-                    defaultActiveKey="1"
-                    items={[
-                        {
-                            key: 1,
-                            label: 'Danh Sách Nhân Viên',
-                            children: (
-                                <Flex vertical gap={'large'}>
-                                    <Flex justify={'end'}>
-                                        <Button
-                                            icon={
-                                                <PlusCircleFill
-                                                    style={{ fontSize: 22, paddingTop: 3 }}
-                                                />
-                                            }
-                                            onClick={() => {
-                                                setModalMain({
-                                                    open: true,
-                                                    title: 'THÊM NHÂN VIÊN',
-                                                });
-                                            }}
-                                            shape={'circle'}
-                                            type={'primary'}
-                                        />
-                                    </Flex>
-                                    <Table
-                                        bordered
-                                        columns={columnsUser}
-                                        dataSource={user}
-                                        loading={loading}
-                                        scroll={{ x: true }}
-                                        showSorterTooltip={false}
+        <ContentComponent>
+            <Tabs
+                centered
+                defaultActiveKey="1"
+                items={[
+                    {
+                        key: 1,
+                        label: 'Danh Sách Nhân Viên',
+                        children: (
+                            <Flex vertical gap={'large'}>
+                                <Flex justify={'end'}>
+                                    <Button
+                                        icon={
+                                            <PlusCircleFill
+                                                style={{ fontSize: 22, paddingTop: 3 }}
+                                            />
+                                        }
+                                        onClick={() => {
+                                            setModalMain({
+                                                open: true,
+                                                title: 'THÊM NHÂN VIÊN',
+                                            });
+                                        }}
+                                        shape={'circle'}
+                                        type={'primary'}
                                     />
                                 </Flex>
-                            ),
-                        },
-                        {
-                            key: 2,
-                            label: 'Quản Lý API',
-                            children: (
-                                <Flex vertical gap={'large'}>
-                                    <Flex justify={'center'} gap={'large'}>
-                                        <Button
-                                            style={{ backgroundColor: '#f759ab', color: 'white' }}
-                                        >
-                                            Get All User
-                                        </Button>
-                                        <Button
-                                            style={{ backgroundColor: '#2db7f5', color: 'white' }}
-                                        >
-                                            Request API
-                                        </Button>
-                                        <Button
-                                            style={{ backgroundColor: '#73d13d', color: 'white' }}
-                                        >
-                                            Get Number Phone
-                                        </Button>
-                                    </Flex>
-                                    <Table
-                                        bordered
-                                        columns={columnsZaloUser}
-                                        dataSource={zaloAPIInfo}
-                                        loading={loading}
-                                        scroll={{ x: true }}
-                                        showSorterTooltip={false}
-                                    />
+                                <Table
+                                    bordered
+                                    columns={columnsUser}
+                                    dataSource={user}
+                                    loading={loading}
+                                    scroll={{ x: true }}
+                                    showSorterTooltip={false}
+                                />
+                            </Flex>
+                        ),
+                    },
+                    {
+                        key: 2,
+                        label: 'Quản Lý API',
+                        children: (
+                            <Flex vertical gap={'large'}>
+                                <Flex justify={'center'} gap={'large'}>
+                                    <Button style={{ backgroundColor: '#f759ab', color: 'white' }}>
+                                        Get All User
+                                    </Button>
+                                    <Button style={{ backgroundColor: '#2db7f5', color: 'white' }}>
+                                        Request API
+                                    </Button>
+                                    <Button style={{ backgroundColor: '#73d13d', color: 'white' }}>
+                                        Get Number Phone
+                                    </Button>
                                 </Flex>
-                            ),
-                        },
-                    ]}
-                    tabBarGutter={40}
-                />
-            </Card>
+                                <Table
+                                    bordered
+                                    columns={columnsZaloUser}
+                                    dataSource={zaloAPIInfo}
+                                    loading={loading}
+                                    scroll={{ x: true }}
+                                    showSorterTooltip={false}
+                                />
+                            </Flex>
+                        ),
+                    },
+                ]}
+                tabBarGutter={40}
+            />
             <Modal
                 afterClose={() => form.resetFields()}
                 cancelButtonProps={{ style: { borderRadius: 20 } }}
@@ -628,7 +604,7 @@ const UserPage = () => {
                 open={modalSuccess.open}
                 message={modalSuccess.message}
             />
-        </Content>
+        </ContentComponent>
     );
 };
 

@@ -16,13 +16,11 @@ import {
 
 import {
     Avatar,
-    Card,
     DatePicker,
     Divider,
     Dropdown,
     Flex,
     Form,
-    Layout,
     Space,
     Table,
     Tabs,
@@ -38,11 +36,11 @@ import {
     ModalErrorOtherComponet,
     ModalSuccessComponent,
     ModalReasonComponent,
+    ContentComponent,
 } from '../components';
 
 const { RangePicker } = DatePicker;
 const URL = process.env.REACT_APP_API_URL;
-const { Content } = Layout;
 const { Text } = Typography;
 
 const ManagerPage = () => {
@@ -815,189 +813,171 @@ const ManagerPage = () => {
     ];
 
     return (
-        <Content
-            style={{
-                padding: 20,
-                backgroundImage: `url(${require('../assets/images/bg24.jpg')})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-            }}
-        >
-            <Card
-                bordered={false}
-                style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                    backdropFilter: 'blur(4px)',
-                }}
-            >
-                <Tabs
-                    centered
-                    defaultActiveKey="1"
-                    items={[
-                        {
-                            key: 1,
-                            label: (
-                                <>
-                                    Danh Sách Nghỉ Phép{' '}
-                                    {totalWaiting !== 0 && (
-                                        <Avatar
-                                            style={{
-                                                backgroundColor: '#f50',
-                                            }}
-                                        >
-                                            {totalWaiting}
-                                        </Avatar>
-                                    )}
-                                </>
-                            ),
-                            children: (
-                                <Flex vertical gap={'large'}>
-                                    <Flex justify={'end'} align={'center'} gap={'middle'}>
-                                        <Text>Select Date</Text>
-                                        <RangePicker
-                                            format={'DD/MM/YYYY'}
-                                            onCalendarChange={dates => {
-                                                const [startDate, endDate] = dates || [];
-
-                                                if (startDate && endDate) {
-                                                    getLeaveListByDate(startDate, endDate);
-                                                } else if (!startDate && !endDate) {
-                                                    getLeaveList();
-                                                }
-                                            }}
-                                        />
-                                    </Flex>
-                                    <Table
-                                        bordered
-                                        columns={columnsLeaveList}
-                                        dataSource={leaveList}
-                                        loading={loading}
-                                        scroll={{ x: true }}
-                                        showSorterTooltip={false}
-                                    />
-                                </Flex>
-                            ),
-                        },
-                        {
-                            key: 2,
-                            label: 'Danh Sách Khác',
-                            children: (
-                                <Flex vertical gap={'large'}>
-                                    <Flex justify={'end'} align={'center'} gap={'middle'}>
-                                        <Text>Select Date</Text>
-                                        <RangePicker
-                                            format={'DD/MM/YYYY'}
-                                            onCalendarChange={dates => {
-                                                const [startDate, endDate] = dates || [];
-
-                                                if (startDate && endDate) {
-                                                    getLeaveListOtherByDate(startDate, endDate);
-                                                } else if (!startDate && !endDate) {
-                                                    getLeaveListOther();
-                                                }
-                                            }}
-                                        />
-                                    </Flex>
-                                    <Table
-                                        bordered
-                                        columns={columnsLeaveListOther}
-                                        dataSource={leaveListOther}
-                                        loading={loading}
-                                        scroll={{ x: true }}
-                                        showSorterTooltip={false}
-                                    />
-                                </Flex>
-                            ),
-                        },
-                        {
-                            key: 3,
-                            label: 'Thống Kê Dữ Liệu',
-                            children: (
-                                <Flex vertical gap={'large'}>
-                                    <Flex justify={'end'} align={'center'} gap={'middle'}>
-                                        <Text>Select Date</Text>
-                                        <RangePicker
-                                            format={'DD/MM/YYYY'}
-                                            onCalendarChange={dates => {
-                                                const [startDate, endDate] = dates || [];
-
-                                                if (startDate && endDate) {
-                                                    getLeaveListStatisticsByDate(
-                                                        startDate,
-                                                        endDate
-                                                    );
-                                                } else if (!startDate && !endDate) {
-                                                    getLeaveListStatistics();
-                                                }
-                                            }}
-                                        />
-                                    </Flex>
-                                    <ReactApexChart
-                                        options={{
-                                            chart: {
-                                                type: 'area',
-                                                // stacked: Xác định xem các loại dữ liệu có được xếp chồng lên nhau không.
-                                                stacked: false,
-                                                height: 500,
-                                                zoom: {
-                                                    type: 'x',
-                                                    enabled: true,
-                                                    autoScaleYaxis: true,
-                                                },
-                                                toolbar: {
-                                                    autoSelected: 'zoom',
-                                                },
-                                            },
-                                            dataLabels: {
-                                                enabled: false,
-                                            },
-                                            // markers: Cấu hình cho đánh dấu trên biểu đồ.
-                                            markers: {
-                                                size: 0,
-                                            },
-                                            title: {
-                                                text: 'Thống Kê Tổng Số Ngày Nghỉ Của Nhân Viên',
-                                                align: 'center',
-                                            },
-                                            fill: {
-                                                type: 'gradient',
-                                                gradient: {
-                                                    shadeIntensity: 1,
-                                                    inverseColors: false,
-                                                    opacityFrom: 0.5,
-                                                    opacityTo: 0,
-                                                    stops: [0, 90, 100],
-                                                },
-                                            },
-                                            yaxis: {
-                                                title: {
-                                                    text: 'Số ngày nghỉ',
-                                                },
-                                            },
-                                            tooltip: {
-                                                shared: false,
-                                                y: { formatter: total => `${total} (ngày)` },
-                                            },
+        <ContentComponent>
+            <Tabs
+                centered
+                defaultActiveKey="1"
+                items={[
+                    {
+                        key: 1,
+                        label: (
+                            <>
+                                Danh Sách Nghỉ Phép{' '}
+                                {totalWaiting !== 0 && (
+                                    <Avatar
+                                        style={{
+                                            backgroundColor: '#f50',
                                         }}
-                                        series={[
-                                            {
-                                                name: 'Tổng số ngày nghỉ: ',
-                                                data: leaveListStatistics.map(item => ({
-                                                    x: item.name,
-                                                    y: item.totalLeave,
-                                                })),
-                                            },
-                                        ]}
-                                        type="area"
-                                        height={700}
+                                    >
+                                        {totalWaiting}
+                                    </Avatar>
+                                )}
+                            </>
+                        ),
+                        children: (
+                            <Flex vertical gap={'large'}>
+                                <Flex justify={'end'} align={'center'} gap={'middle'}>
+                                    <Text>Select Date</Text>
+                                    <RangePicker
+                                        format={'DD/MM/YYYY'}
+                                        onCalendarChange={dates => {
+                                            const [startDate, endDate] = dates || [];
+
+                                            if (startDate && endDate) {
+                                                getLeaveListByDate(startDate, endDate);
+                                            } else if (!startDate && !endDate) {
+                                                getLeaveList();
+                                            }
+                                        }}
                                     />
                                 </Flex>
-                            ),
-                        },
-                    ]}
-                    tabBarGutter={40}
-                />
-            </Card>
+                                <Table
+                                    bordered
+                                    columns={columnsLeaveList}
+                                    dataSource={leaveList}
+                                    loading={loading}
+                                    scroll={{ x: true }}
+                                    showSorterTooltip={false}
+                                />
+                            </Flex>
+                        ),
+                    },
+                    {
+                        key: 2,
+                        label: 'Danh Sách Khác',
+                        children: (
+                            <Flex vertical gap={'large'}>
+                                <Flex justify={'end'} align={'center'} gap={'middle'}>
+                                    <Text>Select Date</Text>
+                                    <RangePicker
+                                        format={'DD/MM/YYYY'}
+                                        onCalendarChange={dates => {
+                                            const [startDate, endDate] = dates || [];
+
+                                            if (startDate && endDate) {
+                                                getLeaveListOtherByDate(startDate, endDate);
+                                            } else if (!startDate && !endDate) {
+                                                getLeaveListOther();
+                                            }
+                                        }}
+                                    />
+                                </Flex>
+                                <Table
+                                    bordered
+                                    columns={columnsLeaveListOther}
+                                    dataSource={leaveListOther}
+                                    loading={loading}
+                                    scroll={{ x: true }}
+                                    showSorterTooltip={false}
+                                />
+                            </Flex>
+                        ),
+                    },
+                    {
+                        key: 3,
+                        label: 'Thống Kê Dữ Liệu',
+                        children: (
+                            <Flex vertical gap={'large'}>
+                                <Flex justify={'end'} align={'center'} gap={'middle'}>
+                                    <Text>Select Date</Text>
+                                    <RangePicker
+                                        format={'DD/MM/YYYY'}
+                                        onCalendarChange={dates => {
+                                            const [startDate, endDate] = dates || [];
+
+                                            if (startDate && endDate) {
+                                                getLeaveListStatisticsByDate(startDate, endDate);
+                                            } else if (!startDate && !endDate) {
+                                                getLeaveListStatistics();
+                                            }
+                                        }}
+                                    />
+                                </Flex>
+                                <ReactApexChart
+                                    options={{
+                                        chart: {
+                                            type: 'area',
+                                            // stacked: Xác định xem các loại dữ liệu có được xếp chồng lên nhau không.
+                                            stacked: false,
+                                            height: 500,
+                                            zoom: {
+                                                type: 'x',
+                                                enabled: true,
+                                                autoScaleYaxis: true,
+                                            },
+                                            toolbar: {
+                                                autoSelected: 'zoom',
+                                            },
+                                        },
+                                        dataLabels: {
+                                            enabled: false,
+                                        },
+                                        // markers: Cấu hình cho đánh dấu trên biểu đồ.
+                                        markers: {
+                                            size: 0,
+                                        },
+                                        title: {
+                                            text: 'Thống Kê Tổng Số Ngày Nghỉ Của Nhân Viên',
+                                            align: 'center',
+                                        },
+                                        fill: {
+                                            type: 'gradient',
+                                            gradient: {
+                                                shadeIntensity: 1,
+                                                inverseColors: false,
+                                                opacityFrom: 0.5,
+                                                opacityTo: 0,
+                                                stops: [0, 90, 100],
+                                            },
+                                        },
+                                        yaxis: {
+                                            title: {
+                                                text: 'Số ngày nghỉ',
+                                            },
+                                        },
+                                        tooltip: {
+                                            shared: false,
+                                            y: { formatter: total => `${total} (ngày)` },
+                                        },
+                                    }}
+                                    series={[
+                                        {
+                                            name: 'Tổng số ngày nghỉ: ',
+                                            data: leaveListStatistics.map(item => ({
+                                                x: item.name,
+                                                y: item.totalLeave,
+                                            })),
+                                        },
+                                    ]}
+                                    type="area"
+                                    height={700}
+                                />
+                            </Flex>
+                        ),
+                    },
+                ]}
+                tabBarGutter={40}
+            />
             <ModalConfirmComponent
                 onCancel={() => setModalConfirm({ open: false })}
                 onOk={modalConfirm.onOk}
@@ -1028,7 +1008,7 @@ const ManagerPage = () => {
                 open={modalSuccess.open}
                 message={modalSuccess.message}
             />
-        </Content>
+        </ContentComponent>
     );
 };
 

@@ -2,21 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-import {
-    Button,
-    Card,
-    DatePicker,
-    Flex,
-    Form,
-    Input,
-    InputNumber,
-    Layout,
-    Select,
-    Spin,
-    Typography,
-} from 'antd';
+import { Button, DatePicker, Flex, Form, Input, InputNumber, Select, Spin, Typography } from 'antd';
 
 import {
+    ContentComponent,
     ModalErrorComponent,
     ModalErrorOtherComponet,
     ModalPasswordComponent,
@@ -27,7 +16,6 @@ import {
 const URL = process.env.REACT_APP_API_URL;
 
 const { TextArea } = Input;
-const { Content } = Layout;
 const { Text } = Typography;
 
 const HomePage = () => {
@@ -218,222 +206,207 @@ const HomePage = () => {
     };
 
     return (
-        <Content
-            style={{
-                padding: 20,
-                backgroundImage: `url(${require('../assets/images/bg24.jpg')})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-            }}
-        >
-            <Spin fullscreen size={'large'} spinning={loading} />
-            <Card
-                bordered={false}
-                style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                    backdropFilter: 'blur(4px)',
+        <ContentComponent>
+            <Spin size={'large'} spinning={loading} />
+            <Form
+                colon={false}
+                form={formMain}
+                labelAlign={'left'}
+                labelCol={{
+                    xs: { span: 24 },
+                    sm: { span: 12 },
+                    md: { span: 8 },
                 }}
+                labelWrap
+                wrapperCol={{
+                    xs: { span: 24 },
+                    sm: { span: 12 },
+                    md: { span: 16 },
+                }}
+                onFinish={onFinish}
             >
-                <Form
-                    colon={false}
-                    form={formMain}
-                    labelAlign={'left'}
-                    labelCol={{
-                        xs: { span: 24 },
-                        sm: { span: 12 },
-                        md: { span: 8 },
-                    }}
-                    labelWrap
-                    wrapperCol={{
-                        xs: { span: 24 },
-                        sm: { span: 12 },
-                        md: { span: 16 },
-                    }}
-                    onFinish={onFinish}
+                <Form.Item
+                    label={
+                        <Text>
+                            <Text strong>HỌ VÀ TÊN</Text>
+                            <br />
+                            <small className="text-muted">EMPLOYEE'S NAME</small>
+                        </Text>
+                    }
+                    name="userId"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Bạn chưa chọn tên!',
+                        },
+                    ]}
                 >
-                    <Form.Item
-                        label={
-                            <Text>
-                                <Text strong>HỌ VÀ TÊN</Text>
-                                <br />
-                                <small className="text-muted">EMPLOYEE'S NAME</small>
-                            </Text>
+                    <Select
+                        filterOption={(input, option) =>
+                            (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
                         }
-                        name="userId"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Bạn chưa chọn tên!',
-                            },
-                        ]}
+                        optionFilterProp="children"
+                        placeholder="Chọn tên trong danh sách..."
+                        showSearch
+                        size={'large'}
+                        style={{ width: '100%' }}
                     >
-                        <Select
-                            filterOption={(input, option) =>
-                                (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
-                            }
-                            optionFilterProp="children"
-                            placeholder="Chọn tên trong danh sách..."
-                            showSearch
-                            size={'large'}
-                            style={{ width: '100%' }}
-                        >
-                            {department.map(d => (
-                                <Select.OptGroup key={d.id} label={d.name}>
-                                    {user.map(
-                                        u =>
-                                            u.id !== 1 &&
-                                            u.departmentId === d.id && (
-                                                <Select.Option key={u.id} value={u.id}>
-                                                    {u.name}
-                                                </Select.Option>
-                                            )
-                                    )}
-                                </Select.OptGroup>
-                            ))}
-                        </Select>
-                    </Form.Item>
+                        {department.map(d => (
+                            <Select.OptGroup key={d.id} label={d.name}>
+                                {user.map(
+                                    u =>
+                                        u.id !== 1 &&
+                                        u.departmentId === d.id && (
+                                            <Select.Option key={u.id} value={u.id}>
+                                                {u.name}
+                                            </Select.Option>
+                                        )
+                                )}
+                            </Select.OptGroup>
+                        ))}
+                    </Select>
+                </Form.Item>
 
-                    <Form.Item
-                        label={
-                            <Text>
-                                <Text strong>LOẠI PHÉP</Text>
-                                <br />
-                                <small className="text-muted">TYPES OF LEAVES</small>
-                            </Text>
-                        }
-                        name="leaveTypeId"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Bạn chưa chọn loại phép!',
-                            },
-                        ]}
-                        style={{ marginTop: 50 }}
+                <Form.Item
+                    label={
+                        <Text>
+                            <Text strong>LOẠI PHÉP</Text>
+                            <br />
+                            <small className="text-muted">TYPES OF LEAVES</small>
+                        </Text>
+                    }
+                    name="leaveTypeId"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Bạn chưa chọn loại phép!',
+                        },
+                    ]}
+                    style={{ marginTop: 50 }}
+                >
+                    <Select
+                        placeholder="Chọn loại phép trong danh sách..."
+                        size={'large'}
+                        style={{ width: '100%' }}
                     >
-                        <Select
-                            placeholder="Chọn loại phép trong danh sách..."
-                            size={'large'}
-                            style={{ width: '100%' }}
-                        >
-                            {leaveType.map(item => (
-                                <Select.Option key={item.id} value={item.id}>
-                                    {item.nameVN}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
+                        {leaveType.map(item => (
+                            <Select.Option key={item.id} value={item.id}>
+                                {item.nameVN}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                </Form.Item>
 
-                    <Form.Item
-                        label={
-                            <Text>
-                                <Text strong>SỐ NGÀY XIN NGHỈ</Text>
-                                <br />
-                                <small className="text-muted">DAY REQUESTED FOR LEAVE</small>
-                            </Text>
-                        }
-                        name="leaveDay"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Bạn chưa nhập số ngày nghỉ!',
-                            },
-                        ]}
-                        style={{ marginTop: 50 }}
-                    >
-                        <InputNumber
-                            max={100}
-                            min={0.25}
-                            placeholder="Nhập số ngày xin nghỉ..."
-                            size={'large'}
-                            step={0.25}
-                            style={{ width: '100%' }}
-                        />
-                    </Form.Item>
+                <Form.Item
+                    label={
+                        <Text>
+                            <Text strong>SỐ NGÀY XIN NGHỈ</Text>
+                            <br />
+                            <small className="text-muted">DAY REQUESTED FOR LEAVE</small>
+                        </Text>
+                    }
+                    name="leaveDay"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Bạn chưa nhập số ngày nghỉ!',
+                        },
+                    ]}
+                    style={{ marginTop: 50 }}
+                >
+                    <InputNumber
+                        max={100}
+                        min={0.25}
+                        placeholder="Nhập số ngày xin nghỉ..."
+                        size={'large'}
+                        step={0.25}
+                        style={{ width: '100%' }}
+                    />
+                </Form.Item>
 
-                    <Form.Item
-                        label={
-                            <Text>
-                                <Text strong>TỪ</Text>
-                                <br />
-                                <small className="text-muted">FROM</small>
-                            </Text>
-                        }
-                        name="fromDate"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Bạn chưa chọn ngày/ giờ bắt đầu!',
-                            },
-                        ]}
-                        style={{ marginTop: 50 }}
-                    >
-                        <DatePicker
-                            allowClear={false}
-                            changeOnBlur={true}
-                            format={'DD/MM/YYYY HH:mm'}
-                            placeholder="Chọn ngày bắt đầu..."
-                            showTime={{ defaultValue: dayjs('07:30', 'HH:mm') }}
-                            size={'large'}
-                            style={{ width: '100%' }}
-                        />
-                    </Form.Item>
+                <Form.Item
+                    label={
+                        <Text>
+                            <Text strong>TỪ</Text>
+                            <br />
+                            <small className="text-muted">FROM</small>
+                        </Text>
+                    }
+                    name="fromDate"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Bạn chưa chọn ngày/ giờ bắt đầu!',
+                        },
+                    ]}
+                    style={{ marginTop: 50 }}
+                >
+                    <DatePicker
+                        allowClear={false}
+                        changeOnBlur={true}
+                        format={'DD/MM/YYYY HH:mm'}
+                        placeholder="Chọn ngày bắt đầu..."
+                        showTime={{ defaultValue: dayjs('07:30', 'HH:mm') }}
+                        size={'large'}
+                        style={{ width: '100%' }}
+                    />
+                </Form.Item>
 
-                    <Form.Item
-                        label={
-                            <Text>
-                                <Text strong>ĐẾN</Text>
-                                <br />
-                                <small className="text-muted">TO</small>
-                            </Text>
-                        }
-                        name="toDate"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Bạn chưa chọn ngày/ giờ kết thúc!',
-                            },
-                        ]}
-                        style={{ marginTop: 50 }}
-                    >
-                        <DatePicker
-                            allowClear={false}
-                            changeOnBlur={true}
-                            format={'DD/MM/YYYY HH:mm'}
-                            placeholder="Chọn ngày kết thúc..."
-                            showTime={{ defaultValue: dayjs('16:30', 'HH:mm') }}
-                            size={'large'}
-                            style={{ width: '100%' }}
-                        />
-                    </Form.Item>
+                <Form.Item
+                    label={
+                        <Text>
+                            <Text strong>ĐẾN</Text>
+                            <br />
+                            <small className="text-muted">TO</small>
+                        </Text>
+                    }
+                    name="toDate"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Bạn chưa chọn ngày/ giờ kết thúc!',
+                        },
+                    ]}
+                    style={{ marginTop: 50 }}
+                >
+                    <DatePicker
+                        allowClear={false}
+                        changeOnBlur={true}
+                        format={'DD/MM/YYYY HH:mm'}
+                        placeholder="Chọn ngày kết thúc..."
+                        showTime={{ defaultValue: dayjs('16:30', 'HH:mm') }}
+                        size={'large'}
+                        style={{ width: '100%' }}
+                    />
+                </Form.Item>
 
-                    <Form.Item
-                        label={
-                            <Text>
-                                <Text strong>LÝ DO</Text>
-                                <br />
-                                <small className="text-muted">REASON</small>
-                            </Text>
-                        }
-                        name="reason"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Bạn chưa nhập lý do!',
-                            },
-                        ]}
-                        style={{ marginTop: 50 }}
-                    >
-                        <TextArea
-                            allowClear
-                            placeholder="Nhập lý do xin nghỉ..."
-                            rows={3}
-                            size={'large'}
-                            style={{ width: '100%' }}
-                        />
-                    </Form.Item>
-                </Form>
-            </Card>
-            <Flex justify="center" style={{ marginTop: 30 }}>
+                <Form.Item
+                    label={
+                        <Text>
+                            <Text strong>LÝ DO</Text>
+                            <br />
+                            <small className="text-muted">REASON</small>
+                        </Text>
+                    }
+                    name="reason"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Bạn chưa nhập lý do!',
+                        },
+                    ]}
+                    style={{ marginTop: 50 }}
+                >
+                    <TextArea
+                        allowClear
+                        placeholder="Nhập lý do xin nghỉ..."
+                        rows={3}
+                        size={'large'}
+                        style={{ width: '100%' }}
+                    />
+                </Form.Item>
+            </Form>
+            <Flex justify="center" style={{ margin: '30px 0 24px 0' }}>
                 <Button size={'large'} type={'primary'} onClick={() => formMain.submit()}>
                     Gửi Phép
                 </Button>
@@ -467,7 +440,7 @@ const HomePage = () => {
                 open={modalWarning.open}
                 message={modalWarning.message}
             />
-        </Content>
+        </ContentComponent>
     );
 };
 

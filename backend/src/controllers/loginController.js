@@ -25,7 +25,11 @@ const loginController = {
             if (!decodePassword(password, results[0].password))
                 return res.status(403).json({ error: -1081, message: 'Sai mật khẩu!' });
 
-            const payload = { username: results[0].username, roleId: results[0].roleId };
+            const payload = {
+                userId: results[0].id,
+                name: results[0].name,
+                roleId: results[0].roleId,
+            };
 
             const accessToken = jwt.sign(payload, process.env.PRIVATE_KEY);
 

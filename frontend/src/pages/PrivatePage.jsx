@@ -1,17 +1,29 @@
 import { Navigate } from 'react-router-dom';
 
-import { NotAuthorizedPage } from './';
+import { Layout } from 'antd';
 
 import { checkToken } from '../utils';
+
+import { FooterComponent, HeaderComponent } from '../components';
+
+import { NotAuthorizedPage } from './';
 
 const PrivatePage = ({ roles, children }) => {
     console.log('Run PrivatePage...');
 
-    const roleId = checkToken()?.roleId;
+    const { name, roleId } = checkToken();
 
     if (!roleId) return <Navigate to="/login" />;
 
-    return roles.includes(roleId) ? children : <NotAuthorizedPage />;
+    return roles.includes(roleId) ? (
+        <Layout style={{ minHeight: '100vh' }}>
+            <HeaderComponent name={name} />
+            {children}
+            <FooterComponent />
+        </Layout>
+    ) : (
+        <NotAuthorizedPage />
+    );
 };
 
 export default PrivatePage;

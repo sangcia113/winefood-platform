@@ -1,3 +1,4 @@
+import ContentComponent from './common/ContentComponent.jsx';
 import FormComponent from './feature/FormComponent';
 import FooterComponent from './common/FooterComponent';
 import HeaderComponent from './common/HeaderComponent';
@@ -11,6 +12,7 @@ import ModalSuccessComponent from './feature/modal/ModalSuccessComponent';
 import ModalWarningComponent from './feature/modal/ModalWarningComponent';
 
 export {
+    ContentComponent,
     FormComponent,
     FooterComponent,
     HeaderComponent,

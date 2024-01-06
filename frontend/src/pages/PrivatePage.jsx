@@ -11,9 +11,9 @@ import { NotAuthorizedPage } from './';
 const PrivatePage = ({ roles, children }) => {
     console.log('Run PrivatePage...');
 
-    const { name, roleId } = checkToken();
+    if (!checkToken()) return <Navigate to="/login" />;
 
-    if (!roleId) return <Navigate to="/login" />;
+    const { name, roleId } = checkToken();
 
     return roles.includes(roleId) ? (
         <Layout style={{ minHeight: '100vh' }}>

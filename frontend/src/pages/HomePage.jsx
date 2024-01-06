@@ -12,6 +12,8 @@ import {
     ModalSuccessComponent,
     ModalWarningComponent,
 } from '../components';
+import { checkToken } from '../utils';
+import { useNavigate } from 'react-router-dom';
 
 const URL = process.env.REACT_APP_API_URL;
 
@@ -21,10 +23,13 @@ const { Text } = Typography;
 const HomePage = () => {
     console.log('Run Home...');
 
+    const [userId, setUserId] = useState();
     const [user, setUser] = useState([]);
     const [department, setDepartment] = useState([]);
     const [leaveType, setLeaveType] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
 
     const [modalError, setModalError] = useState({
         error: '',
@@ -57,10 +62,19 @@ const HomePage = () => {
     const [formPassword] = Form.useForm();
 
     useEffect(() => {
+        handleDecodeToken();
         getDataSource('department', setDepartment);
         getDataSource('user', setUser);
         getDataSource('type', setLeaveType);
     }, []);
+
+    const handleDecodeToken = () => {
+        if (!checkToken()) return navigate('/login');
+
+        const userId = checkToken()?.userId;
+        const name = user.find(item => item.id === userId)?.name;
+        formMain.setFieldsValue({ userId: name });
+    };
 
     const getDataSource = async (table, setDataSource) => {
         try {
@@ -241,7 +255,7 @@ const HomePage = () => {
                         },
                     ]}
                 >
-                    <Select
+                    {/* <Select
                         filterOption={(input, option) =>
                             (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
                         }
@@ -264,7 +278,8 @@ const HomePage = () => {
                                 )}
                             </Select.OptGroup>
                         ))}
-                    </Select>
+                    </Select> */}
+                    <Input readOnly size="large" />
                 </Form.Item>
 
                 <Form.Item

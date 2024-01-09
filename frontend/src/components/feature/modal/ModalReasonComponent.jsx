@@ -26,7 +26,7 @@ const ModalReasonComponent = ({ afterClose, onCancel, onOk, open, form, onFinish
                 </Text>
             </Space>
         }
-        width={460}
+        width={440}
         styles={{
             header: { paddingBottom: 20, textAlign: 'center' },
             footer: { paddingTop: 20, textAlign: 'center' },

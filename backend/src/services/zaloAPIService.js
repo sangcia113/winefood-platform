@@ -2,7 +2,7 @@ const db = require('../configs/databaseZaloAPIConfig');
 
 const zaloAPIService = {
     // Đọc trong cơ sở dữ liệu.
-    read: async () => {
+    readed: async () => {
         // Truy vấn SQL để đọc
         const sql = `SELECT 
                         * 
@@ -16,7 +16,7 @@ const zaloAPIService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    readUser: async () => {
+    readedUser: async () => {
         // Truy vấn SQL để đọc
         const sql = `SELECT
                         *
@@ -33,7 +33,7 @@ const zaloAPIService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
-    update: async (accessToken, refreshToken) => {
+    updated: async (accessToken, refreshToken) => {
         // Truy vấn SQL để cập nhật
         const sql = `UPDATE 
                         api 
@@ -48,4 +48,4 @@ const zaloAPIService = {
 };
 
 // Xuất các hàm để sử dụng trong module khác
-module.exports = { zaloAPIService };
+module.exports = zaloAPIService;

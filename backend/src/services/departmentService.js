@@ -2,7 +2,7 @@ const db = require('../configs/databaseConfig');
 
 const departmentService = {
     // Tạo mới trong cơ sở dữ liệu.
-    create: async (code, name) => {
+    created: async (code, name) => {
         // Truy vấn SQL để thêm
         const sql = `INSERT INTO 
                     department (
@@ -16,7 +16,7 @@ const departmentService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    read: async () => {
+    readed: async () => {
         // Truy vấn SQL để đọc
         const sql = `SELECT 
                     * 
@@ -33,7 +33,7 @@ const departmentService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
-    update: async (code, name, id) => {
+    updated: async (code, name, id) => {
         // Truy vấn SQL để cập nhật
         const sql = `UPDATE 
                     department 
@@ -49,7 +49,7 @@ const departmentService = {
     },
 
     // Xóa khỏi cơ sở dữ liệu.
-    delete: async id => {
+    deleted: async id => {
         // Truy vấn SQL để xoá
         const sql = `DELETE FROM 
                     department 
@@ -62,4 +62,4 @@ const departmentService = {
 };
 
 // Xuất các hàm để sử dụng trong module khác
-module.exports = { departmentService };
+module.exports = departmentService;

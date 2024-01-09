@@ -76,7 +76,14 @@ const UserPage = () => {
 
     const getDepartment = async () => {
         try {
-            const response = await axios.get(`${URL}/api/leave/department`);
+            const accessToken =
+                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+            const response = await axios.get(`${URL}/api/leave/department`, {
+                headers: {
+                    Authorization: accessToken,
+                },
+            });
 
             setDepartment(response.data);
         } catch (error) {
@@ -86,7 +93,14 @@ const UserPage = () => {
 
     const getRole = async () => {
         try {
-            const response = await axios.get(`${URL}/api/leave/role`);
+            const accessToken =
+                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+            const response = await axios.get(`${URL}/api/leave/role`, {
+                headers: {
+                    Authorization: accessToken,
+                },
+            });
 
             setRole(response.data);
         } catch (error) {
@@ -96,9 +110,16 @@ const UserPage = () => {
 
     const getZaloAPIInfo = async () => {
         try {
+            const accessToken =
+                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
             setLoading(true);
 
-            const response = await axios.get(`${URL}/api/zalo/user`);
+            const response = await axios.get(`${URL}/api/zalo/user`, {
+                headers: {
+                    Authorization: accessToken,
+                },
+            });
 
             setZaloAPIInfo(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
@@ -110,9 +131,16 @@ const UserPage = () => {
 
     const getUser = async () => {
         try {
+            const accessToken =
+                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
             setLoading(true);
 
-            const response = await axios.get(`${URL}/api/leave/user`);
+            const response = await axios.get(`${URL}/api/leave/user`, {
+                headers: {
+                    Authorization: accessToken,
+                },
+            });
 
             setUser(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
@@ -124,7 +152,14 @@ const UserPage = () => {
 
     const insertUser = async values => {
         try {
-            const response = await axios.post(`${URL}/api/leave/user`, values);
+            const accessToken =
+                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+            const response = await axios.post(`${URL}/api/leave/user`, values, {
+                headers: {
+                    Authorization: accessToken,
+                },
+            });
 
             setModalMain({ open: false });
 
@@ -141,7 +176,14 @@ const UserPage = () => {
 
     const updateUser = async values => {
         try {
-            const response = await axios.put(`${URL}/api/leave/user/${values.id}`, values);
+            const accessToken =
+                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+            const response = await axios.put(`${URL}/api/leave/user/${values.id}`, values, {
+                headers: {
+                    Authorization: accessToken,
+                },
+            });
 
             setModalMain({ open: false });
 
@@ -158,7 +200,14 @@ const UserPage = () => {
 
     const deleteUser = async id => {
         try {
-            const response = await axios.delete(`${URL}/api/leave/user/${id}`);
+            const accessToken =
+                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+            const response = await axios.delete(`${URL}/api/leave/user/${id}`, {
+                headers: {
+                    Authorization: accessToken,
+                },
+            });
 
             setModalConfirm({
                 open: false,

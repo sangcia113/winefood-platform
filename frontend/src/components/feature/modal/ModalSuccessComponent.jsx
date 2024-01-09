@@ -21,7 +21,7 @@ const ModalSuccessComponent = ({ onOk, open, message }) => (
                 </Text>
             </Space>
         }
-        width={460}
+        width={440}
         styles={{
             header: { textAlign: 'center' },
             footer: { paddingTop: 20, textAlign: 'center' },

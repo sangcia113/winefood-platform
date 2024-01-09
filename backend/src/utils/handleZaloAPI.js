@@ -1,14 +1,14 @@
 const axios = require('axios');
 const qs = require('qs');
-const { zaloAPIService } = require('../services/zaloAPIService');
-const { errorService } = require('../services/errorService');
+const { readed, updated } = require('../services/zaloAPIService');
+const { created } = require('../services/errorService');
 
 const ZALO_API_URL = 'https://openapi.zalo.me/v3.0/oa/message/cs';
 const ZALO_OAUTH_URL = 'https://oauth.zaloapp.com/v4/oa/access_token';
 
 const refreshAccessToken = async () => {
     try {
-        const zaloAPIInfo = await zaloAPIService.read();
+        const zaloAPIInfo = await readed();
 
         const { refreshToken, secretKey, appId } = zaloAPIInfo[0];
 
@@ -37,7 +37,7 @@ const refreshAccessToken = async () => {
 
 const sendZaloNotificationV3 = async (userId, zaloAPIUserId, zaloAPIText, retryCount = 1) => {
     try {
-        const zaloAPIInfo = await zaloAPIService.read();
+        const zaloAPIInfo = await readed();
 
         const { accessToken } = zaloAPIInfo[0];
 
@@ -65,7 +65,7 @@ const sendZaloNotificationV3 = async (userId, zaloAPIUserId, zaloAPIText, retryC
 
         const { error, message } = response.data;
 
-        errorService.create(userId, error, message);
+        created(userId, error, message);
 
         if (error === -216) {
             const responseRefresh = await refreshAccessToken();
@@ -75,7 +75,7 @@ const sendZaloNotificationV3 = async (userId, zaloAPIUserId, zaloAPIText, retryC
             if (!(access_token && refresh_token))
                 return { error: -1007, message: 'Invalid Refresh Token!' };
 
-            await zaloAPIService.update(access_token, refresh_token);
+            await updated(access_token, refresh_token);
 
             if (retryCount > 0)
                 return await sendZaloNotificationV3(
@@ -96,7 +96,7 @@ const sendZaloNotificationV3 = async (userId, zaloAPIUserId, zaloAPIText, retryC
 
 const getAllUser = async () => {
     try {
-        const zaloAPIInfo = await zaloAPIService.read();
+        const zaloAPIInfo = await readed();
 
         const { accessToken } = zaloAPIInfo[0];
 
@@ -121,7 +121,7 @@ const getAllUser = async () => {
 
 const requestUserInfo = async zaloAPIUserId => {
     try {
-        const zaloAPIInfo = await zaloAPIService.read();
+        const zaloAPIInfo = await readed();
 
         const { accessToken } = zaloAPIInfo[0];
 
@@ -169,7 +169,7 @@ const requestUserInfo = async zaloAPIUserId => {
 
 const getUserProfile = async zaloAPIUserId => {
     try {
-        const zaloAPIInfo = await zaloAPIService.read();
+        const zaloAPIInfo = await readed();
 
         const { accessToken } = zaloAPIInfo[0];
 

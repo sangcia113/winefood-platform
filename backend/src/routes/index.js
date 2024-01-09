@@ -1,5 +1,8 @@
 const router = require('express').Router();
 
+// Import các middleWare và xử lý liên quan từ file authMiddleWare.js
+const { verifyToken } = require('../middleWares/authMiddleWare');
+
 // Import các route và xử lý liên quan từ file userRouter.js
 const loginRoute = require('./loginRoute');
 
@@ -27,6 +30,8 @@ const zaloAPIRoute = require('./zaloAPIRoute');
  * Ví dụ: /user/, /user/:id, /user/update, ...
  */
 router.use('/leave/login', loginRoute);
+
+router.use(verifyToken);
 
 router.use('/leave/user', userRoute);
 

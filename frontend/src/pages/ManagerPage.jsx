@@ -40,7 +40,9 @@ import {
 } from '../components';
 
 const { RangePicker } = DatePicker;
+
 const URL = process.env.REACT_APP_API_URL;
+
 const { Text } = Typography;
 
 const ManagerPage = () => {
@@ -92,7 +94,15 @@ const ManagerPage = () => {
         try {
             setLoading(true);
 
-            const response = await axios.get(url, { params });
+            const accessToken =
+                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+            const response = await axios.get(url, {
+                params,
+                headers: {
+                    Authorization: accessToken,
+                },
+            });
 
             const arrData = response.data.map(item => ({
                 ...item,

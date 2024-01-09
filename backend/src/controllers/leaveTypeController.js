@@ -1,14 +1,14 @@
-const { leaveTypeService } = require('../services/leaveTypeService');
+const { created, deleted, readed, updated } = require('../services/leaveTypeService');
 
 const leaveTypeController = {
     // Xử lý yêu cầu thêm mới dữ liệu.
-    create: async (req, res) => {
+    created: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { code, nameVN, nameEN } = req.body;
 
         try {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
-            await leaveTypeService.create(code, nameVN, nameEN);
+            await created(code, nameVN, nameEN);
 
             res.json({ message: 'Thêm dữ liệu thành công!' });
         } catch (err) {
@@ -19,10 +19,10 @@ const leaveTypeController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    read: async (req, res) => {
+    readed: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await leaveTypeService.read();
+            const results = await readed();
 
             res.json(results);
         } catch (err) {
@@ -33,7 +33,7 @@ const leaveTypeController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    update: async (req, res) => {
+    updated: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
@@ -42,7 +42,7 @@ const leaveTypeController = {
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            await leaveTypeService.update(code, nameVN, nameEN, id);
+            await updated(code, nameVN, nameEN, id);
 
             res.json({ message: 'Cập nhật dữ liệu thành công!' });
         } catch (err) {
@@ -53,13 +53,13 @@ const leaveTypeController = {
     },
 
     // Xử lý yêu cầu xoá dữ liệu.
-    delete: async (req, res) => {
+    deleted: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
         try {
             // Gọi hàm service để xoá dữ liệu
-            await leaveTypeService.delete(id);
+            await deleted(id);
 
             res.json({ message: 'Xoá dữ liệu thành công!' });
         } catch (err) {
@@ -71,4 +71,4 @@ const leaveTypeController = {
 };
 
 // Xuất các hàm xử lý yêu cầu để sử dụng trong module khác (router)
-module.exports = { leaveTypeController };
+module.exports = leaveTypeController;

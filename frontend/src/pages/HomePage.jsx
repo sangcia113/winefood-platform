@@ -8,28 +8,24 @@ import {
     ContentComponent,
     ModalErrorComponent,
     ModalErrorOtherComponet,
-    ModalPasswordComponent,
     ModalSuccessComponent,
     ModalWarningComponent,
 } from '../components';
-import { checkToken } from '../utils';
-import { useNavigate } from 'react-router-dom';
-
-const URL = process.env.REACT_APP_API_URL;
 
 const { TextArea } = Input;
 const { Text } = Typography;
 
+const URL = process.env.REACT_APP_API_URL;
+
+const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
 const HomePage = () => {
     console.log('Run Home...');
 
-    const [userId, setUserId] = useState();
     const [user, setUser] = useState([]);
     const [department, setDepartment] = useState([]);
     const [leaveType, setLeaveType] = useState([]);
     const [loading, setLoading] = useState(false);
-
-    const navigate = useNavigate();
 
     const [modalError, setModalError] = useState({
         error: '',
@@ -40,12 +36,6 @@ const HomePage = () => {
         message: '',
         open: false,
         title: '',
-    });
-
-    const [modalPassword, setModalPassword] = useState({
-        onFinish: () => {},
-        onOk: () => {},
-        open: false,
     });
 
     const [modalSuccess, setModalSuccess] = useState({
@@ -59,26 +49,20 @@ const HomePage = () => {
     });
 
     const [formMain] = Form.useForm();
-    const [formPassword] = Form.useForm();
 
     useEffect(() => {
-        handleDecodeToken();
         getDataSource('department', setDepartment);
         getDataSource('user', setUser);
         getDataSource('type', setLeaveType);
     }, []);
 
-    const handleDecodeToken = () => {
-        if (!checkToken()) return navigate('/login');
-
-        const userId = checkToken()?.userId;
-        const name = user.find(item => item.id === userId)?.name;
-        formMain.setFieldsValue({ userId: name });
-    };
-
     const getDataSource = async (table, setDataSource) => {
         try {
-            const response = await axios.get(`${URL}/api/leave/${table}`);
+            const response = await axios.get(`${URL}/api/leave/${table}`, {
+                headers: {
+                    Authorization: accessToken,
+                },
+            });
 
             setDataSource(response.data);
         } catch (error) {
@@ -90,7 +74,11 @@ const HomePage = () => {
         try {
             setLoading(true);
 
-            const response = await axios.post(`${URL}/api/leave/list`, values);
+            const response = await axios.post(`${URL}/api/leave/list`, values, {
+                headers: {
+                    Authorization: accessToken,
+                },
+            });
 
             setModalSuccess({
                 message: (
@@ -105,7 +93,9 @@ const HomePage = () => {
                 open: true,
             });
         } catch (error) {
-            if (error?.response?.data?.error === -904) {
+            const errorCode = error?.response?.data?.error;
+
+            if (errorCode === -904) {
                 setModalErrorOther({
                     open: true,
                     title: 'THẤT BẠI',
@@ -121,7 +111,7 @@ const HomePage = () => {
                         </Text>
                     ),
                 });
-            } else if (error?.response?.data?.error === -230) {
+            } else if (errorCode === -230) {
                 setModalErrorOther({
                     open: true,
                     title: 'THẤT BẠI',
@@ -150,73 +140,62 @@ const HomePage = () => {
     };
 
     const onFinish = values => {
-        setModalPassword({
-            open: true,
-            onFinish: passField => {
-                const password = user.find(item => item.id === values.userId)?.password;
-                if (passField.password === password) {
-                    const { fromDate, toDate } = values;
-                    if (fromDate <= toDate) {
-                        if (
-                            dayjs(fromDate).hour() >= 7 &&
-                            dayjs(fromDate).minute() >= 30 &&
-                            dayjs(toDate).hour() <= 16 &&
-                            dayjs(toDate).minute() <= 30
-                        ) {
-                            insertData({
-                                ...values,
-                                fromDate: dayjs(fromDate).format('YYYY-MM-DD HH:mm'),
-                                toDate: dayjs(toDate).format('YYYY-MM-DD HH:mm'),
-                                userName: user.find(u => u.id === values.userId)?.name,
-                                department: department.find(
-                                    d =>
-                                        d.id ===
-                                        user.find(u => u.id === values.userId)?.departmentId
-                                )?.name,
-                                leaveType: leaveType.find(lt => lt.id === values.leaveTypeId)
-                                    ?.nameVN,
-                            });
-                        } else {
-                            setModalWarning({
-                                message: (
-                                    <Text style={{ textAlign: 'center' }}>
-                                        Giờ bắt đầu & kết thúc phải nằm trong khoảng từ
-                                        <br />
-                                        <b>07:30</b> đến <b>16:30</b>
-                                        <br />
-                                        Giờ bắt đầu của bạn là:{' '}
-                                        <Text strong type="danger">
-                                            {dayjs(fromDate).format('HH:mm')}
-                                        </Text>
-                                        <br />
-                                        Giờ kết thúc của bạn là:{' '}
-                                        <Text strong type="danger">
-                                            {dayjs(toDate).format('HH:mm')}
-                                        </Text>
-                                    </Text>
-                                ),
-                                open: true,
-                            });
-                        }
-                    } else {
-                        setModalWarning({
-                            message: (
-                                <Text style={{ textAlign: 'center' }}>
-                                    Ngày/ giờ kết thúc phải <b>lớn hơn</b>
-                                    <br />
-                                    ngày/ giờ bắt đầu!
-                                </Text>
-                            ),
-                            open: true,
-                        });
-                    }
-                } else {
-                    setModalPassword({ open: false });
+        console.log(values);
+        const { fromDate, toDate } = values;
 
-                    setModalErrorOther({ message: 'SAI MAT KHAU', open: true, title: 'THAT BAI' });
-                }
-            },
-        });
+        if (fromDate <= toDate) {
+            if (
+                dayjs(fromDate).hour() >= 7 &&
+                dayjs(fromDate).minute() >= 30 &&
+                dayjs(toDate).hour() <= 16 &&
+                dayjs(toDate).minute() <= 30
+            ) {
+                insertData({
+                    ...values,
+                    fromDate: dayjs(fromDate).format('YYYY-MM-DD HH:mm'),
+                    toDate: dayjs(toDate).format('YYYY-MM-DD HH:mm'),
+                    userName: user.find(u => u.id === values.userId)?.name,
+                    department: department.find(
+                        d => d.id === user.find(u => u.id === values.userId)?.departmentId
+                    )?.name,
+                    leaveType: leaveType.find(lt => lt.id === values.leaveTypeId)?.nameVN,
+                });
+            } else {
+                setModalWarning({
+                    message: (
+                        <Text style={{ textAlign: 'center' }}>
+                            Giờ bắt đầu & kết thúc phải
+                            <br />
+                            nằm trong khoảng từ
+                            <br />
+                            <b>07:30</b> đến <b>16:30</b>
+                            <br />
+                            Giờ bắt đầu của bạn là:{' '}
+                            <Text strong type="danger">
+                                {dayjs(fromDate).format('HH:mm')}
+                            </Text>
+                            <br />
+                            Giờ kết thúc của bạn là:{' '}
+                            <Text strong type="danger">
+                                {dayjs(toDate).format('HH:mm')}
+                            </Text>
+                        </Text>
+                    ),
+                    open: true,
+                });
+            }
+        } else {
+            setModalWarning({
+                message: (
+                    <Text style={{ textAlign: 'center' }}>
+                        Ngày/ giờ kết thúc phải <b>lớn hơn</b>
+                        <br />
+                        ngày/ giờ bắt đầu!
+                    </Text>
+                ),
+                open: true,
+            });
+        }
     };
 
     return (
@@ -239,7 +218,7 @@ const HomePage = () => {
                 }}
                 onFinish={onFinish}
             >
-                <Form.Item
+                {/* <Form.Item
                     label={
                         <Text>
                             <Text strong>HỌ VÀ TÊN</Text>
@@ -255,7 +234,7 @@ const HomePage = () => {
                         },
                     ]}
                 >
-                    {/* <Select
+                    <Select
                         filterOption={(input, option) =>
                             (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
                         }
@@ -278,9 +257,8 @@ const HomePage = () => {
                                 )}
                             </Select.OptGroup>
                         ))}
-                    </Select> */}
-                    <Input readOnly size="large" />
-                </Form.Item>
+                    </Select>
+                </Form.Item> */}
 
                 <Form.Item
                     label={
@@ -297,7 +275,6 @@ const HomePage = () => {
                             message: 'Bạn chưa chọn loại phép!',
                         },
                     ]}
-                    style={{ marginTop: 50 }}
                 >
                     <Select
                         placeholder="Chọn loại phép trong danh sách..."
@@ -436,14 +413,6 @@ const HomePage = () => {
                 open={modalErrorOther.open}
                 title={modalErrorOther.title}
                 message={modalErrorOther.message}
-            />
-            <ModalPasswordComponent
-                afterClose={() => formPassword.resetFields()}
-                form={formPassword}
-                onCancel={() => setModalPassword({ open: false })}
-                onFinish={modalPassword.onFinish}
-                onOk={() => formPassword.submit()}
-                open={modalPassword.open}
             />
             <ModalSuccessComponent
                 onOk={() => setModalSuccess({ open: false })}

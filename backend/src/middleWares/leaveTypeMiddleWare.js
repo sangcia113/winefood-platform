@@ -46,4 +46,4 @@ const leaveTypeMiddleWare = {
     },
 };
 
-module.exports = { leaveTypeMiddleWare };
+module.exports = leaveTypeMiddleWare;

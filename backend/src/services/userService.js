@@ -2,7 +2,7 @@ const db = require('../configs/databaseConfig');
 
 const userService = {
     // Tạo mới trong cơ sở dữ liệu.
-    create: async (
+    created: async (
         code,
         name,
         birthday,
@@ -44,7 +44,7 @@ const userService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    read: async () => {
+    readed: async () => {
         // Truy vấn SQL để đọc
         const sql = `SELECT 
                         * 
@@ -61,7 +61,7 @@ const userService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    readInfoSuperior: async id => {
+    readedInfoSuperior: async id => {
         // Truy vấn SQL để đọc
         const sql = `SELECT
                         l.name superiorName,
@@ -90,7 +90,7 @@ const userService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
-    update: async (
+    updated: async (
         code,
         name,
         birthday,
@@ -136,7 +136,7 @@ const userService = {
     },
 
     // Xóa khỏi cơ sở dữ liệu.
-    delete: async id => {
+    deleted: async id => {
         // Truy vấn SQL để xoá
         const sql = `DELETE FROM 
                         user 
@@ -182,4 +182,4 @@ const userService = {
 };
 
 // Xuất các hàm để sử dụng trong module khác
-module.exports = { userService };
+module.exports = userService;

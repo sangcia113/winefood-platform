@@ -1,11 +1,11 @@
-const { departmentService } = require('../services/departmentService');
+const { readed } = require('../services/departmentService');
 
 const departmentController = {
     // Xử lý yêu cầu đọc dữ liệu.
-    read: async (req, res) => {
+    readed: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await departmentService.read();
+            const results = await readed();
 
             res.json(results);
         } catch (err) {
@@ -15,4 +15,4 @@ const departmentController = {
 };
 
 // Xuất các hàm xử lý yêu cầu để sử dụng trong module khác (router)
-module.exports = { departmentController };
+module.exports = departmentController;

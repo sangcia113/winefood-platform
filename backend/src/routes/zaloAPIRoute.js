@@ -1,17 +1,17 @@
 const router = require('express').Router();
 
 // Import các hàm xử lý yêu cầu từ controller
-const { zaloAPIController } = require('../controllers/zaloAPIController');
-const { zaloAPIMiddleWare } = require('../middleWares/zaloAPIMiddleWare');
+const { readed, readedUser, updated } = require('../controllers/zaloAPIController');
+const { checkUpdate } = require('../middleWares/zaloAPIMiddleWare');
 
 // End point GET
-router.get('/token', zaloAPIController.read);
+router.get('/token', readed);
 
 // End point GET
-router.get('/user', zaloAPIController.readUser);
+router.get('/user', readedUser);
 
 // End point PUT
-router.put('/token', zaloAPIMiddleWare.checkUpdate, zaloAPIController.update);
+router.put('/token', checkUpdate, updated);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

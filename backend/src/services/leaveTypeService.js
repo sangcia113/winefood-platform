@@ -2,7 +2,7 @@ const db = require('../configs/databaseConfig');
 
 const leaveTypeService = {
     // Tạo mới trong cơ sở dữ liệu.
-    create: async (code, nameVN, nameEN) => {
+    created: async (code, nameVN, nameEN) => {
         // Truy vấn SQL để thêm
         const sql = `INSERT INTO 
                         type (
@@ -17,7 +17,7 @@ const leaveTypeService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    read: async () => {
+    readed: async () => {
         // Truy vấn SQL để đọc
         const sql = `SELECT 
                         * 
@@ -34,7 +34,7 @@ const leaveTypeService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
-    update: async (code, nameVN, nameEN, id) => {
+    updated: async (code, nameVN, nameEN, id) => {
         // Truy vấn SQL để cập nhật
         const sql = `UPDATE 
                         type 
@@ -51,7 +51,7 @@ const leaveTypeService = {
     },
 
     // Xóa khỏi cơ sở dữ liệu.
-    delete: async id => {
+    deleted: async id => {
         // Truy vấn SQL để xoá
         const sql = `DELETE FROM 
                         type 
@@ -84,4 +84,4 @@ const leaveTypeService = {
 };
 
 // Xuất các hàm để sử dụng trong module khác
-module.exports = { leaveTypeService };
+module.exports = leaveTypeService;

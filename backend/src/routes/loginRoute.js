@@ -1,11 +1,8 @@
 const router = require('express').Router();
 
 // Import các hàm xử lý yêu cầu từ controller
-const { loginController } = require('../controllers/loginController');
-const { authMiddleWare } = require('../middleWares/authMiddleWare');
+const { readed } = require('../controllers/loginController');
 
-router.post('/', loginController.read);
-
-router.post('/verify', authMiddleWare.verifyToken);
+router.post('/', readed);
 
 module.exports = router;

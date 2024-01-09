@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 
-const { userService } = require('../services/userService');
+const { checkUserIsExist } = require('../services/userService');
 
-const { encodePassword, decodePassword } = require('../utils');
+const { decodePassword } = require('../utils');
 
 const loginController = {
-    read: async (req, res) => {
+    readed: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { username, password } = req.body;
 
@@ -15,7 +15,7 @@ const loginController = {
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await userService.checkUserIsExist(username);
+            const results = await checkUserIsExist(username);
 
             if (!results.length)
                 return res
@@ -40,4 +40,4 @@ const loginController = {
     },
 };
 
-module.exports = { loginController };
+module.exports = loginController;

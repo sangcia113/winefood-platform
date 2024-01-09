@@ -14,10 +14,10 @@ code {
     font-size: 24px;
 }
 
-.ant-picker-dropdown {
+/* .ant-picker-dropdown {
     left: auto !important;
-    /* right: auto !important; */
-}
+    right: auto !important;
+} */
 
 input::placeholder, textarea::placeholder, .ant-select-selection-placeholder {
     font-size: 20px;

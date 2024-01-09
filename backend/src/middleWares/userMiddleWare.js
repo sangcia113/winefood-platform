@@ -68,4 +68,4 @@ const userMiddleWare = {
     },
 };
 
-module.exports = { userMiddleWare };
+module.exports = userMiddleWare;

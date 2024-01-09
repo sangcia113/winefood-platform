@@ -178,4 +178,4 @@ const leaveListMiddleWare = {
     },
 };
 
-module.exports = { leaveListMiddleWare };
+module.exports = leaveListMiddleWare;

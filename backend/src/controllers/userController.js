@@ -1,10 +1,10 @@
-const { userService } = require('../services/userService');
+const { created, deleted, readed, updated } = require('../services/userService');
 
-const { encodePassword, decodePassword } = require('../utils');
+const { encodePassword } = require('../utils');
 
 const userController = {
     // Xử lý yêu cầu thêm mới dữ liệu.
-    create: async (req, res) => {
+    created: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const {
             code,
@@ -22,7 +22,7 @@ const userController = {
 
         try {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
-            await userService.create(
+            await created(
                 code,
                 name,
                 birthday,
@@ -41,10 +41,10 @@ const userController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    read: async (req, res) => {
+    readed: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await userService.read();
+            const results = await readed();
 
             res.json(results);
         } catch (err) {
@@ -53,7 +53,7 @@ const userController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    update: async (req, res) => {
+    updated: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
@@ -74,7 +74,7 @@ const userController = {
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            await userService.update(
+            await updated(
                 code,
                 name,
                 birthday,
@@ -96,13 +96,13 @@ const userController = {
     },
 
     // Xử lý yêu cầu xoá dữ liệu.
-    delete: async (req, res) => {
+    deleted: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
         try {
             // Gọi hàm service để xoá dữ liệu
-            await userService.delete(id);
+            await deleted(id);
 
             res.json({ error: 0, message: 'Xoá dữ liệu thành công!' });
         } catch (err) {
@@ -114,4 +114,4 @@ const userController = {
 };
 
 // Xuất các hàm xử lý yêu cầu để sử dụng trong module khác (router)
-module.exports = { userController };
+module.exports = userController;

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const authMiddleWare = {
-    verifyToken: async (req, res) => {
+    verifyToken: async (req, res, next) => {
         const accessToken = req.headers.authorization;
 
         if (!accessToken)
@@ -10,32 +10,14 @@ const authMiddleWare = {
                 .json({ error: -1082, message: 'Không có Token nào được cung cấp!' });
 
         jwt.verify(accessToken, process.env.PRIVATE_KEY, (err, decoded) => {
-            if (err) return res.status(400).json({ message: 'Không thể xác thực Token!' });
-            return res.json({ decoded });
+            if (err)
+                return res.status(400).json({ error: -1083, message: 'Không thể xác thực Token!' });
+
+            req.decoded = decoded;
+
+            next();
         });
-
-        // jwt.verify(accessToken, process.env.PRIVATE_KEY, (err, decoded) => {
-        //     if (err) {
-        //         console.error(err);
-        //         return res.status(400).json({ message: 'Không thể xác thực Token!' });
-        //     }
-
-        //     console.log(decoded);
-
-        //     return decoded;
-        // });
-
-        // const fields = accessToken.split(' ');
-
-        // if (fields.length !== 2) {
-        //     throw new CustomErr('Method auth is not support', 403);
-        // }
-
-        // const accessToken = fields[1];
-
-        // const decoded = jwt.verify(accessToken, process.env.PRIVATE_KEY);
-        // console.log(decoded);
     },
 };
 
-module.exports = { authMiddleWare };
+module.exports = authMiddleWare;

@@ -1,11 +1,11 @@
-const { roleService } = require('../services/roleService');
+const { readed } = require('../services/roleService');
 
 const roleController = {
     // Xử lý yêu cầu đọc dữ liệu.
-    read: async (req, res) => {
+    readed: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await roleService.read();
+            const results = await readed();
 
             res.json(results);
         } catch (err) {
@@ -17,4 +17,4 @@ const roleController = {
 };
 
 // Xuất các hàm xử lý yêu cầu để sử dụng trong module khác (router)
-module.exports = { roleController };
+module.exports = roleController;

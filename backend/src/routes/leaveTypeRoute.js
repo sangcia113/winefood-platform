@@ -1,25 +1,20 @@
 const router = require('express').Router();
 
 // Import các hàm xử lý yêu cầu từ controller
-const { leaveTypeController } = require('../controllers/leaveTypeController');
-const { leaveTypeMiddleWare } = require('../middleWares/leaveTypeMiddleWare');
+const { created, deleted, readed, updated } = require('../controllers/leaveTypeController');
+const { checkBody, checkParam } = require('../middleWares/leaveTypeMiddleWare');
 
 // End point POST
-router.post('/', leaveTypeMiddleWare.checkBody, leaveTypeController.create);
+router.post('/', checkBody, created);
 
 // End point GET
-router.get('/', leaveTypeController.read);
+router.get('/', readed);
 
 // End point PUT
-router.put(
-    '/:id',
-    leaveTypeMiddleWare.checkBody,
-    leaveTypeMiddleWare.checkParam,
-    leaveTypeController.update
-);
+router.put('/:id', checkBody, checkParam, updated);
 
 // End point DELETE
-router.delete('/:id', leaveTypeMiddleWare.checkParam, leaveTypeController.delete);
+router.delete('/:id', checkParam, deleted);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

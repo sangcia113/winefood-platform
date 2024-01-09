@@ -18,4 +18,4 @@ const zaloAPIMiddleWare = {
     },
 };
 
-module.exports = { zaloAPIMiddleWare };
+module.exports = zaloAPIMiddleWare;

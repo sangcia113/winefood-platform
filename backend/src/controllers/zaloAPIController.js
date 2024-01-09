@@ -1,11 +1,11 @@
-const { zaloAPIService } = require('../services/zaloAPIService');
+const { readed, readedUser, updated } = require('../services/zaloAPIService');
 
 const zaloAPIController = {
     // Xử lý yêu cầu đọc dữ liệu.
-    read: async (req, res) => {
+    readed: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await zaloAPIService.read();
+            const results = await readed();
 
             res.json(results);
         } catch (err) {
@@ -14,10 +14,10 @@ const zaloAPIController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readUser: async (req, res) => {
+    readedUser: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await zaloAPIService.readUser();
+            const results = await readedUser();
 
             res.json(results);
         } catch (err) {
@@ -25,11 +25,11 @@ const zaloAPIController = {
         }
     },
 
-    update: async (req, res) => {
+    updated: async (req, res) => {
         try {
             const { accessToken, refreshToken } = req.query;
 
-            await zaloAPIService.update(accessToken, refreshToken);
+            await updated(accessToken, refreshToken);
 
             res.json({ message: 'Cập nhật thông tin Zalo API thành công!' });
         } catch (error) {
@@ -39,4 +39,4 @@ const zaloAPIController = {
 };
 
 // Xuất các hàm xử lý yêu cầu để sử dụng trong module khác (router)
-module.exports = { zaloAPIController };
+module.exports = zaloAPIController;

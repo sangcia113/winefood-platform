@@ -1,11 +1,20 @@
 const dayjs = require('dayjs');
-const { leaveListService } = require('../services/leaveListService');
-const { userService } = require('../services/userService');
+const {
+    readed,
+    readedOther,
+    readedStatistics,
+    updatedApproved,
+    updatedApprovedLeaveDay,
+    updatedApprovedLeaveType,
+    updatedApprovedRequestDelete,
+    updatedRejected,
+} = require('../services/leaveListService');
+const { readedInfoSuperior } = require('../services/userService');
 
 const { sendZaloNotificationV3 } = require('../utils/handleZaloAPI');
 
 const leaveListController = {
-    create: async (req, res) => {
+    created: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const {
             userId,
@@ -23,7 +32,7 @@ const leaveListController = {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
             // await leaveListService.create(userId, leaveTypeId, leaveDay, fromDate, toDate, reason);
 
-            const response = await userService.readInfoSuperior(userId);
+            const response = await readedInfoSuperior(userId);
 
             const { superiorName, superiorGender, superiorRoleId, superiorZaloUID } = response[0];
 
@@ -72,10 +81,10 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    read: async (req, res) => {
+    readed: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await leaveListService.read();
+            const results = await readed();
 
             res.json(results);
         } catch (err) {
@@ -84,13 +93,13 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readByDate: async (req, res) => {
+    readedByDate: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { startDate, endDate } = req.query;
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await leaveListService.read(startDate, endDate);
+            const results = await readed(startDate, endDate);
 
             res.json(results);
         } catch (err) {
@@ -99,10 +108,10 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readOther: async (req, res) => {
+    readedOther: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await leaveListService.readOther();
+            const results = await readedOther();
 
             res.json(results);
         } catch (err) {
@@ -111,13 +120,13 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readOtherByDate: async (req, res) => {
+    readedOtherByDate: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { startDate, endDate } = req.query;
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await leaveListService.readOther(startDate, endDate);
+            const results = await readedOther(startDate, endDate);
 
             res.json(results);
         } catch (err) {
@@ -126,10 +135,10 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readStatistics: async (req, res) => {
+    readedStatistics: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await leaveListService.readStatistics();
+            const results = await readedStatistics();
 
             res.json(results);
         } catch (err) {
@@ -138,13 +147,13 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readStatisticsByDate: async (req, res) => {
+    readedStatisticsByDate: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { startDate, endDate } = req.query;
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await leaveListService.readStatistics(startDate, endDate);
+            const results = await readedStatistics(startDate, endDate);
 
             res.json(results);
         } catch (err) {
@@ -153,13 +162,13 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updateApproved: async (req, res) => {
+    updatedApproved: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            await leaveListService.updateApproved(id);
+            await updatedApproved(id);
 
             res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
         } catch (err) {
@@ -168,7 +177,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updateRejected: async (req, res) => {
+    updatedRejected: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
@@ -177,7 +186,7 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            await leaveListService.updateRejected(id, reason);
+            await updatedRejected(id, reason);
 
             res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
         } catch (err) {
@@ -186,13 +195,13 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updateApprovedLeaveType: async (req, res) => {
+    updatedApprovedLeaveType: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            await leaveListService.updateApprovedLeaveType(id);
+            await updatedApprovedLeaveType(id);
 
             res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
         } catch (err) {
@@ -201,13 +210,13 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updateApprovedLeaveDay: async (req, res) => {
+    updatedApprovedLeaveDay: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            await leaveListService.updateApprovedLeaveDay(id);
+            await updatedApprovedLeaveDay(id);
 
             res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
         } catch (err) {
@@ -216,13 +225,13 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updateApprovedRequestDelete: async (req, res) => {
+    updatedApprovedRequestDelete: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            await leaveListService.updateApprovedRequestDelete(id);
+            await updatedApprovedRequestDelete(id);
 
             res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
         } catch (err) {
@@ -232,4 +241,4 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
 };
 
 // Xuất các hàm xử lý yêu cầu để sử dụng trong module khác (router)
-module.exports = { leaveListController };
+module.exports = leaveListController;

@@ -2,7 +2,7 @@ const db = require('../configs/databaseConfig');
 
 const leaveListService = {
     // Tạo mới trong cơ sở dữ liệu.
-    create: async (userId, bookLeaveTypeId, bookLeaveDay, bookFromDate, bookToDate, reason) => {
+    created: async (userId, bookLeaveTypeId, bookLeaveDay, bookFromDate, bookToDate, reason) => {
         // Truy vấn SQL để thêm
         const sql = `INSERT INTO 
                         list (
@@ -29,7 +29,7 @@ const leaveListService = {
         ]);
     },
 
-    read: async (startDate, endDate) => {
+    readed: async (startDate, endDate) => {
         const params = [];
 
         // Truy vấn SQL để đọc
@@ -76,7 +76,7 @@ const leaveListService = {
         return results;
     },
 
-    readOther: async (startDate, endDate) => {
+    readedOther: async (startDate, endDate) => {
         const params = [];
 
         // Truy vấn SQL để đọc
@@ -123,7 +123,7 @@ const leaveListService = {
         return results;
     },
 
-    readStatistics: async (startDate, endDate) => {
+    readedStatistics: async (startDate, endDate) => {
         const params = [];
 
         // Truy vấn SQL để đọc
@@ -268,7 +268,7 @@ const leaveListService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
-    updateApproved: async id => {
+    updatedApproved: async id => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
                         list 
@@ -284,7 +284,7 @@ const leaveListService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
-    updateRejected: async (id, reason) => {
+    updatedRejected: async (id, reason) => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
                         list 
@@ -300,7 +300,7 @@ const leaveListService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
-    updateApprovedLeaveType: async id => {
+    updatedApprovedLeaveType: async id => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
                         list 
@@ -315,7 +315,7 @@ const leaveListService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
-    updateApprovedLeaveDay: async id => {
+    updatedApprovedLeaveDay: async id => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
                         list 
@@ -330,7 +330,7 @@ const leaveListService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
-    updateApprovedRequestDelete: async id => {
+    updatedApprovedRequestDelete: async id => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
                         list 
@@ -346,4 +346,4 @@ const leaveListService = {
 };
 
 // Xuất các hàm để sử dụng trong module khác
-module.exports = { leaveListService };
+module.exports = leaveListService;

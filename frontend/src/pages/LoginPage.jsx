@@ -75,7 +75,7 @@ const LoginPage = () => {
                 style={{
                     backgroundColor: 'rgba(255, 255, 255, 0.4)',
                     backdropFilter: 'blur(2px)',
-                    minWidth: 300,
+                    minWidth: 360,
                     position: 'absolute',
                     top: '50%',
                     left: '50%',

@@ -3,7 +3,7 @@ const zaloAPIMiddleWare = {
         const { zaloAPIUserId, zaloAPIText } = req.query;
 
         if (!(zaloAPIUserId && zaloAPIText))
-            return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ!' });
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
 
         next();
     },
@@ -12,7 +12,7 @@ const zaloAPIMiddleWare = {
         const { accessToken, refreshToken } = req.query;
 
         if (!(accessToken && refreshToken))
-            return res.status(400).json({ message: 'Dữ liệu đầu vào không hợp lệ!' });
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
 
         next();
     },

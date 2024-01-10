@@ -17,8 +17,6 @@ const { Text } = Typography;
 
 const URL = process.env.REACT_APP_API_URL;
 
-const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
-
 const HomePage = () => {
     console.log('Run Home...');
 
@@ -49,6 +47,9 @@ const HomePage = () => {
     });
 
     const [formMain] = Form.useForm();
+
+    const accessToken =
+        localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
     useEffect(() => {
         getDataSource('department', setDepartment);

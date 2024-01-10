@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const { checkUserIsExist } = require('../services/userService');
+const { checkIsExist } = require('../services/userService');
 
 const { decodePassword } = require('../utils');
 
@@ -15,7 +15,7 @@ const loginController = {
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await checkUserIsExist(username);
+            const results = await checkIsExist(null, null, username);
 
             if (!results.length)
                 return res

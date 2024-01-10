@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 // Import các hàm xử lý yêu cầu từ controller
 const { created, deleted, readed, updated } = require('../controllers/userController');
+
 const { checkBody, checkIsExist, checkParam } = require('../middleWares/userMiddleWare');
 
 // End point POST

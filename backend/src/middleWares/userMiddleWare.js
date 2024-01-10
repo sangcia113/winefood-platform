@@ -1,4 +1,4 @@
-const { userService } = require('../services/userService');
+const { checkIsExist } = require('../services/userService');
 
 const userMiddleWare = {
     checkParam: async (req, res, next) => {
@@ -50,7 +50,7 @@ const userMiddleWare = {
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await userService.checkIsExist(code, numberPhone);
+            const results = await checkIsExist(code, numberPhone);
 
             if (results.length > 0)
                 return res.status(400).json({

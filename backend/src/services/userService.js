@@ -67,7 +67,7 @@ const userService = {
                         l.name superiorName,
                         l.gender superiorGender,
                         l.roleId superiorRoleId,
-                        za.zaloUserId superiorZaloUID
+                        za.zaloUserId superiorZaloUserID
                     FROM
                         leave.user l
                     LEFT JOIN
@@ -148,34 +148,32 @@ const userService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    checkIsExist: async (code, numberPhone) => {
+    checkIsExist: async (code, numberPhone, username) => {
+        const params = [];
+
         // Truy vấn SQL để đọc
-        const sql = `SELECT 
+        let sql = `SELECT 
                         * 
                     FROM 
                         user 
-                    WHERE 
-                        code = ?
-                    OR
-                        numberPhone = ?`;
+                    WHERE `;
+
+        if (code && numberPhone) {
+            sql += `code = ? 
+                    AND 
+                numberPhone = ?`;
+
+            params.push(code, numberPhone);
+        }
+
+        if (username) {
+            sql += `username = ?`;
+
+            params.push(username);
+        }
 
         // Thực hiện truy vấn SQL và trả về kết quả
-        const [results] = await db.query(sql, [code, numberPhone]);
-
-        return results;
-    },
-
-    checkUserIsExist: async username => {
-        // Truy vấn SQL để đọc
-        const sql = `SELECT 
-                        * 
-                    FROM 
-                        user 
-                    WHERE 
-                        username = ?`;
-
-        // Thực hiện truy vấn SQL và trả về kết quả
-        const [results] = await db.query(sql, [username]);
+        const [results] = await db.query(sql, params);
 
         return results;
     },

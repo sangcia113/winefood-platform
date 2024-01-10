@@ -12,6 +12,7 @@ const {
 const { readedInfoSuperior } = require('../services/userService');
 
 const { sendZaloNotificationV3 } = require('../utils/handleZaloAPI');
+const { sendZaloAPIV3 } = require('../services/zaloAPIService');
 
 const leaveListController = {
     created: async (req, res) => {
@@ -34,7 +35,8 @@ const leaveListController = {
 
             const response = await readedInfoSuperior(userId);
 
-            const { superiorName, superiorGender, superiorRoleId, superiorZaloUID } = response[0];
+            const { superiorName, superiorGender, superiorRoleId, superiorZaloUserID } =
+                response[0];
 
             const zaloAPIText = `ĐƠN XIN NGHỈ PHÉP
 
@@ -57,21 +59,28 @@ Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.
 Vui lòng trả lời 1 tin nhắn bất kỳ!
 `;
 
-            const responseSend = await sendZaloNotificationV3(
-                userId,
-                '8851502365121811999',
-                zaloAPIText
-            );
+            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
 
-            if (responseSend.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
-                    superiorName,
-                });
-            } else {
-                res.status(400).json(responseSend);
-            }
+            const { error, message } = responseSend;
+
+            console.log(responseSend);
+
+            res.json(responseSend);
+            // const responseSend = await sendZaloNotificationV3(
+            //     userId,
+            //     '8851502365121811999',
+            //     zaloAPIText
+            // );
+
+            // if (responseSend.error === 0) {
+            //     res.status(200).json({
+            //         error: 0,
+            //         message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
+            //         superiorName,
+            //     });
+            // } else {
+            //     res.status(400).json(responseSend);
+            // }
         } catch (error) {
             res.status(500).json({
                 error: -1050,

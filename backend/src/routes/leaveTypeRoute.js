@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 // Import các hàm xử lý yêu cầu từ controller
 const { created, deleted, readed, updated } = require('../controllers/leaveTypeController');
+
 const { checkBody, checkParam } = require('../middleWares/leaveTypeMiddleWare');
 
 // End point POST

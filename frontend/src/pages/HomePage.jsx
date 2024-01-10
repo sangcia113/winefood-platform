@@ -94,6 +94,7 @@ const HomePage = () => {
                 open: true,
             });
         } catch (error) {
+            console.log(error);
             const errorCode = error?.response?.data?.error;
 
             if (errorCode === -904) {

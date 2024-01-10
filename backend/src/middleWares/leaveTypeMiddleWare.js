@@ -1,4 +1,4 @@
-const { leaveTypeService } = require('../services/leaveTypeService');
+const { checkIsExist } = require('../services/leaveTypeService');
 
 const leaveTypeMiddleWare = {
     checkParam: async (req, res, next) => {
@@ -28,7 +28,7 @@ const leaveTypeMiddleWare = {
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await leaveTypeService.checkIsExist(code, nameVN, nameEN);
+            const results = await checkIsExist(code, nameVN, nameEN);
 
             if (results.length > 0)
                 return res.status(400).json({

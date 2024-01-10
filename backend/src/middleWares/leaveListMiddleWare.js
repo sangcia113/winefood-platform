@@ -1,4 +1,10 @@
-const { leaveListService } = require('../services/leaveListService');
+const {
+    checkIsExist,
+    checkStatus,
+    checkStatusLeaveType,
+    checkStatusLeaveDay,
+    checkStatusRequestDelete,
+} = require('../services/leaveListService');
 
 const leaveListMiddleWare = {
     checkParam: async (req, res, next) => {
@@ -28,7 +34,7 @@ const leaveListMiddleWare = {
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await leaveListService.checkIsExist(userId, leaveDay, fromDate, toDate);
+            const results = await checkIsExist(userId, leaveDay, fromDate, toDate);
 
             if (results.length > 0)
                 return res.status(400).json({
@@ -51,7 +57,7 @@ const leaveListMiddleWare = {
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            const results = await leaveListService.checkStatus(id);
+            const results = await checkStatus(id);
 
             if (results[0].managerApproved === 1)
                 return res.json({
@@ -81,7 +87,7 @@ const leaveListMiddleWare = {
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            const results = await leaveListService.checkStatus(id);
+            const results = await checkStatus(id);
 
             if (results[0].managerApproved === 0)
                 return res.json({ error: 909, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
@@ -101,7 +107,7 @@ const leaveListMiddleWare = {
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            const results = await leaveListService.checkStatusLeaveType(id);
+            const results = await checkStatusLeaveType(id);
 
             if (!results[0].actualLeaveTypeID || !results[0].managerApprovedLeaveType)
                 return res.json({
@@ -125,7 +131,7 @@ const leaveListMiddleWare = {
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            const results = await leaveListService.checkStatusLeaveType(id);
+            const results = await checkStatusLeaveDay(id);
 
             if (!results[0].actualLeaveDay || !results[0].managerApprovedLeaveDay)
                 return res.json({
@@ -149,7 +155,7 @@ const leaveListMiddleWare = {
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            const results = await leaveListService.checkStatusRequestDelete(id);
+            const results = await checkStatusRequestDelete(id);
 
             if (!results[0].deleteRequest || !results[0].managerApprovedDelete)
                 return res.json({

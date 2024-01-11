@@ -20,8 +20,6 @@ const URL = process.env.REACT_APP_API_URL;
 const HomePage = () => {
     console.log('Run Home...');
 
-    const [user, setUser] = useState([]);
-    const [department, setDepartment] = useState([]);
     const [leaveType, setLeaveType] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -46,26 +44,24 @@ const HomePage = () => {
         open: false,
     });
 
-    const [formMain] = Form.useForm();
+    const [form] = Form.useForm();
 
     const accessToken =
         localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
     useEffect(() => {
-        getDataSource('department', setDepartment);
-        getDataSource('user', setUser);
-        getDataSource('type', setLeaveType);
+        getLeaveType();
     }, []);
 
-    const getDataSource = async (table, setDataSource) => {
+    const getLeaveType = async () => {
         try {
-            const response = await axios.get(`${URL}/api/leave/${table}`, {
+            const response = await axios.get(`${URL}/api/leave/type`, {
                 headers: {
                     Authorization: accessToken,
                 },
             });
 
-            setDataSource(response.data);
+            setLeaveType(response.data);
         } catch (error) {
             setModalError({ open: true, error });
         }
@@ -81,6 +77,8 @@ const HomePage = () => {
                 },
             });
 
+            form.resetFields();
+
             setModalSuccess({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
@@ -94,7 +92,6 @@ const HomePage = () => {
                 open: true,
             });
         } catch (error) {
-            console.log(error);
             const errorCode = error?.response?.data?.error;
 
             if (errorCode === -904) {
@@ -142,7 +139,6 @@ const HomePage = () => {
     };
 
     const onFinish = values => {
-        console.log(values);
         const { fromDate, toDate } = values;
 
         if (fromDate <= toDate) {
@@ -156,10 +152,6 @@ const HomePage = () => {
                     ...values,
                     fromDate: dayjs(fromDate).format('YYYY-MM-DD HH:mm'),
                     toDate: dayjs(toDate).format('YYYY-MM-DD HH:mm'),
-                    userName: user.find(u => u.id === values.userId)?.name,
-                    department: department.find(
-                        d => d.id === user.find(u => u.id === values.userId)?.departmentId
-                    )?.name,
                     leaveType: leaveType.find(lt => lt.id === values.leaveTypeId)?.nameVN,
                 });
             } else {
@@ -201,11 +193,10 @@ const HomePage = () => {
     };
 
     return (
-        <ContentComponent>
-            <Spin size={'large'} spinning={loading} />
+        <ContentComponent loading={loading}>
             <Form
                 colon={false}
-                form={formMain}
+                form={form}
                 labelAlign={'left'}
                 labelCol={{
                     xs: { span: 24 },
@@ -401,7 +392,7 @@ const HomePage = () => {
                 </Form.Item>
             </Form>
             <Flex justify="center" style={{ margin: '30px 0 24px 0' }}>
-                <Button size={'large'} type={'primary'} onClick={() => formMain.submit()}>
+                <Button size={'large'} type={'primary'} onClick={() => form.submit()}>
                     Gửi Phép
                 </Button>
             </Flex>

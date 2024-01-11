@@ -18,8 +18,11 @@ const leaveListMiddleWare = {
     },
 
     checkBody: async (req, res, next) => {
+        // Lấy thông tin từ auth của yêu cầu
+        const { userId } = req.decoded;
+
         // Lấy thông tin từ body của yêu cầu
-        const { userId, leaveTypeId, leaveDay, fromDate, toDate, reason } = req.body;
+        const { leaveTypeId, leaveDay, fromDate, toDate, reason } = req.body;
 
         // Kiểm tra tính hợp lệ của dữ liệu đầu vào
         if (!(userId && leaveTypeId && leaveDay && fromDate && toDate && reason))
@@ -29,12 +32,15 @@ const leaveListMiddleWare = {
     },
 
     checkIsExist: async (req, res, next) => {
+        // Lấy thông tin từ auth của yêu cầu
+        const { userId } = req.decoded;
+
         // Lấy thông tin từ body của yêu cầu
-        const { userId, leaveTypeId, leaveDay, fromDate, toDate, reason } = req.body;
+        const { fromDate, toDate } = req.body;
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await checkIsExist(userId, leaveDay, fromDate, toDate);
+            const results = await checkIsExist(userId, fromDate, toDate);
 
             if (results.length > 0)
                 return res.status(400).json({

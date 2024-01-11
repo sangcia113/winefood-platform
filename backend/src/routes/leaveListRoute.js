@@ -4,6 +4,7 @@ const router = require('express').Router();
 const {
     created,
     readed,
+    readedByUserId,
     readedByDate,
     readedOther,
     readedOtherByDate,
@@ -23,15 +24,19 @@ const {
     checkApprovedRequestDelete,
     checkBody,
     checkDate,
+    checkIsExist,
     checkParam,
     checkRejected,
 } = require('../middleWares/leaveListMiddleWare');
 
 // End point POST
-router.post('/', checkBody, created);
+router.post('/', checkBody, checkIsExist, created);
 
 // End point GET
 router.get('/', readed);
+
+// End point GET
+router.get('/:id', checkParam, readedByUserId);
 
 // End point GET
 router.get('/search', checkDate, readedByDate);

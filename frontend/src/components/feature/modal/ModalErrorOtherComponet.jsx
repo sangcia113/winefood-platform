@@ -28,7 +28,7 @@ const ModalErrorOtherComponet = ({ onOk, open, title, message }) => (
             footer: { paddingTop: 20, textAlign: 'center' },
         }}
     >
-        <Alert message={message} type="error" />
+        <Alert message={message} type="error" style={{ textAlign: 'center' }} />
     </Modal>
 );
 

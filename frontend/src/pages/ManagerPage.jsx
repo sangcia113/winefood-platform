@@ -84,6 +84,9 @@ const ManagerPage = () => {
 
     const [form] = Form.useForm();
 
+    const accessToken =
+        localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
     useEffect(() => {
         getLeaveList();
         getLeaveListOther();
@@ -93,9 +96,6 @@ const ManagerPage = () => {
     const getDataSource = async (url, params = {}, setDataSource) => {
         try {
             setLoading(true);
-
-            const accessToken =
-                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
             const response = await axios.get(url, {
                 params,
@@ -823,7 +823,7 @@ const ManagerPage = () => {
     ];
 
     return (
-        <ContentComponent>
+        <ContentComponent loading={loading}>
             <Tabs
                 centered
                 defaultActiveKey="1"
@@ -865,7 +865,6 @@ const ManagerPage = () => {
                                     bordered
                                     columns={columnsLeaveList}
                                     dataSource={leaveList}
-                                    loading={loading}
                                     scroll={{ x: true }}
                                     showSorterTooltip={false}
                                 />
@@ -896,7 +895,6 @@ const ManagerPage = () => {
                                     bordered
                                     columns={columnsLeaveListOther}
                                     dataSource={leaveListOther}
-                                    loading={loading}
                                     scroll={{ x: true }}
                                     showSorterTooltip={false}
                                 />

@@ -550,7 +550,7 @@ const UserPage = () => {
     ];
 
     return (
-        <ContentComponent>
+        <ContentComponent loading={loading}>
             <Tabs
                 centered
                 defaultActiveKey="1"
@@ -581,7 +581,6 @@ const UserPage = () => {
                                     bordered
                                     columns={columnsUser}
                                     dataSource={user}
-                                    loading={loading}
                                     scroll={{ x: true }}
                                     showSorterTooltip={false}
                                 />
@@ -608,7 +607,6 @@ const UserPage = () => {
                                     bordered
                                     columns={columnsZaloUser}
                                     dataSource={zaloAPIInfo}
-                                    loading={loading}
                                     scroll={{ x: true }}
                                     showSorterTooltip={false}
                                 />

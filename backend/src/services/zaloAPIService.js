@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const axios = require('axios');
 
+const qs = require('qs');
+
 const db = require('../configs/databaseZaloAPIConfig');
 
 const { created } = require('../services/errorService');
@@ -53,7 +55,7 @@ const zaloAPIService = {
     },
 
     refreshToken: async () => {
-        const zaloAPIInfo = await this.readed();
+        const zaloAPIInfo = await zaloAPIService.readed();
 
         const { refreshToken, secretKey, appId } = zaloAPIInfo[0];
 
@@ -78,7 +80,7 @@ const zaloAPIService = {
     },
 
     sendZaloAPIV3: async (zaloAPIUserId, zaloAPIText, retryCount = 1) => {
-        const zaloAPIInfo = await this.readed();
+        const zaloAPIInfo = await zaloAPIService.readed();
 
         const { accessToken } = zaloAPIInfo[0];
 
@@ -109,17 +111,21 @@ const zaloAPIService = {
         created(zaloAPIUserId, error, message);
 
         if (error === -216) {
-            const responseRefresh = await this.refreshToken();
+            const responseRefresh = await zaloAPIService.refreshToken();
 
             const { access_token, refresh_token } = responseRefresh.data;
 
             if (!(access_token && refresh_token))
                 return { error: -1007, message: 'Invalid Refresh Token!' };
 
-            await this.updated(access_token, refresh_token);
+            await zaloAPIService.updated(access_token, refresh_token);
 
             if (retryCount > 0)
-                return await this.sendZaloAPIV3(zaloAPIUserId, zaloAPIText, retryCount - 1);
+                return await zaloAPIService.sendZaloAPIV3(
+                    zaloAPIUserId,
+                    zaloAPIText,
+                    retryCount - 1
+                );
 
             throw new Error('Maximum retry count reached.');
         } else {

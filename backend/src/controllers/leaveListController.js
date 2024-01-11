@@ -1,5 +1,5 @@
-const dayjs = require('dayjs');
 const {
+    created,
     readed,
     readedOther,
     readedStatistics,
@@ -11,76 +11,51 @@ const {
 } = require('../services/leaveListService');
 const { readedInfoSuperior } = require('../services/userService');
 
-const { sendZaloNotificationV3 } = require('../utils/handleZaloAPI');
+const { messageLeaveList } = require('../utils/handleZaloMessage');
+
 const { sendZaloAPIV3 } = require('../services/zaloAPIService');
 
 const leaveListController = {
     created: async (req, res) => {
+        // Lấy thông tin từ auth của yêu cầu
+        const { userId, name, department } = req.decoded;
+
         // Lấy thông tin từ body của yêu cầu
-        const {
-            userId,
-            userName,
-            department,
-            leaveTypeId,
-            leaveType,
-            leaveDay,
-            fromDate,
-            toDate,
-            reason,
-        } = req.body;
+        const { leaveTypeId, leaveType, leaveDay, fromDate, toDate, reason } = req.body;
 
         try {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
-            // await leaveListService.create(userId, leaveTypeId, leaveDay, fromDate, toDate, reason);
+            await created(userId, leaveTypeId, leaveDay, fromDate, toDate, reason);
 
             const response = await readedInfoSuperior(userId);
 
             const { superiorName, superiorGender, superiorRoleId, superiorZaloUserID } =
                 response[0];
 
-            const zaloAPIText = `ĐƠN XIN NGHỈ PHÉP
-
-Dear ${superiorGender === 1 ? 'Mr.' : 'Ms.'} ${superiorName},
-xin gửi đến ${superiorGender === 1 ? 'anh' : 'chị'} với các thông tin như sau:
-
-- Họ và tên: ${userName}
-- Loại phép: ${leaveType}
-- Bộ phận: ${department}
-- Số ngày nghỉ: ${leaveDay}
-- Từ ngày: ${fromDate}
-- Đến ngày: ${toDate}
-- Lý do: ${reason}
-- Ngày yêu cầu: ${dayjs().format('DD/MM/YYYY HH:mm')}
-- Vui lòng truy cập vào đây để xem chi tiết: http://winefood-sw.com/nghiphep/${
-                superiorRoleId === 1 || superiorRoleId === 2 ? 'manager' : 'leader'
-            }
-
-Chú ý: Để nhận được thông báo tiếp theo từ Wine Food. 
-Vui lòng trả lời 1 tin nhắn bất kỳ!
-`;
+            const zaloAPIText = messageLeaveList(
+                superiorGender,
+                superiorName,
+                superiorRoleId,
+                name,
+                leaveType,
+                department,
+                leaveDay,
+                fromDate,
+                toDate,
+                reason
+            );
 
             const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
 
-            const { error, message } = responseSend;
-
-            console.log(responseSend);
-
-            res.json(responseSend);
-            // const responseSend = await sendZaloNotificationV3(
-            //     userId,
-            //     '8851502365121811999',
-            //     zaloAPIText
-            // );
-
-            // if (responseSend.error === 0) {
-            //     res.status(200).json({
-            //         error: 0,
-            //         message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
-            //         superiorName,
-            //     });
-            // } else {
-            //     res.status(400).json(responseSend);
-            // }
+            if (responseSend.error === 0) {
+                res.status(200).json({
+                    error: 0,
+                    message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
+                    superiorName,
+                });
+            } else {
+                res.status(400).json(responseSend);
+            }
         } catch (error) {
             res.status(500).json({
                 error: -1050,
@@ -91,6 +66,18 @@ Vui lòng trả lời 1 tin nhắn bất kỳ!
 
     // Xử lý yêu cầu đọc dữ liệu.
     readed: async (req, res) => {
+        try {
+            // Gọi hàm service để đọc dữ liệu
+            const results = await readed();
+
+            res.json(results);
+        } catch (err) {
+            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+        }
+    },
+
+    // Xử lý yêu cầu đọc dữ liệu.
+    readedByUserId: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
             const results = await readed();

@@ -153,9 +153,14 @@ const userService = {
 
         // Truy vấn SQL để đọc
         let sql = `SELECT 
-                        * 
+                        u.*,
+                        d.name department
                     FROM 
-                        user 
+                        user u
+                    LEFT JOIN
+                        department d
+                    ON
+                        d.id = u.departmentId
                     WHERE `;
 
         if (code && numberPhone) {

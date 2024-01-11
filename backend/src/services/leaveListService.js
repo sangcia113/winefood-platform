@@ -175,7 +175,7 @@ const leaveListService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    checkIsExist: async (userID, bookLeaveDay, bookFromDate, bookToDate) => {
+    checkIsExist: async (userID, bookFromDate, bookToDate) => {
         // Truy vấn SQL để đọc
         const sql = `SELECT 
                         * 
@@ -183,8 +183,6 @@ const leaveListService = {
                         list 
                     WHERE 
                         userId = ? 
-                    AND 
-                        bookLeaveDay = ? 
                     AND 
                         bookFromDate = ? 
                     AND 
@@ -195,7 +193,7 @@ const leaveListService = {
                         deleteRequest IS NULL`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
-        const [results] = await db.query(sql, [userID, bookLeaveDay, bookFromDate, bookToDate]);
+        const [results] = await db.query(sql, [userID, bookFromDate, bookToDate]);
 
         return results;
     },

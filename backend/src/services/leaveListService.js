@@ -76,6 +76,50 @@ const leaveListService = {
         return results;
     },
 
+    readedByUserId: async (userId, startDate, endDate) => {
+        const params = [userId];
+
+        // Truy vấn SQL để đọc
+        let sql = `SELECT
+                        l.*,
+                        u.name AS userName,
+                        d.name AS department,
+                        bt.nameVN AS bookLeaveType,
+                        at.nameVN AS actualLeaveType
+                    FROM list AS
+                        l
+                    LEFT JOIN user AS u
+                    ON
+                        u.id = l.userId
+                    LEFT JOIN department AS d
+                    ON
+                        d.id = u.departmentId
+                    LEFT JOIN type AS bt
+                    ON
+                        bt.id = l.bookLeaveTypeId
+                    LEFT JOIN type AS at
+                    ON 
+                        at.id = l.actualLeaveTypeID
+                    WHERE
+                        userId = ?`;
+
+        if (startDate && endDate) {
+            sql +=
+                startDate === endDate
+                    ? ` AND ? BETWEEN DATE(bookFromDate) AND DATE(bookToDate)`
+                    : ` AND DATE(bookFromDate) <= ? AND DATE(bookToDate) >= ?`;
+
+            params.push(endDate, startDate);
+        }
+
+        sql += ` ORDER BY l.id DESC`;
+
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, params);
+
+        return results;
+    },
+
     readedOther: async (startDate, endDate) => {
         const params = [];
 

@@ -36,7 +36,7 @@ router.post('/', checkBody, checkIsExist, created);
 router.get('/', readed);
 
 // End point GET
-router.get('/:id', checkParam, readedByUserId);
+router.get('/limit', readedByUserId);
 
 // End point GET
 router.get('/search', checkDate, readedByDate);

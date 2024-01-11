@@ -245,13 +245,13 @@ const HistoryPage = () => {
         try {
             setLoading(true);
 
-            const response = await axios.get(`${URL}/api/leave/list/${accessToken.userId}`, {
+            const response = await axios.get(`${URL}/api/leave/list/limit`, {
                 headers: {
                     Authorization: accessToken,
                 },
             });
 
-            setDataSource(response.data);
+            setDataSource(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
             console.log(error);
         } finally {

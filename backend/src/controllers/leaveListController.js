@@ -2,6 +2,7 @@ const {
     created,
     readed,
     readedOther,
+    readedByUserId,
     readedStatistics,
     updatedApproved,
     updatedApprovedLeaveDay,
@@ -78,9 +79,12 @@ const leaveListController = {
 
     // Xử lý yêu cầu đọc dữ liệu.
     readedByUserId: async (req, res) => {
+        // Lấy thông tin từ auth của yêu cầu
+        const { userId } = req.decoded;
+
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await readed();
+            const results = await readedByUserId(userId);
 
             res.json(results);
         } catch (err) {

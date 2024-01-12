@@ -145,7 +145,13 @@ const columns = [
         dataIndex: 'tracking',
         key: 'tracking',
         ellipsis: true,
-        render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+        render: (_, record) => {
+            if (record.deleted === 1) return <Tag color="#ff4d4f">Đã xóa</Tag>;
+            else {
+                if (record.tracking === 1) return <Tag color="#108ee9">Đã gửi Leader</Tag>;
+                if (record.tracking === 2) return <Tag color="#52c41a">Đã gửi Manager</Tag>;
+            }
+        },
     },
     {
         title: 'Xác nhận',
@@ -155,40 +161,13 @@ const columns = [
                 dataIndex: 'leaderApproved',
                 key: 'leaderApproved',
                 ellipsis: true,
-                render: record => record && <CheckCircleFilled style={{ color: '#52c41a' }} />,
-            },
-            {
-                title: 'Quản lý',
-                dataIndex: 'managerApproved',
-                key: 'managerApproved',
-                ellipsis: true,
                 render: (_, record) => {
-                    if (record.managerApproved === 0) {
-                        return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
-                    } else if (record.managerApproved === 1) {
-                        return <CheckCircleFilled style={{ color: '#52c41a' }} />;
-                    } else if (record.managerApprovedDelete === null) {
-                        return (
-                            <Tag
-                                bordered={false}
-                                color="processing"
-                                icon={<SyncOutlined spin />}
-                                style={{ paddingLeft: 0, backgroundColor: 'white' }}
-                            >
-                                Waiting...
-                            </Tag>
-                        );
-                    }
-                },
-            },
-            {
-                title: 'Huỷ phép',
-                dataIndex: 'managerApprovedDelete',
-                key: 'managerApprovedDelete',
-                ellipsis: true,
-                render: (_, record) => {
-                    if (record.deleteRequest === 1) {
-                        if (record.managerApprovedDelete === null) {
+                    if (!record.deleted) {
+                        if (record.leaderApproved === 0)
+                            return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
+                        else if (record.leaderApproved === 1)
+                            return <CheckCircleFilled style={{ color: '#52c41a' }} />;
+                        else
                             return (
                                 <Tag
                                     bordered={false}
@@ -199,11 +178,56 @@ const columns = [
                                     Waiting...
                                 </Tag>
                             );
-                        } else if (record.managerApprovedDelete === 1) {
-                            return <CheckCircleFilled style={{ color: '#52c41a' }} />;
-                        } else {
+                    }
+                },
+            },
+            {
+                title: 'Quản lý',
+                dataIndex: 'managerApproved',
+                key: 'managerApproved',
+                ellipsis: true,
+                render: (_, record) => {
+                    if (!record.deleted) {
+                        if (record.managerApproved === 0)
                             return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
-                        }
+                        else if (record.managerApproved === 1)
+                            return <CheckCircleFilled style={{ color: '#52c41a' }} />;
+                        else if (!record.managerApprovedDelete)
+                            return (
+                                <Tag
+                                    bordered={false}
+                                    color="processing"
+                                    icon={<SyncOutlined spin />}
+                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                >
+                                    Waiting...
+                                </Tag>
+                            );
+                    }
+                },
+            },
+            {
+                title: 'Huỷ phép',
+                dataIndex: 'managerApprovedDelete',
+                key: 'managerApprovedDelete',
+                ellipsis: true,
+                render: (_, record) => {
+                    if (record.deleteRequest) {
+                        if (record.managerApprovedDelete === 0)
+                            return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
+                        else if (record.managerApprovedDelete === 1)
+                            return <CheckCircleFilled style={{ color: '#52c41a' }} />;
+                        else
+                            return (
+                                <Tag
+                                    bordered={false}
+                                    color="processing"
+                                    icon={<SyncOutlined spin />}
+                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                >
+                                    Waiting...
+                                </Tag>
+                            );
                     }
                 },
             },
@@ -245,7 +269,7 @@ const HistoryPage = () => {
         try {
             setLoading(true);
 
-            const response = await axios.get(`${URL}/api/leave/list/limit`, {
+            const response = await axios.get(`${URL}/api/leave/list/history`, {
                 headers: {
                     Authorization: accessToken,
                 },
@@ -261,29 +285,13 @@ const HistoryPage = () => {
 
     return (
         <ContentComponent loading={loading}>
-            <Flex vertical gap={'large'}>
-                <Flex justify={'end'} align={'center'} gap={'middle'}>
-                    <Text>Select Date</Text>
-                    <RangePicker
-                        format={'DD/MM/YYYY'}
-                        onCalendarChange={dates => {
-                            // const [startDate, endDate] = dates || [];
-                            // if (startDate && endDate) {
-                            //     getLeaveListByDate(startDate, endDate);
-                            // } else if (!startDate && !endDate) {
-                            //     getLeaveList();
-                            // }
-                        }}
-                    />
-                </Flex>
-                <Table
-                    bordered
-                    columns={columns}
-                    dataSource={dataSource}
-                    scroll={{ x: true }}
-                    showSorterTooltip={false}
-                />
-            </Flex>
+            <Table
+                bordered
+                columns={columns}
+                dataSource={dataSource}
+                scroll={{ x: true }}
+                showSorterTooltip={false}
+            />
         </ContentComponent>
     );
 };

@@ -4,12 +4,13 @@ const router = require('express').Router();
 const {
     created,
     readed,
-    readedByUserId,
     readedByDate,
     readedOther,
     readedOtherByDate,
     readedStatistics,
     readedStatisticsByDate,
+    readedHistory,
+    readedLeader,
     updatedApproved,
     updatedApprovedLeaveDay,
     updatedApprovedLeaveType,
@@ -36,7 +37,10 @@ router.post('/', checkBody, checkIsExist, created);
 router.get('/', readed);
 
 // End point GET
-router.get('/limit', readedByUserId);
+router.get('/history', readedHistory);
+
+// End point GET
+router.get('/leader', readedLeader);
 
 // End point GET
 router.get('/search', checkDate, readedByDate);

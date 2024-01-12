@@ -2,8 +2,9 @@ const {
     created,
     readed,
     readedOther,
-    readedByUserId,
     readedStatistics,
+    readedHistory,
+    readedLeader,
     updatedApproved,
     updatedApprovedLeaveDay,
     updatedApprovedLeaveType,
@@ -78,21 +79,6 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readedByUserId: async (req, res) => {
-        // Lấy thông tin từ auth của yêu cầu
-        const { userId } = req.decoded;
-
-        try {
-            // Gọi hàm service để đọc dữ liệu
-            const results = await readedByUserId(userId);
-
-            res.json(results);
-        } catch (err) {
-            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
-        }
-    },
-
-    // Xử lý yêu cầu đọc dữ liệu.
     readedByDate: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { startDate, endDate } = req.query;
@@ -154,6 +140,36 @@ const leaveListController = {
         try {
             // Gọi hàm service để đọc dữ liệu
             const results = await readedStatistics(startDate, endDate);
+
+            res.json(results);
+        } catch (err) {
+            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+        }
+    },
+
+    // Xử lý yêu cầu đọc dữ liệu.
+    readedHistory: async (req, res) => {
+        // Lấy thông tin từ auth của yêu cầu
+        const { userId } = req.decoded;
+
+        try {
+            // Gọi hàm service để đọc dữ liệu
+            const results = await readedHistory(userId);
+
+            res.json(results);
+        } catch (err) {
+            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+        }
+    },
+
+    // Xử lý yêu cầu đọc dữ liệu.
+    readedLeader: async (req, res) => {
+        // Lấy thông tin từ auth của yêu cầu
+        const { userId } = req.decoded;
+
+        try {
+            // Gọi hàm service để đọc dữ liệu
+            const results = await readedLeader(userId);
 
             res.json(results);
         } catch (err) {

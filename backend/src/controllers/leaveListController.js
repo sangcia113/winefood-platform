@@ -10,10 +10,13 @@ const {
     updatedApprovedLeaveType,
     updatedApprovedRequestDelete,
     updatedRejected,
+    updatedCancel,
+    updatedRequestCancel,
 } = require('../services/leaveListService');
-const { readedInfoSuperior } = require('../services/userService');
 
-const { messageLeaveList } = require('../utils/handleZaloMessage');
+const { readedInfoSuperior, readedInfoManager } = require('../services/userService');
+
+const { messageRequestLeave, messageRequestCancel } = require('../utils');
 
 const { sendZaloAPIV3 } = require('../services/zaloAPIService');
 
@@ -34,7 +37,7 @@ const leaveListController = {
             const { superiorName, superiorGender, superiorRoleId, superiorZaloUserID } =
                 response[0];
 
-            const zaloAPIText = messageLeaveList(
+            const zaloAPIText = messageRequestLeave(
                 superiorGender,
                 superiorName,
                 superiorRoleId,
@@ -60,8 +63,8 @@ const leaveListController = {
             }
         } catch (error) {
             res.status(500).json({
-                error: -1050,
-                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn',
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },
@@ -74,7 +77,10 @@ const leaveListController = {
 
             res.json(results);
         } catch (err) {
-            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 
@@ -89,7 +95,10 @@ const leaveListController = {
 
             res.json(results);
         } catch (err) {
-            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 
@@ -101,7 +110,10 @@ const leaveListController = {
 
             res.json(results);
         } catch (err) {
-            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 
@@ -116,7 +128,10 @@ const leaveListController = {
 
             res.json(results);
         } catch (err) {
-            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 
@@ -128,7 +143,10 @@ const leaveListController = {
 
             res.json(results);
         } catch (err) {
-            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 
@@ -143,7 +161,10 @@ const leaveListController = {
 
             res.json(results);
         } catch (err) {
-            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 
@@ -158,7 +179,10 @@ const leaveListController = {
 
             res.json(results);
         } catch (err) {
-            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 
@@ -173,7 +197,10 @@ const leaveListController = {
 
             res.json(results);
         } catch (err) {
-            res.status(500).json({ message: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 
@@ -186,9 +213,12 @@ const leaveListController = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedApproved(id);
 
-            res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+            res.json({ error: 0, message: 'Phê duyệt thành công!' });
         } catch (err) {
-            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
         }
     },
 
@@ -204,9 +234,12 @@ const leaveListController = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedRejected(id, reason);
 
-            res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+            res.json({ error: 0, message: 'Từ chối thành công!' });
         } catch (err) {
-            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
         }
     },
 
@@ -219,9 +252,12 @@ const leaveListController = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedApprovedLeaveType(id);
 
-            res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+            res.json({ error: 0, message: 'Phê duyệt thành công!' });
         } catch (err) {
-            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
         }
     },
 
@@ -234,9 +270,12 @@ const leaveListController = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedApprovedLeaveDay(id);
 
-            res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+            res.json({ error: 0, message: 'Phê duyệt thành công!' });
         } catch (err) {
-            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
         }
     },
 
@@ -249,9 +288,79 @@ const leaveListController = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedApprovedRequestDelete(id);
 
-            res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+            res.json({ error: 0, message: 'Phê duyệt thành công!' });
         } catch (err) {
-            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn' });
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
+        }
+    },
+
+    updateCancel: async (req, res) => {
+        // Lấy ID từ params của yêu cầu
+        const { id } = req.params;
+
+        try {
+            // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+            await updatedCancel(id);
+
+            res.json({ error: 0, message: 'Huỷ phép thành công!' });
+        } catch (err) {
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
+        }
+    },
+
+    updateRequestCancel: async (req, res) => {
+        // Lấy ID từ params của yêu cầu
+        const { id } = req.params;
+
+        // Lấy thông tin từ auth của yêu cầu
+        const { name, department } = req.decoded;
+
+        // Lấy thông tin từ body của yêu cầu
+        const { requestReason, leaveType, leaveDay, fromDate, toDate, reason } = req.body;
+
+        try {
+            // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+            await updatedRequestCancel(id, requestReason);
+
+            const response = await readedInfoManager();
+
+            const { managerName, managerGender, managerZaloUserID } = response[0];
+
+            const zaloAPIText = messageRequestCancel(
+                requestReason,
+                managerGender,
+                managerName,
+                name,
+                leaveType,
+                department,
+                leaveDay,
+                fromDate,
+                toDate,
+                reason
+            );
+
+            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+
+            if (responseSend.error === 0) {
+                res.status(200).json({
+                    error: 0,
+                    message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
+                    managerName,
+                });
+            } else {
+                res.status(400).json(responseSend);
+            }
+        } catch (err) {
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
         }
     },
 };

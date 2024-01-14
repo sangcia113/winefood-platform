@@ -55,17 +55,18 @@ const HeaderComponent = ({ name }) => {
     return (
         <Header
             style={{
-                alignItems: 'center',
                 backgroundColor: 'white',
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '0px 4px ',
+                padding: '0px 8px ',
             }}
         >
-            <Link to="/">
-                <Image alt="Logo WineFood" preview={false} src={imgSrc} width={270} />
-            </Link>
-            <Flex justify="space-between" gap={8}>
+            <Flex align="center" justify="space-between">
+                <List
+                    style={{ cursor: 'pointer', fontSize: 36 }}
+                    onClick={() => setOpenDraw(prevOpen => !prevOpen)}
+                />
+                <Link to="/">
+                    <Image alt="Logo WineFood" preview={false} src={imgSrc} width={240} />
+                </Link>
                 {name && (
                     <Dropdown
                         arrow
@@ -106,10 +107,6 @@ const HeaderComponent = ({ name }) => {
                         </Avatar>
                     </Dropdown>
                 )}
-                <List
-                    style={{ cursor: 'pointer', fontSize: 36 }}
-                    onClick={() => setOpenDraw(prevOpen => !prevOpen)}
-                />
             </Flex>
             <Drawer
                 footer={
@@ -119,9 +116,9 @@ const HeaderComponent = ({ name }) => {
                 }
                 onClose={() => setOpenDraw(prevOpen => !prevOpen)}
                 open={openDrawer}
-                placement="right"
+                placement="left"
                 title="Menu"
-                width={320}
+                width={300}
                 styles={{ footer: { textAlign: 'center' } }}
             >
                 <Menu

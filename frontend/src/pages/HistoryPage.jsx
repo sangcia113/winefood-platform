@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-import { ContentComponent } from '../components';
-import { DatePicker, Dropdown, Flex, Table, Tag, Typography } from 'antd';
+import {
+    ContentComponent,
+    ModalErrorComponent,
+    ModalErrorOtherComponent,
+    ModalReasonComponent,
+    ModalSuccessComponent,
+} from '../components';
+import { Dropdown, Form, Table, Tag } from 'antd';
 import {
     CheckCircleFilled,
     CloseCircleFilled,
@@ -13,250 +19,36 @@ import { ThreeDotsVertical } from 'react-bootstrap-icons';
 import dayjs from 'dayjs';
 import axios from 'axios';
 
-const { RangePicker } = DatePicker;
-
-const { Text } = Typography;
-
 const URL = process.env.REACT_APP_API_URL;
-
-const columns = [
-    {
-        title: '',
-        dataIndex: 'action',
-        key: 'action',
-        fixed: 'left',
-        render: (_, record) => (
-            <Dropdown
-                arrow={true}
-                menu={{
-                    items: [
-                        {
-                            key: 1,
-                            label: 'Hủy phép',
-                            icon: <StopFilled />,
-                            onClick: () => {},
-                            style: { color: '#ff4d4f' },
-                        },
-                        {
-                            key: 2,
-                            label: 'Điều chỉnh',
-                            icon: <EditFilled />,
-                            children: [
-                                {
-                                    key: 4,
-                                    label: 'Loại phép',
-                                    // icon: <TagFilled />,
-                                    style: { color: '#c41d7f' },
-                                    onClick: () => {},
-                                },
-                                {
-                                    key: 5,
-                                    label: 'Số ngày',
-                                    // icon: <ReadFilled />,
-                                    style: { color: '#1677ff' },
-                                    onClick: () => {},
-                                },
-                                {
-                                    key: 6,
-                                    label: 'Cả hai',
-                                    // icon: <UnlockFilled />,
-                                    style: { color: '#531dab' },
-                                    onClick: () => {},
-                                },
-                            ],
-                        },
-                    ],
-                }}
-                placement={'bottomLeft'}
-            >
-                <ThreeDotsVertical />
-            </Dropdown>
-        ),
-    },
-    {
-        title: '#',
-        dataIndex: 'id',
-        key: 'id',
-        sorter: (a, b) => a.id - b.id,
-    },
-    {
-        title: 'Loại phép',
-        children: [
-            {
-                title: 'Đăng ký',
-                dataIndex: 'bookLeaveType',
-                key: 'bookLeaveType',
-                ellipsis: true,
-            },
-            {
-                title: 'Thực tế',
-                dataIndex: 'actualLeaveType',
-                key: 'actualLeaveType',
-                ellipsis: true,
-            },
-        ],
-    },
-    {
-        title: 'Số ngày',
-        children: [
-            {
-                title: 'Đăng ký',
-                dataIndex: 'bookLeaveDay',
-                key: 'bookLeaveDay',
-                ellipsis: true,
-            },
-            {
-                title: 'Thực tế',
-                dataIndex: 'actualLeaveDay',
-                key: 'actualLeaveDay',
-                ellipsis: true,
-            },
-        ],
-    },
-    {
-        title: 'Từ ngày',
-        dataIndex: 'bookFromDate',
-        key: 'bookFromDate',
-        ellipsis: true,
-        render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
-    },
-    {
-        title: 'Đến ngày',
-        dataIndex: 'bookToDate',
-        key: 'bookToDate',
-        ellipsis: true,
-        render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
-    },
-    {
-        title: 'Lý do',
-        dataIndex: 'reason',
-        key: 'reason',
-        ellipsis: true,
-    },
-    {
-        title: 'Ngày yêu cầu',
-        dataIndex: 'requestDate',
-        key: 'requestDate',
-        ellipsis: true,
-        render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
-    },
-    {
-        title: 'Lộ trình',
-        dataIndex: 'tracking',
-        key: 'tracking',
-        ellipsis: true,
-        render: (_, record) => {
-            if (record.deleted === 1) return <Tag color="#ff4d4f">Đã xóa</Tag>;
-            else {
-                if (record.tracking === 1) return <Tag color="#108ee9">Đã gửi Leader</Tag>;
-                if (record.tracking === 2) return <Tag color="#52c41a">Đã gửi Manager</Tag>;
-            }
-        },
-    },
-    {
-        title: 'Xác nhận',
-        children: [
-            {
-                title: 'Tổ trưởng',
-                dataIndex: 'leaderApproved',
-                key: 'leaderApproved',
-                ellipsis: true,
-                render: (_, record) => {
-                    if (!record.deleted) {
-                        if (record.leaderApproved === 0)
-                            return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
-                        else if (record.leaderApproved === 1)
-                            return <CheckCircleFilled style={{ color: '#52c41a' }} />;
-                        else
-                            return (
-                                <Tag
-                                    bordered={false}
-                                    color="processing"
-                                    icon={<SyncOutlined spin />}
-                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
-                                >
-                                    Waiting...
-                                </Tag>
-                            );
-                    }
-                },
-            },
-            {
-                title: 'Quản lý',
-                dataIndex: 'managerApproved',
-                key: 'managerApproved',
-                ellipsis: true,
-                render: (_, record) => {
-                    if (!record.deleted) {
-                        if (record.managerApproved === 0)
-                            return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
-                        else if (record.managerApproved === 1)
-                            return <CheckCircleFilled style={{ color: '#52c41a' }} />;
-                        else if (!record.managerApprovedDelete)
-                            return (
-                                <Tag
-                                    bordered={false}
-                                    color="processing"
-                                    icon={<SyncOutlined spin />}
-                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
-                                >
-                                    Waiting...
-                                </Tag>
-                            );
-                    }
-                },
-            },
-            {
-                title: 'Huỷ phép',
-                dataIndex: 'managerApprovedDelete',
-                key: 'managerApprovedDelete',
-                ellipsis: true,
-                render: (_, record) => {
-                    if (record.deleteRequest) {
-                        if (record.managerApprovedDelete === 0)
-                            return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
-                        else if (record.managerApprovedDelete === 1)
-                            return <CheckCircleFilled style={{ color: '#52c41a' }} />;
-                        else
-                            return (
-                                <Tag
-                                    bordered={false}
-                                    color="processing"
-                                    icon={<SyncOutlined spin />}
-                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
-                                >
-                                    Waiting...
-                                </Tag>
-                            );
-                    }
-                },
-            },
-        ],
-    },
-    {
-        title: 'Lý do từ chối',
-        children: [
-            {
-                title: 'Tổ trưởng',
-                dataIndex: 'leaderRejectReason',
-                key: 'leaderRejectReason',
-                ellipsis: true,
-            },
-            {
-                title: 'Quản lý',
-                dataIndex: 'managerRejectReason',
-                key: 'managerRejectReason',
-                ellipsis: true,
-            },
-        ],
-    },
-];
 
 const HistoryPage = () => {
     console.log('Run HistoryPage...');
 
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
+
+    const [modalError, setModalError] = useState({
+        open: false,
+        error: '',
+    });
+
+    const [modalErrorOther, setModalErrorOther] = useState({
+        open: false,
+        title: '',
+        message: '',
+    });
+
+    const [modalReason, setModalReason] = useState({
+        open: false,
+        onFinish: () => {},
+    });
+
+    const [modalSuccess, setModalSuccess] = useState({
+        open: false,
+        message: '',
+    });
+
+    const [form] = Form.useForm();
 
     const accessToken =
         localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
@@ -283,6 +75,354 @@ const HistoryPage = () => {
         }
     };
 
+    const cancelLeave = async id => {
+        try {
+            const response = await axios.put(
+                `${URL}/api/leave/list/cancel/${id}`,
+                {},
+                {
+                    headers: {
+                        Authorization: accessToken,
+                    },
+                }
+            );
+
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
+
+            getLeaveList();
+        } catch (error) {
+            setModalError({ open: true, error });
+        }
+    };
+
+    const requestCancelLeave = async (
+        id,
+        requestReason,
+        leaveType,
+        leaveDay,
+        fromDate,
+        toDate,
+        reason
+    ) => {
+        try {
+            const response = await axios.put(
+                `${URL}/api/leave/list/request-cancel/${id}`,
+                { requestReason, leaveType, leaveDay, fromDate, toDate, reason },
+                {
+                    headers: {
+                        Authorization: accessToken,
+                    },
+                }
+            );
+
+            setModalReason({ open: false });
+
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
+
+            getLeaveList();
+        } catch (error) {
+            setModalError({ open: true, error });
+        }
+    };
+
+    const columns = [
+        {
+            title: '',
+            dataIndex: 'action',
+            key: 'action',
+            fixed: 'left',
+            render: (_, record) => (
+                <Dropdown
+                    arrow={true}
+                    menu={{
+                        items: [
+                            {
+                                key: 1,
+                                label: 'Hủy phép',
+                                icon: <StopFilled />,
+                                onClick: () => {
+                                    if (record.deleted || record.deleteRequest) {
+                                        setModalErrorOther({
+                                            message: (
+                                                <ul>
+                                                    <li>
+                                                        <b>Bạn đã tự huỷ</b> yêu cầu nghỉ phép này.
+                                                    </li>
+                                                    <li>
+                                                        <b>Bạn đã yêu cầu hủy</b> yêu cầu nghỉ phép
+                                                        này.
+                                                    </li>
+                                                </ul>
+                                            ),
+                                            open: true,
+                                            title: 'KHÔNG THỂ HUỶ PHÉP',
+                                        });
+                                    } else if (
+                                        record.leaderApproved === 1 ||
+                                        record.managerApproved === 1
+                                    ) {
+                                        setModalReason({
+                                            open: true,
+                                            onFinish: values =>
+                                                requestCancelLeave(
+                                                    record.id,
+                                                    values.reason,
+                                                    record.bookLeaveType,
+                                                    record.bookLeaveDay,
+                                                    record.bookFromDate,
+                                                    record.bookToDate,
+                                                    record.reason
+                                                ),
+                                        });
+                                    } else {
+                                        cancelLeave(record.id);
+                                    }
+                                },
+                                style: { color: '#ff4d4f' },
+                            },
+                            {
+                                key: 2,
+                                label: 'Điều chỉnh',
+                                icon: <EditFilled />,
+                                children: [
+                                    {
+                                        key: 4,
+                                        label: 'Loại phép',
+                                        // icon: <TagFilled />,
+                                        style: { color: '#c41d7f' },
+                                        onClick: () => {},
+                                    },
+                                    {
+                                        key: 5,
+                                        label: 'Số ngày',
+                                        // icon: <ReadFilled />,
+                                        style: { color: '#1677ff' },
+                                        onClick: () => {},
+                                    },
+                                    {
+                                        key: 6,
+                                        label: 'Cả hai',
+                                        // icon: <UnlockFilled />,
+                                        style: { color: '#531dab' },
+                                        onClick: () => {},
+                                    },
+                                ],
+                            },
+                        ],
+                    }}
+                    placement={'bottomLeft'}
+                >
+                    <ThreeDotsVertical />
+                </Dropdown>
+            ),
+        },
+        {
+            title: '#',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => a.id - b.id,
+        },
+        {
+            title: 'Loại phép',
+            children: [
+                {
+                    title: 'Đăng ký',
+                    dataIndex: 'bookLeaveType',
+                    key: 'bookLeaveType',
+                    ellipsis: true,
+                },
+                {
+                    title: 'Thực tế',
+                    dataIndex: 'actualLeaveType',
+                    key: 'actualLeaveType',
+                    ellipsis: true,
+                    render: (_, record) =>
+                        record.actualLeaveType &&
+                        record.managerApprovedLeaveType && (
+                            <>
+                                <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
+                                {record.actualLeaveType}
+                            </>
+                        ),
+                },
+            ],
+        },
+        {
+            title: 'Số ngày',
+            children: [
+                {
+                    title: 'Đăng ký',
+                    dataIndex: 'bookLeaveDay',
+                    key: 'bookLeaveDay',
+                    ellipsis: true,
+                },
+                {
+                    title: 'Thực tế',
+                    dataIndex: 'actualLeaveDay',
+                    key: 'actualLeaveDay',
+                    ellipsis: true,
+                    render: (_, record) =>
+                        record.actualLeaveDay &&
+                        record.managerApprovedLeaveDay && (
+                            <>
+                                <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
+                                {record.actualLeaveDay}
+                            </>
+                        ),
+                },
+            ],
+        },
+        {
+            title: 'Từ ngày',
+            dataIndex: 'bookFromDate',
+            key: 'bookFromDate',
+            ellipsis: true,
+            render: (_, record) =>
+                record.actualFromDate && record.managerApprovedLeaveDay
+                    ? dayjs(record.actualFromDate).format('HH:mm DD/MM/YYYY')
+                    : dayjs(record.bookFromDate).format('HH:mm DD/MM/YYYY'),
+        },
+        {
+            title: 'Đến ngày',
+            dataIndex: 'bookToDate',
+            key: 'bookToDate',
+            ellipsis: true,
+            render: (_, record) =>
+                record.actualToDate && record.managerApprovedLeaveDay
+                    ? dayjs(record.actualToDate).format('HH:mm DD/MM/YYYY')
+                    : dayjs(record.bookToDate).format('HH:mm DD/MM/YYYY'),
+        },
+        {
+            title: 'Lý do',
+            dataIndex: 'reason',
+            key: 'reason',
+            ellipsis: true,
+        },
+        {
+            title: 'Ngày yêu cầu',
+            dataIndex: 'requestDate',
+            key: 'requestDate',
+            ellipsis: true,
+            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+        },
+        {
+            title: 'Lộ trình',
+            dataIndex: 'tracking',
+            key: 'tracking',
+            ellipsis: true,
+            render: (_, record) => {
+                if (record.deleted) return <Tag color="#ff4d4f">Đã xóa</Tag>;
+                else {
+                    if (record.tracking === 1) return <Tag color="#108ee9">Đã gửi Leader</Tag>;
+                    if (record.tracking === 2) return <Tag color="#52c41a">Đã gửi Manager</Tag>;
+                }
+            },
+        },
+        {
+            title: 'Xác nhận',
+            children: [
+                {
+                    title: 'Tổ trưởng',
+                    dataIndex: 'leaderApproved',
+                    key: 'leaderApproved',
+                    ellipsis: true,
+                    render: (_, record) => {
+                        if (!record.deleted) {
+                            if (record.leaderApproved === 0)
+                                return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
+                            else if (record.leaderApproved === 1)
+                                return <CheckCircleFilled style={{ color: '#52c41a' }} />;
+                            else
+                                return (
+                                    <Tag
+                                        bordered={false}
+                                        color="processing"
+                                        icon={<SyncOutlined spin />}
+                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                    >
+                                        Waiting...
+                                    </Tag>
+                                );
+                        }
+                    },
+                },
+                {
+                    title: 'Quản lý',
+                    dataIndex: 'managerApproved',
+                    key: 'managerApproved',
+                    ellipsis: true,
+                    render: (_, record) => {
+                        if (!record.deleted && !record.deleteRequest) {
+                            if (record.managerApproved === 0)
+                                return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
+                            else if (record.managerApproved === 1)
+                                return <CheckCircleFilled style={{ color: '#52c41a' }} />;
+                            else if (record.leaderApproved === 1)
+                                return (
+                                    <Tag
+                                        bordered={false}
+                                        color="processing"
+                                        icon={<SyncOutlined spin />}
+                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                    >
+                                        Waiting...
+                                    </Tag>
+                                );
+                        }
+                    },
+                },
+                {
+                    title: 'Huỷ phép',
+                    dataIndex: 'managerApprovedDelete',
+                    key: 'managerApprovedDelete',
+                    ellipsis: true,
+                    render: (_, record) => {
+                        if (record.deleteRequest) {
+                            if (record.managerApprovedDelete === 0)
+                                return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
+                            else if (record.managerApprovedDelete === 1)
+                                return <CheckCircleFilled style={{ color: '#52c41a' }} />;
+                            else
+                                return (
+                                    <Tag
+                                        bordered={false}
+                                        color="processing"
+                                        icon={<SyncOutlined spin />}
+                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                    >
+                                        Waiting...
+                                    </Tag>
+                                );
+                        }
+                    },
+                },
+            ],
+        },
+        {
+            title: 'Lý do từ chối',
+            children: [
+                {
+                    title: 'Tổ trưởng',
+                    dataIndex: 'leaderRejectReason',
+                    key: 'leaderRejectReason',
+                    ellipsis: true,
+                },
+                {
+                    title: 'Quản lý',
+                    dataIndex: 'managerRejectReason',
+                    key: 'managerRejectReason',
+                    ellipsis: true,
+                },
+            ],
+        },
+    ];
+
     return (
         <ContentComponent loading={loading}>
             <Table
@@ -291,6 +431,30 @@ const HistoryPage = () => {
                 dataSource={dataSource}
                 scroll={{ x: true }}
                 showSorterTooltip={false}
+            />
+            <ModalErrorComponent
+                onOk={() => setModalError({ open: false })}
+                open={modalError.open}
+                error={modalError.error}
+            />
+            <ModalErrorOtherComponent
+                onOk={() => setModalErrorOther({ open: false })}
+                open={modalErrorOther.open}
+                title={modalErrorOther.title}
+                message={modalErrorOther.message}
+            />
+            <ModalReasonComponent
+                afterClose={() => form.resetFields()}
+                onCancel={() => setModalReason({ open: false })}
+                onOk={() => form.submit()}
+                open={modalReason.open}
+                form={form}
+                onFinish={modalReason.onFinish}
+            />
+            <ModalSuccessComponent
+                onOk={() => setModalSuccess({ open: false })}
+                open={modalSuccess.open}
+                message={modalSuccess.message}
             />
         </ContentComponent>
     );

@@ -16,6 +16,8 @@ const {
     updatedApprovedLeaveType,
     updatedApprovedRequestDelete,
     updatedRejected,
+    updateCancel,
+    updateRequestCancel,
 } = require('../controllers/leaveListController');
 
 const {
@@ -81,6 +83,12 @@ router.put(
     checkApprovedRequestDelete,
     updatedApprovedRequestDelete
 );
+
+// End point PUT
+router.put('/cancel/:id', checkParam, updateCancel);
+
+// End point PUT
+router.put('/request-cancel/:id', checkParam, updateRequestCancel);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

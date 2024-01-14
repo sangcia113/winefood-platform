@@ -33,7 +33,7 @@ import { getUniqueName } from '../utils';
 import {
     ModalConfirmComponent,
     ModalErrorComponent,
-    ModalErrorOtherComponet,
+    ModalErrorOtherComponent,
     ModalSuccessComponent,
     ModalReasonComponent,
     ContentComponent,
@@ -72,7 +72,6 @@ const ManagerPage = () => {
     });
 
     const [modalReason, setModalReason] = useState({
-        onOk: () => {},
         open: false,
         onFinish: () => {},
     });
@@ -997,7 +996,7 @@ const ManagerPage = () => {
                 open={modalError.open}
                 error={modalError.error}
             />
-            <ModalErrorOtherComponet
+            <ModalErrorOtherComponent
                 onOk={() => setModalErrorOther({ open: false })}
                 open={modalErrorOther.open}
                 title={modalErrorOther.title}

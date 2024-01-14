@@ -196,7 +196,7 @@ const leaveListService = {
                     ON 
                         at.id = l.actualLeaveTypeID
                     WHERE
-                        userId = ?
+                        userId = ? 
                     ORDER BY 
                         l.id 
                     DESC`;
@@ -409,6 +409,36 @@ const leaveListService = {
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [1, new Date(), id]);
+    },
+
+    // Cập nhật trong cơ sở dữ liệu.
+    updatedCancel: async id => {
+        // Truy vấn SQL để đọc
+        const sql = `UPDATE 
+                        list 
+                    SET 
+                        deleted = ?, 
+                        deletedDate = ? 
+                    WHERE 
+                        id = ?`;
+
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [1, new Date(), id]);
+    },
+
+    // Cập nhật trong cơ sở dữ liệu.
+    updatedRequestCancel: async (id, reason) => {
+        // Truy vấn SQL để đọc
+        const sql = `UPDATE 
+                        list 
+                    SET 
+                        deleteRequest = ?, 
+                        deleteReason = ?
+                    WHERE 
+                        id = ?`;
+
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [1, reason, id]);
     },
 };
 

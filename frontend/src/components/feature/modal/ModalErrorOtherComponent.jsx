@@ -4,7 +4,7 @@ import React from 'react';
 
 const { Text } = Typography;
 
-const ModalErrorOtherComponet = ({ onOk, open, title, message }) => (
+const ModalErrorOtherComponent = ({ onOk, open, title, message }) => (
     <Modal
         cancelButtonProps={{ style: { display: 'none' } }}
         centered
@@ -32,4 +32,4 @@ const ModalErrorOtherComponet = ({ onOk, open, title, message }) => (
     </Modal>
 );
 
-export default ModalErrorOtherComponet;
+export default ModalErrorOtherComponent;

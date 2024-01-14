@@ -1,16 +1,9 @@
 const { encodePassword, decodePassword } = require('../utils/handleHashPassword');
-const {
-    getAllUser,
-    getUserProfile,
-    requestUserInfo,
-    sendZaloNotificationV3,
-} = require('../utils/handleZaloAPI');
+const { messageRequestLeave, messageRequestCancel } = require('../utils/handleZaloMessage');
 
 module.exports = {
     encodePassword,
     decodePassword,
-    getAllUser,
-    getUserProfile,
-    requestUserInfo,
-    sendZaloNotificationV3,
+    messageRequestLeave,
+    messageRequestCancel,
 };

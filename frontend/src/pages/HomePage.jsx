@@ -7,7 +7,7 @@ import { Button, DatePicker, Flex, Form, Input, InputNumber, Select, Spin, Typog
 import {
     ContentComponent,
     ModalErrorComponent,
-    ModalErrorOtherComponet,
+    ModalErrorOtherComponent,
     ModalSuccessComponent,
     ModalWarningComponent,
 } from '../components';
@@ -401,7 +401,7 @@ const HomePage = () => {
                 open={modalError.open}
                 error={modalError.error}
             />
-            <ModalErrorOtherComponet
+            <ModalErrorOtherComponent
                 onOk={() => setModalErrorOther({ open: false })}
                 open={modalErrorOther.open}
                 title={modalErrorOther.title}

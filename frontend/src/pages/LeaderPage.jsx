@@ -11,6 +11,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const { Text } = Typography;
 
@@ -262,8 +263,17 @@ const LeaderPage = () => {
         }
     };
 
+    const itemsBreadcrumb = [
+        {
+            title: <Link to="/">Home</Link>,
+        },
+        {
+            title: <Link to="/leader">Leader</Link>,
+        },
+    ];
+
     return (
-        <ContentComponent loading={loading}>
+        <ContentComponent loading={loading} items={itemsBreadcrumb}>
             <Table
                 bordered
                 columns={columns}

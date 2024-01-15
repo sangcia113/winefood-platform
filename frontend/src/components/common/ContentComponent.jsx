@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Card, Layout, Spin } from 'antd';
+import { Breadcrumb, Card, Layout, Spin } from 'antd';
 
 const { Content } = Layout;
 
-const ContentComponent = ({ loading, children }) => (
+const ContentComponent = ({ loading, items, children }) => (
     <Spin spinning={loading} tip="Vui lòng đợi...">
         <Content
             style={{
@@ -14,6 +14,7 @@ const ContentComponent = ({ loading, children }) => (
                 backgroundPosition: 'center',
             }}
         >
+            <Breadcrumb items={items} style={{ margin: 22 }} />
             <Card
                 bordered={false}
                 style={{

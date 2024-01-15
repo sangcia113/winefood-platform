@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-import { Button, DatePicker, Flex, Form, Input, InputNumber, Select, Spin, Typography } from 'antd';
+import { Button, DatePicker, Flex, Form, Input, InputNumber, Select, Typography } from 'antd';
 
 import {
     ContentComponent,
@@ -11,6 +11,7 @@ import {
     ModalSuccessComponent,
     ModalWarningComponent,
 } from '../components';
+import { Link } from 'react-router-dom';
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -192,8 +193,14 @@ const HomePage = () => {
         }
     };
 
+    const itemsBreadcrumb = [
+        {
+            title: <Link to="/">Home</Link>,
+        },
+    ];
+
     return (
-        <ContentComponent loading={loading}>
+        <ContentComponent loading={loading} items={itemsBreadcrumb}>
             <Form
                 colon={false}
                 form={form}
@@ -329,7 +336,7 @@ const HomePage = () => {
                     <DatePicker
                         allowClear={false}
                         changeOnBlur={true}
-                        format={'DD/MM/YYYY HH:mm'}
+                        format={'HH:mm DD/MM/YYYY'}
                         placeholder="Chọn ngày bắt đầu..."
                         showTime={{ defaultValue: dayjs('07:30', 'HH:mm') }}
                         size={'large'}
@@ -357,7 +364,7 @@ const HomePage = () => {
                     <DatePicker
                         allowClear={false}
                         changeOnBlur={true}
-                        format={'DD/MM/YYYY HH:mm'}
+                        format={'HH:mm DD/MM/YYYY'}
                         placeholder="Chọn ngày kết thúc..."
                         showTime={{ defaultValue: dayjs('16:30', 'HH:mm') }}
                         size={'large'}

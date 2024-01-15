@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import {
     ContentComponent,
+    ModalEditComponent,
     ModalErrorComponent,
     ModalErrorOtherComponent,
     ModalReasonComponent,
@@ -18,6 +19,7 @@ import {
 import { ThreeDotsVertical } from 'react-bootstrap-icons';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const URL = process.env.REACT_APP_API_URL;
 
@@ -26,6 +28,8 @@ const HistoryPage = () => {
 
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
+
+    const [modalEdit, setModalEdit] = useState({});
 
     const [modalError, setModalError] = useState({
         open: false,
@@ -48,7 +52,8 @@ const HistoryPage = () => {
         message: '',
     });
 
-    const [form] = Form.useForm();
+    const [formEdit] = Form.useForm();
+    const [formReason] = Form.useForm();
 
     const accessToken =
         localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
@@ -190,29 +195,7 @@ const HistoryPage = () => {
                                 key: 2,
                                 label: 'Điều chỉnh',
                                 icon: <EditFilled />,
-                                children: [
-                                    {
-                                        key: 4,
-                                        label: 'Loại phép',
-                                        // icon: <TagFilled />,
-                                        style: { color: '#c41d7f' },
-                                        onClick: () => {},
-                                    },
-                                    {
-                                        key: 5,
-                                        label: 'Số ngày',
-                                        // icon: <ReadFilled />,
-                                        style: { color: '#1677ff' },
-                                        onClick: () => {},
-                                    },
-                                    {
-                                        key: 6,
-                                        label: 'Cả hai',
-                                        // icon: <UnlockFilled />,
-                                        style: { color: '#531dab' },
-                                        onClick: () => {},
-                                    },
-                                ],
+                                onClick: () => {},
                             },
                         ],
                     }}
@@ -227,6 +210,19 @@ const HistoryPage = () => {
             dataIndex: 'id',
             key: 'id',
             sorter: (a, b) => a.id - b.id,
+        },
+        {
+            title: 'Lộ trình',
+            dataIndex: 'tracking',
+            key: 'tracking',
+            ellipsis: true,
+            render: (_, record) => {
+                if (record.deleted) return <Tag color="#ff4d4f">Đã xóa</Tag>;
+                else {
+                    if (record.tracking === 1) return <Tag color="#108ee9">Đã gửi Leader</Tag>;
+                    if (record.tracking === 2) return <Tag color="#52c41a">Đã gửi Manager</Tag>;
+                }
+            },
         },
         {
             title: 'Loại phép',
@@ -310,19 +306,6 @@ const HistoryPage = () => {
             key: 'requestDate',
             ellipsis: true,
             render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
-        },
-        {
-            title: 'Lộ trình',
-            dataIndex: 'tracking',
-            key: 'tracking',
-            ellipsis: true,
-            render: (_, record) => {
-                if (record.deleted) return <Tag color="#ff4d4f">Đã xóa</Tag>;
-                else {
-                    if (record.tracking === 1) return <Tag color="#108ee9">Đã gửi Leader</Tag>;
-                    if (record.tracking === 2) return <Tag color="#52c41a">Đã gửi Manager</Tag>;
-                }
-            },
         },
         {
             title: 'Xác nhận',
@@ -423,8 +406,17 @@ const HistoryPage = () => {
         },
     ];
 
+    const itemsBreadcrumb = [
+        {
+            title: <Link to="/">Home</Link>,
+        },
+        {
+            title: <Link to="/history">History</Link>,
+        },
+    ];
+
     return (
-        <ContentComponent loading={loading}>
+        <ContentComponent loading={loading} items={itemsBreadcrumb}>
             <Table
                 bordered
                 columns={columns}
@@ -432,6 +424,7 @@ const HistoryPage = () => {
                 scroll={{ x: true }}
                 showSorterTooltip={false}
             />
+            <ModalEditComponent afterClose={() => formEdit.resetFields()} />
             <ModalErrorComponent
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
@@ -444,11 +437,11 @@ const HistoryPage = () => {
                 message={modalErrorOther.message}
             />
             <ModalReasonComponent
-                afterClose={() => form.resetFields()}
+                afterClose={() => formReason.resetFields()}
                 onCancel={() => setModalReason({ open: false })}
-                onOk={() => form.submit()}
+                onOk={() => formReason.submit()}
                 open={modalReason.open}
-                form={form}
+                form={formReason}
                 onFinish={modalReason.onFinish}
             />
             <ModalSuccessComponent

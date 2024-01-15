@@ -26,7 +26,7 @@ const ModalPasswordComponent = ({ afterClose, onCancel, onOk, open, form, onFini
                 </Text>
             </Space>
         }
-        width={440}
+        width={480}
         styles={{
             header: { paddingBottom: 20, textAlign: 'center' },
             footer: { paddingTop: 20, textAlign: 'center' },

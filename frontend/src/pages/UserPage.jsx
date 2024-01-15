@@ -28,6 +28,7 @@ import {
 import { getUniqueName } from '../utils';
 import { ContentComponent, FormComponent } from '../components';
 import { ModalConfirmComponent, ModalErrorComponent, ModalSuccessComponent } from '../components';
+import { Link } from 'react-router-dom';
 
 const URL = process.env.REACT_APP_API_URL;
 
@@ -549,8 +550,17 @@ const UserPage = () => {
         },
     ];
 
+    const itemsBreadcrumb = [
+        {
+            title: <Link to="/">Home</Link>,
+        },
+        {
+            title: <Link to="/user">User</Link>,
+        },
+    ];
+
     return (
-        <ContentComponent loading={loading}>
+        <ContentComponent loading={loading} items={itemsBreadcrumb}>
             <Tabs
                 centered
                 defaultActiveKey="1"

@@ -11,7 +11,13 @@ const NotAuthorizedPage = () => {
         <Result
             status="403"
             title="403 Forbidden"
-            subTitle="Tài khoản của bạn không có quyền truy cập vào trang này"
+            subTitle={
+                <>
+                    Sorry, you are not authorized to access this page
+                    <br />
+                    Xin lỗi, tài khoản của bạn không có quyền truy cập vào trang này
+                </>
+            }
             extra={
                 <Button type="primary" onClick={() => navigate('/')}>
                     Trang chủ

@@ -1,9 +1,14 @@
 const { encodePassword, decodePassword } = require('../utils/handleHashPassword');
-const { messageRequestLeave, messageRequestCancel } = require('../utils/handleZaloMessage');
+const {
+    messageRequestCancel,
+    messageRequestEdit,
+    messageRequestLeave,
+} = require('../utils/handleZaloMessage');
 
 module.exports = {
     encodePassword,
     decodePassword,
-    messageRequestLeave,
     messageRequestCancel,
+    messageRequestEdit,
+    messageRequestLeave,
 };

@@ -1,5 +1,5 @@
 import checkToken from './handleAuth';
-import { getDataSource, getDataSourceZaloAPI } from './handleGetDataSource';
-import getUniqueName from './handleGetUniqueName';
+import createConnection from './handleConnection';
+import getUniqueName from './handleUniqueName';
 
-export { checkToken, getDataSource, getDataSourceZaloAPI, getUniqueName };
+export { checkToken, createConnection, getUniqueName };

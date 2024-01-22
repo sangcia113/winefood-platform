@@ -1,17 +1,9 @@
+import React from 'react';
+
+import { DatePicker, Form, InputNumber, Modal, Select, Space, Typography } from 'antd';
 import { SmileFilled } from '@ant-design/icons';
-import {
-    Checkbox,
-    DatePicker,
-    Flex,
-    Form,
-    InputNumber,
-    Modal,
-    Select,
-    Space,
-    Typography,
-} from 'antd';
+
 import dayjs from 'dayjs';
-import React, { useState } from 'react';
 
 const { Text } = Typography;
 
@@ -19,14 +11,12 @@ const ModalEditComponent = ({
     afterClose,
     form,
     leaveType = [],
+    loading,
     onCancel,
     onOk,
     open,
     onFinish,
 }) => {
-    const [checkbox, setCheckBox] = useState({ checkboxLeaveDay: true, checkboxLeaveType: false });
-
-    console.log(checkbox);
     return (
         <Modal
             afterClose={afterClose}
@@ -34,7 +24,7 @@ const ModalEditComponent = ({
             cancelText="Hủy Bỏ"
             centered
             closeIcon={false}
-            okButtonProps={{ style: { borderRadius: 20 } }}
+            okButtonProps={{ loading: loading, style: { borderRadius: 20 } }}
             okText="Đồng Ý"
             onCancel={onCancel}
             onOk={onOk}
@@ -53,28 +43,6 @@ const ModalEditComponent = ({
                 footer: { paddingTop: 20, textAlign: 'center' },
             }}
         >
-            <Flex align="center" justify="center" gap={32} style={{ marginBottom: 24 }}>
-                <Checkbox
-                    name="checkboxLeaveType"
-                    onChange={() =>
-                        setCheckBox(prevState => ({
-                            checkboxLeaveType: !prevState.checkboxLeaveType,
-                        }))
-                    }
-                >
-                    Loại phép
-                </Checkbox>
-                <Checkbox
-                    name="checkboxLeaveDay"
-                    onChange={() =>
-                        setCheckBox(prevState => ({
-                            checkboxLeaveDay: !prevState.checkboxLeaveDay,
-                        }))
-                    }
-                >
-                    Số ngày nghỉ
-                </Checkbox>
-            </Flex>
             <Form
                 colon={false}
                 form={form}
@@ -90,122 +58,118 @@ const ModalEditComponent = ({
                 }}
                 onFinish={onFinish}
             >
-                <div style={{ display: checkbox.checkboxLeaveType === false && 'none' }}>
-                    <Form.Item
-                        label={
-                            <Text style={{ fontSize: 16 }}>
-                                <Text strong style={{ fontSize: 16 }}>
-                                    LOẠI PHÉP
-                                </Text>
-                                <br />
-                                <small className="text-muted">TYPES OF LEAVES</small>
+                <Form.Item
+                    label={
+                        <Text style={{ fontSize: 18 }}>
+                            <Text strong style={{ fontSize: 16 }}>
+                                LOẠI PHÉP
                             </Text>
-                        }
-                        name="leaveTypeId"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Bạn chưa chọn loại phép!',
-                            },
-                        ]}
+                            <br />
+                            <small className="text-muted">TYPES OF LEAVES</small>
+                        </Text>
+                    }
+                    name="actualLeaveTypeId"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Bạn chưa chọn loại phép!',
+                        },
+                    ]}
+                >
+                    <Select
+                        placeholder="Chọn loại phép trong danh sách..."
+                        style={{ width: '100%' }}
                     >
-                        <Select
-                            placeholder="Chọn loại phép trong danh sách..."
-                            style={{ width: '100%' }}
-                        >
-                            {leaveType.map(item => (
-                                <Select.Option key={item.id} value={item.id}>
-                                    {item.nameVN}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                </div>
+                        {leaveType.map(item => (
+                            <Select.Option key={item.id} value={item.id}>
+                                {item.nameVN}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                    label={
+                        <Text style={{ fontSize: 18 }}>
+                            <Text strong style={{ fontSize: 16 }}>
+                                SỐ NGÀY XIN NGHỈ
+                            </Text>
+                            <br />
+                            <small className="text-muted">DAY REQUESTED FOR LEAVE</small>
+                        </Text>
+                    }
+                    name="actualLeaveDay"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Bạn chưa nhập số ngày nghỉ!',
+                        },
+                    ]}
+                >
+                    <InputNumber
+                        className="custom-modal-input"
+                        max={100}
+                        min={0.25}
+                        placeholder="Nhập số ngày xin nghỉ..."
+                        step={0.25}
+                        style={{ width: '100%' }}
+                    />
+                </Form.Item>
 
-                <div style={{ display: checkbox.checkboxLeaveDay === false && 'none' }}>
-                    <Form.Item
-                        label={
-                            <Text style={{ fontSize: 16 }}>
-                                <Text strong style={{ fontSize: 16 }}>
-                                    SỐ NGÀY XIN NGHỈ
-                                </Text>
-                                <br />
-                                <small className="text-muted">DAY REQUESTED FOR LEAVE</small>
+                <Form.Item
+                    label={
+                        <Text style={{ fontSize: 18 }}>
+                            <Text strong style={{ fontSize: 16 }}>
+                                TỪ
                             </Text>
-                        }
-                        name="leaveDay"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Bạn chưa nhập số ngày nghỉ!',
-                            },
-                        ]}
-                    >
-                        <InputNumber
-                            max={100}
-                            min={0.25}
-                            placeholder="Nhập số ngày xin nghỉ..."
-                            step={0.25}
-                            style={{ width: '100%' }}
-                        />
-                    </Form.Item>
+                            <br />
+                            <small className="text-muted">FROM</small>
+                        </Text>
+                    }
+                    name="actualFromDate"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Bạn chưa chọn ngày/ giờ bắt đầu!',
+                        },
+                    ]}
+                >
+                    <DatePicker
+                        allowClear={false}
+                        changeOnBlur={true}
+                        format={'HH:mm DD/MM/YYYY'}
+                        placeholder="Chọn ngày bắt đầu..."
+                        showTime={{ defaultValue: dayjs('07:30', 'HH:mm') }}
+                        style={{ width: '100%' }}
+                    />
+                </Form.Item>
 
-                    <Form.Item
-                        label={
-                            <Text style={{ fontSize: 16 }}>
-                                <Text strong style={{ fontSize: 16 }}>
-                                    TỪ
-                                </Text>
-                                <br />
-                                <small className="text-muted">FROM</small>
+                <Form.Item
+                    label={
+                        <Text style={{ fontSize: 18 }}>
+                            <Text strong style={{ fontSize: 16 }}>
+                                ĐẾN
                             </Text>
-                        }
-                        name="fromDate"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Bạn chưa chọn ngày/ giờ bắt đầu!',
-                            },
-                        ]}
-                    >
-                        <DatePicker
-                            allowClear={false}
-                            changeOnBlur={true}
-                            format={'HH:mm DD/MM/YYYY'}
-                            placeholder="Chọn ngày bắt đầu..."
-                            showTime={{ defaultValue: dayjs('07:30', 'HH:mm') }}
-                            style={{ width: '100%' }}
-                        />
-                    </Form.Item>
-
-                    <Form.Item
-                        label={
-                            <Text style={{ fontSize: 16 }}>
-                                <Text strong style={{ fontSize: 16 }}>
-                                    ĐẾN
-                                </Text>
-                                <br />
-                                <small className="text-muted">TO</small>
-                            </Text>
-                        }
-                        name="toDate"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Bạn chưa chọn ngày/ giờ kết thúc!',
-                            },
-                        ]}
-                    >
-                        <DatePicker
-                            allowClear={false}
-                            changeOnBlur={true}
-                            format={'HH:mm DD/MM/YYYY'}
-                            placeholder="Chọn ngày kết thúc..."
-                            showTime={{ defaultValue: dayjs('16:30', 'HH:mm') }}
-                            style={{ width: '100%' }}
-                        />
-                    </Form.Item>
-                </div>
+                            <br />
+                            <small className="text-muted">TO</small>
+                        </Text>
+                    }
+                    name="actualToDate"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Bạn chưa chọn ngày/ giờ kết thúc!',
+                        },
+                    ]}
+                >
+                    <DatePicker
+                        allowClear={false}
+                        changeOnBlur={true}
+                        format={'HH:mm DD/MM/YYYY'}
+                        placeholder="Chọn ngày kết thúc..."
+                        showTime={{ defaultValue: dayjs('16:30', 'HH:mm') }}
+                        style={{ width: '100%' }}
+                    />
+                </Form.Item>
             </Form>
         </Modal>
     );

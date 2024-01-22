@@ -6,11 +6,11 @@ const handleZaloMessage = {
         superiorName,
         superiorRoleId,
         name,
-        leaveType,
         department,
-        leaveDay,
-        fromDate,
-        toDate,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
         reason
     ) => {
         return (
@@ -18,32 +18,32 @@ const handleZaloMessage = {
             'Dear ' +
             (superiorGender === 1 ? 'Mr. ' : 'Ms. ') +
             superiorName +
-            ' xin gửi đến ' +
+            ', xin gửi đến ' +
             (superiorGender === 1 ? 'anh' : 'chị') +
             ' với các thông tin như sau:\n\n' +
             '- Họ và tên: ' +
             name +
             '\n' +
-            '- Loại phép: ' +
-            leaveType +
-            '\n' +
             '- Bộ phận: ' +
             department +
             '\n' +
+            '- Loại phép: ' +
+            bookLeaveType +
+            '\n' +
             '- Số ngày nghỉ: ' +
-            leaveDay +
+            bookLeaveDay +
             '\n' +
             '- Từ ngày: ' +
-            dayjs(fromDate).format('DD/MM/YYYY HH:mm') +
+            dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
             '\n' +
             '- Đến ngày: ' +
-            dayjs(toDate).format('DD/MM/YYYY HH:mm') +
+            dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
             '\n' +
             '- Lý do: ' +
             reason +
             '\n' +
             '- Ngày yêu cầu: ' +
-            dayjs().format('DD/MM/YYYY HH:mm') +
+            dayjs().format('HH:mm DD/MM/YYYY') +
             '\n' +
             '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/' +
             (superiorRoleId === 1 || superiorRoleId === 2 ? 'manager' : 'leader') +
@@ -54,23 +54,23 @@ const handleZaloMessage = {
     },
 
     messageRequestCancel: (
-        requestReason,
         managerGender,
         managerName,
         name,
-        leaveType,
         department,
+        leaveType,
         leaveDay,
         fromDate,
         toDate,
-        reason
+        reason,
+        requestReason
     ) => {
         return (
             'ĐƠN XIN HUỶ PHÉP\n\n' +
             'Dear ' +
             (managerGender === 1 ? 'Mr. ' : 'Ms. ') +
             managerName +
-            ' xin gửi đến ' +
+            ', xin gửi đến ' +
             (managerGender === 1 ? 'anh' : 'chị') +
             ' với các thông tin huỷ phép như sau: ' +
             requestReason +
@@ -78,26 +78,92 @@ const handleZaloMessage = {
             '- Họ và tên: ' +
             name +
             '\n' +
-            '- Loại phép: ' +
-            leaveType +
-            '\n' +
             '- Bộ phận: ' +
             department +
+            '\n' +
+            '- Loại phép: ' +
+            leaveType +
             '\n' +
             '- Số ngày nghỉ: ' +
             leaveDay +
             '\n' +
             '- Từ ngày: ' +
-            dayjs(fromDate).format('DD/MM/YYYY HH:mm') +
+            dayjs(fromDate).format('HH:mm DD/MM/YYYY') +
             '\n' +
             '- Đến ngày: ' +
-            dayjs(toDate).format('DD/MM/YYYY HH:mm') +
+            dayjs(toDate).format('HH:mm DD/MM/YYYY') +
             '\n' +
             '- Lý do: ' +
             reason +
             '\n' +
             '- Ngày yêu cầu: ' +
-            dayjs().format('DD/MM/YYYY HH:mm') +
+            dayjs().format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/manager' +
+            '\n\n' +
+            'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
+            'Vui lòng trả lời 1 tin nhắn bất kỳ!'
+        );
+    },
+
+    messageRequestEdit: (
+        managerGender,
+        managerName,
+        name,
+        department,
+        actualLeaveType,
+        actualLeaveDay,
+        actualFromDate,
+        actualToDate,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason
+    ) => {
+        return (
+            'ĐƠN XIN ĐIỀU CHỈNH THÔNG TIN NGHỈ PHÉP THỰC TẾ\n\n' +
+            'Dear ' +
+            (managerGender === 1 ? 'Mr. ' : 'Ms. ') +
+            managerName +
+            ', xin gửi đến ' +
+            (managerGender === 1 ? 'anh' : 'chị') +
+            ' với các thông tin như sau:\n\n' +
+            '- Họ và tên: ' +
+            name +
+            '\n' +
+            '- Bộ phận: ' +
+            department +
+            '\n' +
+            '- Loại phép (thực tế): ' +
+            actualLeaveType +
+            '\n' +
+            '- Số ngày nghỉ (thực tế): ' +
+            actualLeaveDay +
+            '\n' +
+            '- Từ ngày (thực tế): ' +
+            dayjs(actualFromDate).format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Đến ngày (thực tế): ' +
+            dayjs(actualToDate).format('HH:mm DD/MM/YYYY') +
+            '\n\n' +
+            '- Loại phép (đăng ký): ' +
+            bookLeaveType +
+            '\n' +
+            '- Số ngày nghỉ (đăng ký): ' +
+            bookLeaveDay +
+            '\n' +
+            '- Từ ngày (đăng ký): ' +
+            dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Đến ngày (đăng ký): ' +
+            dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Lý do: ' +
+            reason +
+            '\n' +
+            '- Ngày yêu cầu: ' +
+            dayjs().format('HH:mm DD/MM/YYYY') +
             '\n' +
             '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/manager' +
             '\n\n' +

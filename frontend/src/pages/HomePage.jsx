@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import { Button, DatePicker, Flex, Form, Input, InputNumber, Select, Typography } from 'antd';
@@ -11,18 +11,18 @@ import {
     ModalSuccessComponent,
     ModalWarningComponent,
 } from '../components';
-import { Link } from 'react-router-dom';
+
+import { createConnection } from '../utils';
 
 const { TextArea } = Input;
 const { Text } = Typography;
 
-const URL = process.env.REACT_APP_API_URL;
-
 const HomePage = () => {
     console.log('Run Home...');
 
-    const [leaveType, setLeaveType] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    const [leaveType, setLeaveType] = useState([]);
 
     const [modalError, setModalError] = useState({
         error: '',
@@ -56,11 +56,7 @@ const HomePage = () => {
 
     const getLeaveType = async () => {
         try {
-            const response = await axios.get(`${URL}/api/leave/type`, {
-                headers: {
-                    Authorization: accessToken,
-                },
-            });
+            const response = await createConnection(accessToken).get(`/leave/type`);
 
             setLeaveType(response.data);
         } catch (error) {
@@ -72,11 +68,7 @@ const HomePage = () => {
         try {
             setLoading(true);
 
-            const response = await axios.post(`${URL}/api/leave/list`, values, {
-                headers: {
-                    Authorization: accessToken,
-                },
-            });
+            const response = await createConnection(accessToken).post(`/leave/list`, values);
 
             form.resetFields();
 
@@ -105,7 +97,7 @@ const HomePage = () => {
                             <br />
                             <b>tồn tại trong hệ thống!</b>
                             <br />
-                            Vui lòng liên hệ <b>cấp trên</b> để được
+                            Vui lòng liên hệ với <b>cấp trên</b> để được
                             <br />
                             phê duyệt!
                         </Text>
@@ -140,20 +132,20 @@ const HomePage = () => {
     };
 
     const onFinish = values => {
-        const { fromDate, toDate } = values;
+        const { bookFromDate, bookToDate } = values;
 
-        if (fromDate <= toDate) {
+        if (bookFromDate <= bookToDate) {
             if (
-                dayjs(fromDate).hour() >= 7 &&
-                dayjs(fromDate).minute() >= 30 &&
-                dayjs(toDate).hour() <= 16 &&
-                dayjs(toDate).minute() <= 30
+                dayjs(bookFromDate).hour() >= 7 &&
+                dayjs(bookFromDate).minute() >= 30 &&
+                dayjs(bookToDate).hour() <= 16 &&
+                dayjs(bookToDate).minute() <= 30
             ) {
                 insertData({
                     ...values,
-                    fromDate: dayjs(fromDate).format('YYYY-MM-DD HH:mm'),
-                    toDate: dayjs(toDate).format('YYYY-MM-DD HH:mm'),
-                    leaveType: leaveType.find(lt => lt.id === values.leaveTypeId)?.nameVN,
+                    bookFromDate: dayjs(bookFromDate).format('YYYY-MM-DD HH:mm'),
+                    bookToDate: dayjs(bookToDate).format('YYYY-MM-DD HH:mm'),
+                    bookLeaveType: leaveType.find(l => l.id === values.bookLeaveTypeId)?.nameVN,
                 });
             } else {
                 setModalWarning({
@@ -167,12 +159,12 @@ const HomePage = () => {
                             <br />
                             Giờ bắt đầu của bạn là:{' '}
                             <Text strong type="danger">
-                                {dayjs(fromDate).format('HH:mm')}
+                                {dayjs(bookFromDate).format('HH:mm')}
                             </Text>
                             <br />
                             Giờ kết thúc của bạn là:{' '}
                             <Text strong type="danger">
-                                {dayjs(toDate).format('HH:mm')}
+                                {dayjs(bookToDate).format('HH:mm')}
                             </Text>
                         </Text>
                     ),
@@ -268,7 +260,7 @@ const HomePage = () => {
                             <small className="text-muted">TYPES OF LEAVES</small>
                         </Text>
                     }
-                    name="leaveTypeId"
+                    name="bookLeaveTypeId"
                     rules={[
                         {
                             required: true,
@@ -297,7 +289,7 @@ const HomePage = () => {
                             <small className="text-muted">DAY REQUESTED FOR LEAVE</small>
                         </Text>
                     }
-                    name="leaveDay"
+                    name="bookLeaveDay"
                     rules={[
                         {
                             required: true,
@@ -324,7 +316,7 @@ const HomePage = () => {
                             <small className="text-muted">FROM</small>
                         </Text>
                     }
-                    name="fromDate"
+                    name="bookFromDate"
                     rules={[
                         {
                             required: true,
@@ -352,7 +344,7 @@ const HomePage = () => {
                             <small className="text-muted">TO</small>
                         </Text>
                     }
-                    name="toDate"
+                    name="bookToDate"
                     rules={[
                         {
                             required: true,
@@ -399,7 +391,7 @@ const HomePage = () => {
                 </Form.Item>
             </Form>
             <Flex justify="center" style={{ margin: '30px 0 24px 0' }}>
-                <Button size={'large'} type={'primary'} onClick={() => form.submit()}>
+                <Button onClick={() => form.submit()} size={'large'} type={'primary'}>
                     Gửi Phép
                 </Button>
             </Flex>

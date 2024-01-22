@@ -3,25 +3,31 @@ const router = require('express').Router();
 // Import các hàm xử lý yêu cầu từ controller
 const {
     created,
-    readed,
-    readedByDate,
-    readedOther,
-    readedOtherByDate,
-    readedStatistics,
-    readedStatisticsByDate,
+    readedManager,
+    readedManagerByDate,
+    readedManagerOther,
+    readedManagerOtherByDate,
+    readedManagerStatistics,
+    readedManagerStatisticsByDate,
     readedHistory,
     readedLeader,
-    updatedApproved,
+    updatedLeaderApproved,
+    updatedLeaderRejected,
+    updatedManagerApproved,
     updatedApprovedLeaveDay,
     updatedApprovedLeaveType,
     updatedApprovedRequestDelete,
-    updatedRejected,
+    updatedManagerRejected,
     updateCancel,
     updateRequestCancel,
+    updateRequestEdit,
 } = require('../controllers/leaveListController');
 
 const {
-    checkApproved,
+    checkLeaderApproved,
+    checkLeaderRejected,
+    checkManagerApproved,
+    checkManagerRejected,
     checkApprovedLeaveDay,
     checkApprovedLeaveType,
     checkApprovedRequestDelete,
@@ -29,14 +35,10 @@ const {
     checkDate,
     checkIsExist,
     checkParam,
-    checkRejected,
 } = require('../middleWares/leaveListMiddleWare');
 
 // End point POST
 router.post('/', checkBody, checkIsExist, created);
-
-// End point GET
-router.get('/', readed);
 
 // End point GET
 router.get('/history', readedHistory);
@@ -45,50 +47,67 @@ router.get('/history', readedHistory);
 router.get('/leader', readedLeader);
 
 // End point GET
-router.get('/search', checkDate, readedByDate);
+router.get('/manager', readedManager);
 
 // End point GET
-router.get('/other', readedOther);
+router.get('/manager/search', checkDate, readedManagerByDate);
 
 // End point GET
-router.get('/other/search', checkDate, readedOtherByDate);
+router.get('/manager/other', readedManagerOther);
 
 // End point GET
-router.get('/statistics', readedStatistics);
+router.get('/manager/other/search', checkDate, readedManagerOtherByDate);
 
 // End point GET
-router.get('/statistics/search', checkDate, readedStatisticsByDate);
+router.get('/manager/statistics', readedManagerStatistics);
+
+// End point GET
+router.get('/manager/statistics/search', checkDate, readedManagerStatisticsByDate);
 
 // End point PUT
-router.put('/approved/:id', checkParam, checkBody, checkApproved, updatedApproved);
+router.put('/history/cancel/:id', checkParam, updateCancel);
 
 // End point PUT
-router.put('/rejected/:id', checkParam, checkRejected, updatedRejected);
+router.put('/history/request-cancel/:id', checkParam, updateRequestCancel);
+
+// End point PUT
+router.put('/history/request-edit/:id', checkParam, updateRequestEdit);
+
+// End point PUT
+router.put('/leader/approved/:id', checkParam, checkLeaderApproved, updatedLeaderApproved);
+
+// End point PUT
+router.put('/leader/rejected/:id', checkParam, checkLeaderRejected, updatedLeaderRejected);
+
+// End point PUT
+router.put('/manager/approved/:id', checkParam, checkManagerApproved, updatedManagerApproved);
+
+// End point PUT
+router.put('/manager/rejected/:id', checkParam, checkManagerRejected, updatedManagerRejected);
 
 // End point PUT
 router.put(
-    '/approved-leave-type/:id',
+    '/manager/approved-leave-type/:id',
     checkParam,
     checkApprovedLeaveType,
     updatedApprovedLeaveType
 );
 
 // End point PUT
-router.put('/approved-leave-day/:id', checkParam, checkApprovedLeaveDay, updatedApprovedLeaveDay);
+router.put(
+    '/manager/approved-leave-day/:id',
+    checkParam,
+    checkApprovedLeaveDay,
+    updatedApprovedLeaveDay
+);
 
 // End point PUT
 router.put(
-    '/approved-request-delete/:id',
+    '/manager/approved-request-delete/:id',
     checkParam,
     checkApprovedRequestDelete,
     updatedApprovedRequestDelete
 );
-
-// End point PUT
-router.put('/cancel/:id', checkParam, updateCancel);
-
-// End point PUT
-router.put('/request-cancel/:id', checkParam, updateRequestCancel);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

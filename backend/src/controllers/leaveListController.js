@@ -1,22 +1,25 @@
 const {
     created,
-    readed,
-    readedOther,
-    readedStatistics,
+    readedManager,
+    readedManagerOther,
+    readedManagerStatistics,
     readedHistory,
     readedLeader,
-    updatedApproved,
+    updatedLeaderApproved,
+    updatedLeaderRejected,
+    updatedManagerApproved,
     updatedApprovedLeaveDay,
     updatedApprovedLeaveType,
     updatedApprovedRequestDelete,
-    updatedRejected,
+    updatedManagerRejected,
     updatedCancel,
     updatedRequestCancel,
+    updatedRequestEdit,
 } = require('../services/leaveListService');
 
 const { readedInfoSuperior, readedInfoManager } = require('../services/userService');
 
-const { messageRequestLeave, messageRequestCancel } = require('../utils');
+const { messageRequestCancel, messageRequestEdit, messageRequestLeave } = require('../utils');
 
 const { sendZaloAPIV3 } = require('../services/zaloAPIService');
 
@@ -26,11 +29,12 @@ const leaveListController = {
         const { userId, name, department } = req.decoded;
 
         // Lấy thông tin từ body của yêu cầu
-        const { leaveTypeId, leaveType, leaveDay, fromDate, toDate, reason } = req.body;
+        const { bookLeaveTypeId, bookLeaveType, bookLeaveDay, bookFromDate, bookToDate, reason } =
+            req.body;
 
         try {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
-            await created(userId, leaveTypeId, leaveDay, fromDate, toDate, reason);
+            await created(userId, bookLeaveTypeId, bookLeaveDay, bookFromDate, bookToDate, reason);
 
             const response = await readedInfoSuperior(userId);
 
@@ -42,11 +46,11 @@ const leaveListController = {
                 superiorName,
                 superiorRoleId,
                 name,
-                leaveType,
                 department,
-                leaveDay,
-                fromDate,
-                toDate,
+                bookLeaveType,
+                bookLeaveDay,
+                bookFromDate,
+                bookToDate,
                 reason
             );
 
@@ -70,10 +74,10 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readed: async (req, res) => {
+    readedManager: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await readed();
+            const results = await readedManager();
 
             res.json(results);
         } catch (err) {
@@ -85,13 +89,13 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readedByDate: async (req, res) => {
+    readedManagerByDate: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { startDate, endDate } = req.query;
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await readed(startDate, endDate);
+            const results = await readedManager(startDate, endDate);
 
             res.json(results);
         } catch (err) {
@@ -103,10 +107,10 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readedOther: async (req, res) => {
+    readedManagerOther: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await readedOther();
+            const results = await readedManagerOther();
 
             res.json(results);
         } catch (err) {
@@ -118,13 +122,13 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readedOtherByDate: async (req, res) => {
+    readedManagerOtherByDate: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { startDate, endDate } = req.query;
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await readedOther(startDate, endDate);
+            const results = await readedManagerOther(startDate, endDate);
 
             res.json(results);
         } catch (err) {
@@ -136,10 +140,10 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readedStatistics: async (req, res) => {
+    readedManagerStatistics: async (req, res) => {
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await readedStatistics();
+            const results = await readedManagerStatistics();
 
             res.json(results);
         } catch (err) {
@@ -151,13 +155,13 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu đọc dữ liệu.
-    readedStatisticsByDate: async (req, res) => {
+    readedManagerStatisticsByDate: async (req, res) => {
         // Lấy thông tin từ body của yêu cầu
         const { startDate, endDate } = req.query;
 
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await readedStatistics(startDate, endDate);
+            const results = await readedManagerStatistics(startDate, endDate);
 
             res.json(results);
         } catch (err) {
@@ -205,13 +209,13 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updatedApproved: async (req, res) => {
+    updatedLeaderApproved: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            await updatedApproved(id);
+            await updatedLeaderApproved(id);
 
             res.json({ error: 0, message: 'Phê duyệt thành công!' });
         } catch (err) {
@@ -223,7 +227,7 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updatedRejected: async (req, res) => {
+    updatedLeaderRejected: async (req, res) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
@@ -232,7 +236,46 @@ const leaveListController = {
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            await updatedRejected(id, reason);
+            await updatedLeaderRejected(id, reason);
+
+            res.json({ error: 0, message: 'Từ chối thành công!' });
+        } catch (err) {
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
+        }
+    },
+
+    // Xử lý yêu cầu cập nhật dữ liệu.
+    updatedManagerApproved: async (req, res) => {
+        // Lấy ID từ params của yêu cầu
+        const { id } = req.params;
+
+        try {
+            // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+            await updatedManagerApproved(id);
+
+            res.json({ error: 0, message: 'Phê duyệt thành công!' });
+        } catch (err) {
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
+        }
+    },
+
+    // Xử lý yêu cầu cập nhật dữ liệu.
+    updatedManagerRejected: async (req, res) => {
+        // Lấy ID từ params của yêu cầu
+        const { id } = req.params;
+
+        // Lấy thông tin từ body của yêu cầu
+        const { reason } = req.body;
+
+        try {
+            // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+            await updatedManagerRejected(id, reason);
 
             res.json({ error: 0, message: 'Từ chối thành công!' });
         } catch (err) {
@@ -322,7 +365,8 @@ const leaveListController = {
         const { name, department } = req.decoded;
 
         // Lấy thông tin từ body của yêu cầu
-        const { requestReason, leaveType, leaveDay, fromDate, toDate, reason } = req.body;
+        const { bookLeaveType, bookLeaveDay, bookFromDate, bookToDate, reason, requestReason } =
+            req.body;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
@@ -333,15 +377,85 @@ const leaveListController = {
             const { managerName, managerGender, managerZaloUserID } = response[0];
 
             const zaloAPIText = messageRequestCancel(
-                requestReason,
                 managerGender,
                 managerName,
                 name,
-                leaveType,
                 department,
-                leaveDay,
-                fromDate,
-                toDate,
+                bookLeaveType,
+                bookLeaveDay,
+                bookFromDate,
+                bookToDate,
+                reason,
+                requestReason
+            );
+
+            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+
+            if (responseSend.error === 0) {
+                res.status(200).json({
+                    error: 0,
+                    message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
+                    managerName,
+                });
+            } else {
+                res.status(400).json(responseSend);
+            }
+        } catch (err) {
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
+        }
+    },
+
+    updateRequestEdit: async (req, res) => {
+        // Lấy ID từ params của yêu cầu
+        const { id } = req.params;
+
+        // Lấy thông tin từ auth của yêu cầu
+        const { name, department } = req.decoded;
+
+        // Lấy thông tin từ body của yêu cầu
+        const {
+            bookLeaveType,
+            bookLeaveDay,
+            bookFromDate,
+            bookToDate,
+            actualLeaveTypeId,
+            actualLeaveType,
+            actualLeaveDay,
+            actualFromDate,
+            actualToDate,
+            reason,
+        } = req.body;
+
+        try {
+            // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+            await updatedRequestEdit(
+                id,
+                actualLeaveTypeId,
+                actualLeaveDay,
+                actualFromDate,
+                actualToDate
+            );
+
+            const response = await readedInfoManager();
+
+            const { managerName, managerGender, managerZaloUserID } = response[0];
+
+            const zaloAPIText = messageRequestEdit(
+                managerGender,
+                managerName,
+                name,
+                department,
+                actualLeaveType,
+                actualLeaveDay,
+                actualFromDate,
+                actualToDate,
+                bookLeaveType,
+                bookLeaveDay,
+                bookFromDate,
+                bookToDate,
                 reason
             );
 

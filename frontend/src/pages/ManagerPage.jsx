@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import ReactApexChart from 'react-apexcharts';
-
-import { PencilFill, ThreeDotsVertical } from 'react-bootstrap-icons';
-import {
-    CheckCircleFilled,
-    CloseCircleFilled,
-    ReadFilled,
-    StopFilled,
-    SyncOutlined,
-    TagFilled,
-    UnlockFilled,
-} from '@ant-design/icons';
 
 import {
     Avatar,
@@ -29,8 +18,17 @@ import {
     Tooltip,
     Typography,
 } from 'antd';
+import {
+    CheckCircleFilled,
+    CloseCircleFilled,
+    ReadFilled,
+    StopFilled,
+    SyncOutlined,
+    TagFilled,
+    UnlockFilled,
+} from '@ant-design/icons';
+import { PencilFill, ThreeDotsVertical } from 'react-bootstrap-icons';
 
-import { getUniqueName } from '../utils';
 import {
     ModalConfirmComponent,
     ModalErrorComponent,
@@ -39,12 +37,10 @@ import {
     ModalReasonComponent,
     ContentComponent,
 } from '../components';
-import { Link } from 'react-router-dom';
+
+import { createConnection, getUniqueName } from '../utils';
 
 const { RangePicker } = DatePicker;
-
-const URL = process.env.REACT_APP_API_URL;
-
 const { Text } = Typography;
 
 const ManagerPage = () => {
@@ -98,11 +94,8 @@ const ManagerPage = () => {
         try {
             setLoading(true);
 
-            const response = await axios.get(url, {
+            const response = await createConnection(accessToken).get(url, {
                 params,
-                headers: {
-                    Authorization: accessToken,
-                },
             });
 
             const arrData = response.data.map(item => ({
@@ -119,14 +112,14 @@ const ManagerPage = () => {
     };
 
     const getLeaveList = async () => {
-        await getDataSource(`${URL}/api/leave/list`, {}, setLeaveList);
+        await getDataSource(`/leave/list/manager`, {}, setLeaveList);
 
         getTotalWaiting();
     };
 
     const getLeaveListByDate = async (startDate, endDate) => {
         await getDataSource(
-            `${URL}/api/leave/list/search`,
+            `/leave/list/manager/search`,
             {
                 startDate: dayjs(startDate).format('YYYY-MM-DD'),
                 endDate: dayjs(endDate).format('YYYY-MM-DD'),
@@ -138,12 +131,12 @@ const ManagerPage = () => {
     };
 
     const getLeaveListOther = async () => {
-        await getDataSource(`${URL}/api/leave/list/other`, {}, setLeaveListOther);
+        await getDataSource(`/leave/list/manager/other`, {}, setLeaveListOther);
     };
 
     const getLeaveListOtherByDate = async (startDate, endDate) => {
         await getDataSource(
-            `${URL}/api/leave/list/other/search`,
+            `/leave/list/manager/other/search`,
             {
                 startDate: dayjs(startDate).format('YYYY-MM-DD'),
                 endDate: dayjs(endDate).format('YYYY-MM-DD'),
@@ -153,12 +146,12 @@ const ManagerPage = () => {
     };
 
     const getLeaveListStatistics = async () => {
-        await getDataSource(`${URL}/api/leave/list/statistics`, {}, setLeaveListStatistics);
+        await getDataSource(`/leave/list/manager/statistics`, {}, setLeaveListStatistics);
     };
 
     const getLeaveListStatisticsByDate = async (startDate, endDate) => {
         await getDataSource(
-            `${URL}/api/leave/list/statistics/search`,
+            `/leave/list/manager/statistics/search`,
             {
                 startDate: dayjs(startDate).format('YYYY-MM-DD'),
                 endDate: dayjs(endDate).format('YYYY-MM-DD'),
@@ -170,7 +163,7 @@ const ManagerPage = () => {
     const getTotalWaiting = () => {
         const total = leaveList.reduce(
             (accumulator, currentValue) =>
-                currentValue.managerApproved === null && currentValue.deleteRequest === null
+                !currentValue.managerApproved && !currentValue.deleteRequest
                     ? accumulator + 1
                     : accumulator,
             0
@@ -181,7 +174,9 @@ const ManagerPage = () => {
 
     const approveLeave = async id => {
         try {
-            const response = await axios.put(`${URL}/api/leave/list/approved/${id}`);
+            const response = await createConnection(accessToken).put(
+                `/leave/list/manager/approved/${id}`
+            );
 
             setModalConfirm({ open: false });
 
@@ -200,7 +195,10 @@ const ManagerPage = () => {
 
     const rejectLeave = async (id, reason) => {
         try {
-            const response = await axios.put(`${URL}/api/leave/list/rejected/${id}`, reason);
+            const response = await createConnection(accessToken).put(
+                `/leave/list/manager/rejected/${id}`,
+                reason
+            );
 
             setModalReason({ open: false });
 
@@ -219,7 +217,9 @@ const ManagerPage = () => {
 
     const approveLeaveType = async id => {
         try {
-            const response = await axios.put(`${URL}/api/leave/list/approved-leave-type/${id}`);
+            const response = await createConnection(accessToken).put(
+                `/leave/list/manager/approved-leave-type/${id}`
+            );
 
             setModalConfirm({ open: false });
 
@@ -236,7 +236,9 @@ const ManagerPage = () => {
 
     const approveLeaveDay = async id => {
         try {
-            const response = await axios.put(`${URL}/api/leave/list/approved-leave-day/${id}`);
+            const response = await createConnection(accessToken).put(
+                `/leave/list/manager/approved-leave-day/${id}`
+            );
 
             setModalConfirm({ open: false });
 
@@ -253,7 +255,9 @@ const ManagerPage = () => {
 
     const approveRequestDelete = async id => {
         try {
-            const response = await axios.put(`${URL}/api/leave/list/approved-request-delete/${id}`);
+            const response = await createConnection(accessToken).put(
+                `/leave/list/manager/approved-request-delete/${id}`
+            );
 
             setModalConfirm({ open: false });
 
@@ -350,7 +354,7 @@ const ManagerPage = () => {
                                         style: { color: '#c41d7f' },
                                         onClick: () => {
                                             if (
-                                                record.actualLeaveTypeID === null ||
+                                                !record.actualLeaveTypeId ||
                                                 record.managerApprovedLeaveType === 1
                                             ) {
                                                 setModalErrorOther({
@@ -390,7 +394,7 @@ const ManagerPage = () => {
                                         style: { color: '#1677ff' },
                                         onClick: () => {
                                             if (
-                                                record.actualLeaveDay === null ||
+                                                !record.actualLeaveDay ||
                                                 record.managerApprovedLeaveDay === 1
                                             ) {
                                                 setModalErrorOther({
@@ -431,7 +435,7 @@ const ManagerPage = () => {
                                         style: { color: '#531dab' },
                                         onClick: () => {
                                             if (
-                                                record.deleteRequest === null ||
+                                                !record.deleteRequest ||
                                                 record.managerApprovedDelete === 1
                                             ) {
                                                 setModalErrorOther({
@@ -597,8 +601,8 @@ const ManagerPage = () => {
             filterSearch: true,
             onFilter: (value, record) => record.userName.includes(value),
             render: (_, record) => {
-                if (record.managerApprovedDelete === null) {
-                    if (record.managerApproved === null) {
+                if (!record.managerApprovedDelete) {
+                    if (!record.managerApproved) {
                         return (
                             <Text strong style={{ color: '#1677ff' }}>
                                 {record.userName}
@@ -703,7 +707,7 @@ const ManagerPage = () => {
                             return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
                         } else if (record.managerApproved === 1) {
                             return <CheckCircleFilled style={{ color: '#52c41a' }} />;
-                        } else if (record.managerApprovedDelete === null) {
+                        } else if (!record.managerApprovedDelete) {
                             return (
                                 <Tag
                                     bordered={false}
@@ -724,7 +728,7 @@ const ManagerPage = () => {
                     ellipsis: true,
                     render: (_, record) => {
                         if (record.deleteRequest === 1) {
-                            if (record.managerApprovedDelete === null) {
+                            if (!record.managerApprovedDelete) {
                                 return (
                                     <Tag
                                         bordered={false}

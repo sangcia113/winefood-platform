@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import dayjs from 'dayjs';
 
-import {
-    ContentComponent,
-    ModalEditComponent,
-    ModalErrorComponent,
-    ModalErrorOtherComponent,
-    ModalReasonComponent,
-    ModalSuccessComponent,
-} from '../components';
 import { Dropdown, Form, Table, Tag } from 'antd';
 import {
     CheckCircleFilled,
@@ -17,19 +11,31 @@ import {
     SyncOutlined,
 } from '@ant-design/icons';
 import { ThreeDotsVertical } from 'react-bootstrap-icons';
-import dayjs from 'dayjs';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
 
-const URL = process.env.REACT_APP_API_URL;
+import {
+    ContentComponent,
+    ModalEditComponent,
+    ModalErrorComponent,
+    ModalErrorOtherComponent,
+    ModalReasonComponent,
+    ModalSuccessComponent,
+} from '../components';
+
+import { createConnection } from '../utils';
 
 const HistoryPage = () => {
     console.log('Run HistoryPage...');
 
     const [loading, setLoading] = useState(false);
-    const [dataSource, setDataSource] = useState([]);
 
-    const [modalEdit, setModalEdit] = useState({});
+    const [history, setHistory] = useState([]);
+
+    const [leaveType, setLeaveType] = useState([]);
+
+    const [modalEdit, setModalEdit] = useState({
+        open: false,
+        onFinish: () => {},
+    });
 
     const [modalError, setModalError] = useState({
         open: false,
@@ -59,22 +65,33 @@ const HistoryPage = () => {
         localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
     useEffect(() => {
-        getLeaveList();
+        getHistory();
+        getLeaveType();
     }, []);
 
-    const getLeaveList = async () => {
+    const getLeaveType = async () => {
         try {
             setLoading(true);
 
-            const response = await axios.get(`${URL}/api/leave/list/history`, {
-                headers: {
-                    Authorization: accessToken,
-                },
-            });
+            const response = await createConnection(accessToken).get(`/leave/type`);
 
-            setDataSource(response.data.map(item => ({ ...item, key: item.id })));
+            setLeaveType(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
-            console.log(error);
+            setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getHistory = async () => {
+        try {
+            setLoading(true);
+
+            const response = await createConnection(accessToken).get(`/leave/list/history`);
+
+            setHistory(response.data.map(item => ({ ...item, key: item.id })));
+        } catch (error) {
+            setModalError({ error, open: true });
         } finally {
             setLoading(false);
         }
@@ -82,14 +99,10 @@ const HistoryPage = () => {
 
     const cancelLeave = async id => {
         try {
-            const response = await axios.put(
-                `${URL}/api/leave/list/cancel/${id}`,
-                {},
-                {
-                    headers: {
-                        Authorization: accessToken,
-                    },
-                }
+            setLoading(true);
+
+            const response = await createConnection(accessToken).put(
+                `/leave/list/history/cancel/${id}`
             );
 
             setModalSuccess({
@@ -97,29 +110,35 @@ const HistoryPage = () => {
                 open: true,
             });
 
-            getLeaveList();
+            getHistory();
         } catch (error) {
-            setModalError({ open: true, error });
+            setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
         }
     };
 
     const requestCancelLeave = async (
         id,
-        requestReason,
-        leaveType,
-        leaveDay,
-        fromDate,
-        toDate,
-        reason
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason,
+        requestReason
     ) => {
         try {
-            const response = await axios.put(
-                `${URL}/api/leave/list/request-cancel/${id}`,
-                { requestReason, leaveType, leaveDay, fromDate, toDate, reason },
+            setLoading(true);
+
+            const response = await createConnection(accessToken).put(
+                `/leave/list/history/request-cancel/${id}`,
                 {
-                    headers: {
-                        Authorization: accessToken,
-                    },
+                    bookLeaveType,
+                    bookLeaveDay,
+                    bookFromDate,
+                    bookToDate,
+                    reason,
+                    requestReason,
                 }
             );
 
@@ -130,9 +149,58 @@ const HistoryPage = () => {
                 open: true,
             });
 
-            getLeaveList();
+            getHistory();
         } catch (error) {
-            setModalError({ open: true, error });
+            setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const requestEditLeave = async (
+        id,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        actualLeaveTypeId,
+        actualLeaveType,
+        actualLeaveDay,
+        actualFromDate,
+        actualToDate,
+        reason
+    ) => {
+        try {
+            setLoading(true);
+
+            const response = await createConnection(accessToken).put(
+                `/leave/list/history/request-edit/${id}`,
+                {
+                    bookLeaveType,
+                    bookLeaveDay,
+                    bookFromDate,
+                    bookToDate,
+                    actualLeaveTypeId,
+                    actualLeaveType,
+                    actualLeaveDay,
+                    actualFromDate,
+                    actualToDate,
+                    reason,
+                }
+            );
+
+            setModalEdit({ open: false });
+
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
+
+            getHistory();
+        } catch (error) {
+            setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -149,6 +217,43 @@ const HistoryPage = () => {
                         items: [
                             {
                                 key: 1,
+                                label: 'Điều chỉnh',
+                                icon: <EditFilled />,
+                                onClick: () => {
+                                    formEdit.setFieldsValue({
+                                        id: record.id,
+                                        actualLeaveTypeId: record.bookLeaveTypeId,
+                                        actualLeaveDay: record.bookLeaveDay,
+                                        actualFromDate: dayjs(record.bookFromDate),
+                                        actualToDate: dayjs(record.bookToDate),
+                                    });
+
+                                    setModalEdit({
+                                        onFinish: values =>
+                                            requestEditLeave(
+                                                record.id,
+                                                record.bookLeaveType,
+                                                record.bookLeaveDay,
+                                                record.bookFromDate,
+                                                record.bookToDate,
+                                                values.actualLeaveTypeId,
+                                                leaveType.find(
+                                                    l => l.id === values.actualLeaveTypeId
+                                                )?.nameVN,
+                                                values.actualLeaveDay,
+                                                values.actualFromDate,
+                                                values.actualToDate,
+                                                record.reason
+                                            ),
+                                        open: true,
+                                    });
+                                },
+                                style: {
+                                    color: '#faad14',
+                                },
+                            },
+                            {
+                                key: 2,
                                 label: 'Hủy phép',
                                 icon: <StopFilled />,
                                 onClick: () => {
@@ -177,12 +282,12 @@ const HistoryPage = () => {
                                             onFinish: values =>
                                                 requestCancelLeave(
                                                     record.id,
-                                                    values.reason,
                                                     record.bookLeaveType,
                                                     record.bookLeaveDay,
                                                     record.bookFromDate,
                                                     record.bookToDate,
-                                                    record.reason
+                                                    record.reason,
+                                                    values.reason
                                                 ),
                                         });
                                     } else {
@@ -190,12 +295,6 @@ const HistoryPage = () => {
                                     }
                                 },
                                 style: { color: '#ff4d4f' },
-                            },
-                            {
-                                key: 2,
-                                label: 'Điều chỉnh',
-                                icon: <EditFilled />,
-                                onClick: () => {},
                             },
                         ],
                     }}
@@ -217,7 +316,7 @@ const HistoryPage = () => {
             key: 'tracking',
             ellipsis: true,
             render: (_, record) => {
-                if (record.deleted) return <Tag color="#ff4d4f">Đã xóa</Tag>;
+                if (record.managerApprovedDelete) return <Tag color="#ff4d4f">Đã hủy</Tag>;
                 else {
                     if (record.tracking === 1) return <Tag color="#108ee9">Đã gửi Leader</Tag>;
                     if (record.tracking === 2) return <Tag color="#52c41a">Đã gửi Manager</Tag>;
@@ -238,14 +337,29 @@ const HistoryPage = () => {
                     dataIndex: 'actualLeaveType',
                     key: 'actualLeaveType',
                     ellipsis: true,
-                    render: (_, record) =>
-                        record.actualLeaveType &&
-                        record.managerApprovedLeaveType && (
-                            <>
-                                <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
-                                {record.actualLeaveType}
-                            </>
-                        ),
+                    render: (_, record) => {
+                        if (record.actualLeaveTypeID) {
+                            if (record.managerApprovedLeaveType) {
+                                return (
+                                    <>
+                                        <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
+                                        {record.actualLeaveType}
+                                    </>
+                                );
+                            } else {
+                                return (
+                                    <Tag
+                                        bordered={false}
+                                        color="processing"
+                                        icon={<SyncOutlined spin />}
+                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                    >
+                                        {record.actualLeaveType}
+                                    </Tag>
+                                );
+                            }
+                        }
+                    },
                 },
             ],
         },
@@ -263,14 +377,29 @@ const HistoryPage = () => {
                     dataIndex: 'actualLeaveDay',
                     key: 'actualLeaveDay',
                     ellipsis: true,
-                    render: (_, record) =>
-                        record.actualLeaveDay &&
-                        record.managerApprovedLeaveDay && (
-                            <>
-                                <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
-                                {record.actualLeaveDay}
-                            </>
-                        ),
+                    render: (_, record) => {
+                        if (record.actualLeaveDay) {
+                            if (record.managerApprovedLeaveDay) {
+                                return (
+                                    <>
+                                        <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
+                                        {record.actualLeaveDay}
+                                    </>
+                                );
+                            } else {
+                                return (
+                                    <Tag
+                                        bordered={false}
+                                        color="processing"
+                                        icon={<SyncOutlined spin />}
+                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                    >
+                                        {record.actualLeaveDay}
+                                    </Tag>
+                                );
+                            }
+                        }
+                    },
                 },
             ],
         },
@@ -420,11 +549,20 @@ const HistoryPage = () => {
             <Table
                 bordered
                 columns={columns}
-                dataSource={dataSource}
+                dataSource={history}
                 scroll={{ x: true }}
                 showSorterTooltip={false}
             />
-            <ModalEditComponent afterClose={() => formEdit.resetFields()} />
+            <ModalEditComponent
+                afterClose={() => formEdit.resetFields()}
+                form={formEdit}
+                leaveType={leaveType}
+                loading={loading}
+                onCancel={() => setModalEdit({ open: false })}
+                onFinish={modalEdit.onFinish}
+                onOk={() => formEdit.submit()}
+                open={modalEdit.open}
+            />
             <ModalErrorComponent
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
@@ -438,11 +576,12 @@ const HistoryPage = () => {
             />
             <ModalReasonComponent
                 afterClose={() => formReason.resetFields()}
+                form={formReason}
+                loading={loading}
                 onCancel={() => setModalReason({ open: false })}
+                onFinish={modalReason.onFinish}
                 onOk={() => formReason.submit()}
                 open={modalReason.open}
-                form={formReason}
-                onFinish={modalReason.onFinish}
             />
             <ModalSuccessComponent
                 onOk={() => setModalSuccess({ open: false })}

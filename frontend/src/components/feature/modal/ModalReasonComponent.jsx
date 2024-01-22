@@ -6,14 +6,14 @@ const { Text } = Typography;
 
 const { TextArea } = Input;
 
-const ModalReasonComponent = ({ afterClose, onCancel, onOk, open, form, onFinish }) => (
+const ModalReasonComponent = ({ afterClose, form, loading, onCancel, onFinish, onOk, open }) => (
     <Modal
         afterClose={afterClose}
         cancelButtonProps={{ style: { borderRadius: 20 } }}
         cancelText="Hủy Bỏ"
         centered
         closeIcon={false}
-        okButtonProps={{ style: { borderRadius: 20 } }}
+        okButtonProps={{ loading: loading, style: { borderRadius: 20 } }}
         okText="Đồng Ý"
         onCancel={onCancel}
         onOk={onOk}
@@ -33,7 +33,7 @@ const ModalReasonComponent = ({ afterClose, onCancel, onOk, open, form, onFinish
         }}
     >
         <Form form={form} onFinish={onFinish}>
-            <Form.Item name={'reason'} rules={[{ message: 'Bạn chưa nhập lý do', required: true }]}>
+            <Form.Item name="reason" rules={[{ message: 'Bạn chưa nhập lý do', required: true }]}>
                 <TextArea rows={3} placeholder="Vui lòng nhập lý do" />
             </Form.Item>
         </Form>

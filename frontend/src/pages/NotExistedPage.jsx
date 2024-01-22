@@ -11,7 +11,13 @@ const NotExistedPage = () => {
         <Result
             status="404"
             title="404 Not Found"
-            subTitle="Trang mà bạn đang truy cập không tồn tại"
+            subTitle={
+                <>
+                    Sorry, the page you visited does not exist
+                    <br />
+                    Xin lỗi, trang mà bạn đang truy cập không tồn tại
+                </>
+            }
             extra={
                 <Button type="primary" onClick={() => navigate('/')}>
                     Trang chủ

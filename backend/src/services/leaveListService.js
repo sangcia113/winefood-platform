@@ -29,7 +29,78 @@ const leaveListService = {
         ]);
     },
 
-    readed: async (startDate, endDate) => {
+    readedHistory: async userId => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT
+                        l.*,
+                        d.name AS department,
+                        bt.nameVN AS bookLeaveType,
+                        at.nameVN AS actualLeaveType
+                    FROM list AS
+                        l
+                    LEFT JOIN user AS u
+                    ON
+                        u.id = l.userId
+                    LEFT JOIN department AS d
+                    ON
+                        d.id = u.departmentId
+                    LEFT JOIN type AS bt
+                    ON
+                        bt.id = l.bookLeaveTypeId
+                    LEFT JOIN type AS at
+                    ON 
+                        at.id = l.actualLeaveTypeID
+                    WHERE
+                        userId = ? 
+                    AND
+                        deleted IS NULL 
+                    ORDER BY 
+                        l.id 
+                    DESC`;
+
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, userId);
+
+        return results;
+    },
+
+    readedLeader: async userId => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT
+                        l.*,
+                        u.name AS userName,
+                        d.name AS department,
+                        bt.nameVN AS bookLeaveType,
+                        at.nameVN AS actualLeaveType
+                    FROM list AS
+                        l
+                    LEFT JOIN user AS u
+                    ON
+                        u.id = l.userId
+                    LEFT JOIN department AS d
+                    ON
+                        d.id = u.departmentId
+                    LEFT JOIN type AS bt
+                    ON
+                        bt.id = l.bookLeaveTypeId
+                    LEFT JOIN type AS at
+                    ON 
+                        at.id = l.actualLeaveTypeID
+                    WHERE
+                        superiorId = ?
+                    AND
+                        deleted IS NULL
+                    ORDER BY 
+                        l.id 
+                    DESC`;
+
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, userId);
+
+        return results;
+    },
+
+    readedManager: async (startDate, endDate) => {
         const params = [];
 
         // Truy vấn SQL để đọc
@@ -68,7 +139,9 @@ const leaveListService = {
             params.push(endDate, startDate);
         }
 
-        sql += ` ORDER BY l.id DESC`;
+        sql += ` ORDER BY 
+                    l.id 
+                DESC`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, params);
@@ -76,7 +149,7 @@ const leaveListService = {
         return results;
     },
 
-    readedOther: async (startDate, endDate) => {
+    readedManagerOther: async (startDate, endDate) => {
         const params = [];
 
         // Truy vấn SQL để đọc
@@ -123,7 +196,7 @@ const leaveListService = {
         return results;
     },
 
-    readedStatistics: async (startDate, endDate) => {
+    readedManagerStatistics: async (startDate, endDate) => {
         const params = [];
 
         // Truy vấn SQL để đọc
@@ -174,75 +247,6 @@ const leaveListService = {
         return results;
     },
 
-    readedHistory: async userId => {
-        // Truy vấn SQL để đọc
-        const sql = `SELECT
-                        l.*,
-                        d.name AS department,
-                        bt.nameVN AS bookLeaveType,
-                        at.nameVN AS actualLeaveType
-                    FROM list AS
-                        l
-                    LEFT JOIN user AS u
-                    ON
-                        u.id = l.userId
-                    LEFT JOIN department AS d
-                    ON
-                        d.id = u.departmentId
-                    LEFT JOIN type AS bt
-                    ON
-                        bt.id = l.bookLeaveTypeId
-                    LEFT JOIN type AS at
-                    ON 
-                        at.id = l.actualLeaveTypeID
-                    WHERE
-                        userId = ? 
-                    ORDER BY 
-                        l.id 
-                    DESC`;
-
-        // Thực hiện truy vấn SQL và trả về kết quả
-        const [results] = await db.query(sql, userId);
-
-        return results;
-    },
-
-    readedLeader: async userId => {
-        // Truy vấn SQL để đọc
-        const sql = `SELECT
-                        l.*,
-                        u.name,
-                        d.name AS department,
-                        bt.nameVN AS bookLeaveType,
-                        at.nameVN AS actualLeaveType
-                    FROM list AS
-                        l
-                    LEFT JOIN user AS u
-                    ON
-                        u.id = l.userId
-                    LEFT JOIN department AS d
-                    ON
-                        d.id = u.departmentId
-                    LEFT JOIN type AS bt
-                    ON
-                        bt.id = l.bookLeaveTypeId
-                    LEFT JOIN type AS at
-                    ON 
-                        at.id = l.actualLeaveTypeID
-                    WHERE
-                        superiorId = ?
-                    AND
-                        deleted IS NULL
-                    ORDER BY 
-                        l.id 
-                    DESC`;
-
-        // Thực hiện truy vấn SQL và trả về kết quả
-        const [results] = await db.query(sql, userId);
-
-        return results;
-    },
-
     // Đọc trong cơ sở dữ liệu.
     checkIsExist: async (userID, bookFromDate, bookToDate) => {
         // Truy vấn SQL để đọc
@@ -268,7 +272,23 @@ const leaveListService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    checkStatus: async id => {
+    checkLeaderApprove: async id => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT 
+                        leaderApproved 
+                    FROM 
+                        list 
+                    WHERE 
+                        id = ?`;
+
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, [id]);
+
+        return results;
+    },
+
+    // Đọc trong cơ sở dữ liệu.
+    checkManagerApprove: async id => {
         // Truy vấn SQL để đọc
         const sql = `SELECT 
                         managerApproved 
@@ -335,7 +355,39 @@ const leaveListService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
-    updatedApproved: async id => {
+    updatedLeaderApproved: async id => {
+        // Truy vấn SQL để đọc
+        const sql = `UPDATE 
+                        list 
+                    SET 
+                        leaderApproved = ?, 
+                        leaderRejectReason = ?, 
+                        leaderApprovedDate = ? 
+                    WHERE 
+                        id = ?`;
+
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [1, '', new Date(), id]);
+    },
+
+    // Cập nhật trong cơ sở dữ liệu.
+    updatedLeaderRejected: async (id, reason) => {
+        // Truy vấn SQL để đọc
+        const sql = `UPDATE 
+                        list 
+                    SET 
+                        leaderApproved = ?, 
+                        leaderRejectReason = ?, 
+                        leaderApprovedDate = ? 
+                    WHERE 
+                        id = ?`;
+
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [0, reason, new Date(), id]);
+    },
+
+    // Cập nhật trong cơ sở dữ liệu.
+    updatedManagerApproved: async id => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
                         list 
@@ -351,7 +403,7 @@ const leaveListService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
-    updatedRejected: async (id, reason) => {
+    updatedManagerRejected: async (id, reason) => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
                         list 
@@ -439,6 +491,29 @@ const leaveListService = {
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [1, reason, id]);
+    },
+
+    // Cập nhật trong cơ sở dữ liệu.
+    updatedRequestEdit: async (
+        id,
+        actualLeaveTypeId,
+        actualLeaveDay,
+        actualFromDate,
+        actualToDate
+    ) => {
+        // Truy vấn SQL để đọc
+        let sql = `UPDATE 
+                        list 
+                    SET
+                        actualLeaveTypeID = ?,
+                        actualLeaveDay	 = ?, 
+                        actualFromDate = ?, 
+                        actualToDate = ?
+                    WHERE 
+                        id = ?`;
+
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [actualLeaveTypeId, actualLeaveDay, actualFromDate, actualToDate, id]);
     },
 };
 

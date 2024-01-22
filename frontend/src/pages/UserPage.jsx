@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
-
-// React Bootstrap Icons
-import { PencilFill, PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons';
-import { DeleteFilled, SyncOutlined } from '@ant-design/icons';
 
 // Ant Design components
 import {
@@ -23,14 +19,18 @@ import {
     Tag,
     Typography,
 } from 'antd';
+import { DeleteFilled, SyncOutlined } from '@ant-design/icons';
+import { PencilFill, PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons';
 
-// Local imports
-import { getUniqueName } from '../utils';
-import { ContentComponent, FormComponent } from '../components';
-import { ModalConfirmComponent, ModalErrorComponent, ModalSuccessComponent } from '../components';
-import { Link } from 'react-router-dom';
+import {
+    ContentComponent,
+    FormComponent,
+    ModalConfirmComponent,
+    ModalErrorComponent,
+    ModalSuccessComponent,
+} from '../components';
 
-const URL = process.env.REACT_APP_API_URL;
+import { createConnection, getUniqueName } from '../utils';
 
 // Ant Design Layout
 const { Password } = Input;
@@ -39,11 +39,15 @@ const { Text } = Typography;
 const UserPage = () => {
     console.log('Run UserPage');
 
-    const [department, setDepartment] = useState([]);
-    const [role, setRole] = useState([]);
-    const [zaloAPIInfo, setZaloAPIInfo] = useState([]);
-    const [user, setUser] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    const [department, setDepartment] = useState([]);
+
+    const [role, setRole] = useState([]);
+
+    const [zaloAPIInfo, setZaloAPIInfo] = useState([]);
+
+    const [user, setUser] = useState([]);
 
     const [modalMain, setModalMain] = useState({
         open: false,
@@ -68,6 +72,9 @@ const UserPage = () => {
 
     const [form] = Form.useForm();
 
+    const accessToken =
+        localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
     useEffect(() => {
         getDepartment();
         getRole();
@@ -77,14 +84,7 @@ const UserPage = () => {
 
     const getDepartment = async () => {
         try {
-            const accessToken =
-                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
-
-            const response = await axios.get(`${URL}/api/leave/department`, {
-                headers: {
-                    Authorization: accessToken,
-                },
-            });
+            const response = await createConnection(accessToken).get(`/leave/department`);
 
             setDepartment(response.data);
         } catch (error) {
@@ -94,14 +94,7 @@ const UserPage = () => {
 
     const getRole = async () => {
         try {
-            const accessToken =
-                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
-
-            const response = await axios.get(`${URL}/api/leave/role`, {
-                headers: {
-                    Authorization: accessToken,
-                },
-            });
+            const response = await createConnection(accessToken).get(`/leave/role`);
 
             setRole(response.data);
         } catch (error) {
@@ -111,16 +104,9 @@ const UserPage = () => {
 
     const getZaloAPIInfo = async () => {
         try {
-            const accessToken =
-                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
-
             setLoading(true);
 
-            const response = await axios.get(`${URL}/api/zalo/user`, {
-                headers: {
-                    Authorization: accessToken,
-                },
-            });
+            const response = await createConnection(accessToken).get(`/zalo/user`);
 
             setZaloAPIInfo(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
@@ -132,16 +118,9 @@ const UserPage = () => {
 
     const getUser = async () => {
         try {
-            const accessToken =
-                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
-
             setLoading(true);
 
-            const response = await axios.get(`${URL}/api/leave/user`, {
-                headers: {
-                    Authorization: accessToken,
-                },
-            });
+            const response = await createConnection(accessToken).get(`/leave/user`);
 
             setUser(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
@@ -153,14 +132,7 @@ const UserPage = () => {
 
     const insertUser = async values => {
         try {
-            const accessToken =
-                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
-
-            const response = await axios.post(`${URL}/api/leave/user`, values, {
-                headers: {
-                    Authorization: accessToken,
-                },
-            });
+            const response = await createConnection(accessToken).post(`/leave/user`, values);
 
             setModalMain({ open: false });
 
@@ -177,14 +149,10 @@ const UserPage = () => {
 
     const updateUser = async values => {
         try {
-            const accessToken =
-                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
-
-            const response = await axios.put(`${URL}/api/leave/user/${values.id}`, values, {
-                headers: {
-                    Authorization: accessToken,
-                },
-            });
+            const response = await createConnection(accessToken).put(
+                `/leave/user/${values.id}`,
+                values
+            );
 
             setModalMain({ open: false });
 
@@ -201,14 +169,7 @@ const UserPage = () => {
 
     const deleteUser = async id => {
         try {
-            const accessToken =
-                localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
-
-            const response = await axios.delete(`${URL}/api/leave/user/${id}`, {
-                headers: {
-                    Authorization: accessToken,
-                },
-            });
+            const response = await createConnection(accessToken).delete(`/leave/user/${id}`);
 
             setModalConfirm({
                 open: false,

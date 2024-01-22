@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ContentComponent } from '../components';
-import { Dropdown, Table, Tag, Typography } from 'antd';
-import { ThreeDotsVertical } from 'react-bootstrap-icons';
+import { Link } from 'react-router-dom';
+import dayjs from 'dayjs';
+
+import { Dropdown, Form, Space, Table, Tag, Typography } from 'antd';
 import {
     CheckCircleFilled,
     CloseCircleFilled,
@@ -9,165 +10,389 @@ import {
     StopFilled,
     SyncOutlined,
 } from '@ant-design/icons';
-import dayjs from 'dayjs';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { ThreeDotsVertical } from 'react-bootstrap-icons';
+
+import {
+    ContentComponent,
+    ModalConfirmComponent,
+    ModalErrorComponent,
+    ModalErrorOtherComponent,
+    ModalReasonComponent,
+    ModalSuccessComponent,
+} from '../components';
+
+import { createConnection, getUniqueName } from '../utils';
 
 const { Text } = Typography;
 
-const URL = process.env.REACT_APP_API_URL;
+const LeaderPage = () => {
+    console.log('Run LeaderPage...');
 
-const columns = [
-    {
+    const [loading, setLoading] = useState(false);
+
+    const [leader, setLeader] = useState([]);
+
+    const [modalConfirm, setModalConfirm] = useState({
+        onOk: () => {},
+        open: false,
+        message: '',
+    });
+
+    const [modalError, setModalError] = useState({
+        open: false,
+        error: '',
+    });
+
+    const [modalErrorOther, setModalErrorOther] = useState({
+        open: false,
         title: '',
-        dataIndex: 'action',
-        key: 'action',
-        fixed: 'left',
-        render: (_, record) => (
-            <Dropdown
-                arrow={true}
-                menu={{
-                    items: [
-                        {
-                            key: 1,
-                            label: 'Hủy phép',
-                            icon: <StopFilled />,
-                            onClick: () => {},
-                            style: { color: '#ff4d4f' },
-                        },
-                        {
-                            key: 2,
-                            label: 'Điều chỉnh',
-                            icon: <EditFilled />,
-                            children: [
-                                {
-                                    key: 4,
-                                    label: 'Loại phép',
-                                    // icon: <TagFilled />,
-                                    style: { color: '#c41d7f' },
-                                    onClick: () => {},
+        message: '',
+    });
+
+    const [modalReason, setModalReason] = useState({
+        open: false,
+        onFinish: () => {},
+    });
+
+    const [modalSuccess, setModalSuccess] = useState({
+        open: false,
+        message: '',
+    });
+
+    const [formReason] = Form.useForm();
+
+    const accessToken =
+        localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+    useEffect(() => {
+        getLeader();
+    }, []);
+
+    const getLeader = async () => {
+        try {
+            setLoading(true);
+
+            const response = await createConnection(accessToken).get(`/leave/list/leader`);
+
+            setLeader(response.data.map(item => ({ ...item, key: item.id })));
+        } catch (error) {
+            setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const approveLeave = async id => {
+        try {
+            const response = await createConnection(accessToken).put(
+                `/leave/list/leader/approved/${id}`
+            );
+
+            setModalConfirm({ open: false });
+
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
+
+            getLeader();
+        } catch (error) {
+            setModalConfirm({ open: false });
+
+            setModalError({ open: true, error });
+        }
+    };
+
+    const rejectLeave = async (id, reason) => {
+        try {
+            const response = await createConnection(accessToken).put(
+                `/leave/list/leader/rejected/${id}`,
+                reason
+            );
+
+            setModalReason({ open: false });
+
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
+
+            getLeader();
+        } catch (error) {
+            setModalReason({ open: false });
+
+            setModalError({ open: true, error });
+        }
+    };
+
+    const columns = [
+        {
+            title: '',
+            dataIndex: 'action',
+            key: 'action',
+            fixed: 'left',
+            render: (_, record) => (
+                <Dropdown
+                    arrow={true}
+                    menu={{
+                        items: [
+                            {
+                                key: 1,
+                                label: 'Phê duyệt',
+                                icon: <EditFilled />,
+                                onClick: () => {
+                                    if (
+                                        record.leaderApproved === 1 ||
+                                        record.managerApproved === 1
+                                    ) {
+                                        setModalErrorOther({
+                                            message: (
+                                                <ul>
+                                                    <li>
+                                                        <b>Bạn đã phê duyệt</b> yêu cầu nghỉ phép
+                                                        này.
+                                                    </li>
+                                                    <li>
+                                                        <b>Manager đã phê duyệt</b> yêu cầu nghỉ
+                                                        phép này.
+                                                    </li>
+                                                </ul>
+                                            ),
+                                            open: true,
+                                            title: 'KHÔNG THỂ PHÊ DUYỆT',
+                                        });
+                                    } else {
+                                        setModalConfirm({
+                                            message: (
+                                                <Space direction="vertical" align="center">
+                                                    Bạn có chắc duyệt yêu cầu nghỉ phép của
+                                                    <b>{record.userName}</b>
+                                                </Space>
+                                            ),
+                                            onOk: () => approveLeave(record.id),
+                                            open: true,
+                                        });
+                                    }
                                 },
-                                {
-                                    key: 5,
-                                    label: 'Số ngày',
-                                    // icon: <ReadFilled />,
-                                    style: { color: '#1677ff' },
-                                    onClick: () => {},
+                                style: {
+                                    color: '#1677ff',
                                 },
-                                {
-                                    key: 6,
-                                    label: 'Cả hai',
-                                    // icon: <UnlockFilled />,
-                                    style: { color: '#531dab' },
-                                    onClick: () => {},
+                            },
+                            {
+                                key: 2,
+                                label: 'Từ chối',
+                                icon: <StopFilled />,
+                                onClick: () => {
+                                    if (
+                                        record.leaderApproved === 0 ||
+                                        record.managerApproved === 0 ||
+                                        record.managerApproved === 1
+                                    ) {
+                                        setModalErrorOther({
+                                            message: (
+                                                <ul>
+                                                    <li>
+                                                        <b>Bạn đã từ chối</b> yêu cầu nghỉ phép này.
+                                                    </li>
+                                                    <li>
+                                                        <b>Manager đã từ chối</b> yêu cầu nghỉ phép
+                                                        này.
+                                                    </li>
+                                                    <li>
+                                                        <b>Manager đã phê duyệt</b> yêu cầu nghỉ
+                                                        phép này.
+                                                    </li>
+                                                </ul>
+                                            ),
+                                            open: true,
+                                            title: 'KHÔNG THỂ TỪ CHỐI',
+                                        });
+                                    } else {
+                                        setModalReason({
+                                            open: true,
+                                            onFinish: reason => rejectLeave(record.id, reason),
+                                        });
+                                    }
                                 },
-                            ],
-                        },
-                    ],
-                }}
-                placement={'bottomLeft'}
-            >
-                <ThreeDotsVertical />
-            </Dropdown>
-        ),
-    },
-    {
-        title: '#',
-        dataIndex: 'id',
-        key: 'id',
-        sorter: (a, b) => a.id - b.id,
-    },
-    {
-        title: 'Họ và Tên',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        render: record => <Text strong>{record}</Text>,
-    },
-    {
-        title: 'Loại phép',
-        children: [
-            {
-                title: 'Đăng ký',
-                dataIndex: 'bookLeaveType',
-                key: 'bookLeaveType',
-                ellipsis: true,
-            },
-            {
-                title: 'Thực tế',
-                dataIndex: 'actualLeaveType',
-                key: 'actualLeaveType',
-                ellipsis: true,
-            },
-        ],
-    },
-    {
-        title: 'Số ngày',
-        children: [
-            {
-                title: 'Đăng ký',
-                dataIndex: 'bookLeaveDay',
-                key: 'bookLeaveDay',
-                ellipsis: true,
-            },
-            {
-                title: 'Thực tế',
-                dataIndex: 'actualLeaveDay',
-                key: 'actualLeaveDay',
-                ellipsis: true,
-            },
-        ],
-    },
-    {
-        title: 'Từ ngày',
-        dataIndex: 'bookFromDate',
-        key: 'bookFromDate',
-        ellipsis: true,
-        render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
-    },
-    {
-        title: 'Đến ngày',
-        dataIndex: 'bookToDate',
-        key: 'bookToDate',
-        ellipsis: true,
-        render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
-    },
-    {
-        title: 'Lý do',
-        dataIndex: 'reason',
-        key: 'reason',
-        ellipsis: true,
-    },
-    {
-        title: 'Ngày yêu cầu',
-        dataIndex: 'requestDate',
-        key: 'requestDate',
-        ellipsis: true,
-        render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
-    },
-    {
-        title: 'Lộ trình',
-        dataIndex: 'tracking',
-        key: 'tracking',
-        ellipsis: true,
-        render: (_, record) => {
-            if (record.deleted === 1) return <Tag color="#ff4d4f">Đã xóa</Tag>;
-            else {
-                if (record.tracking === 1) return <Tag color="#108ee9">Đã gửi Leader</Tag>;
-                if (record.tracking === 2) return <Tag color="#52c41a">Đã gửi Manager</Tag>;
-            }
+                                style: { color: '#ff4d4f' },
+                            },
+                        ],
+                    }}
+                    placement={'bottomLeft'}
+                >
+                    <ThreeDotsVertical />
+                </Dropdown>
+            ),
         },
-    },
-    {
-        title: 'Xác nhận',
-        children: [
-            {
-                title: 'Tổ trưởng',
-                dataIndex: 'leaderApproved',
-                key: 'leaderApproved',
-                ellipsis: true,
-                render: (_, record) => {
-                    if (!record.deleted) {
+        {
+            title: '#',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => a.id - b.id,
+        },
+        {
+            title: 'Lộ trình',
+            dataIndex: 'tracking',
+            key: 'tracking',
+            ellipsis: true,
+            render: (_, record) => {
+                if (record.managerApprovedDelete) return <Tag color="#ff4d4f">Đã hủy</Tag>;
+                else {
+                    if (record.tracking === 1) return <Tag color="#108ee9">Đã gửi Leader</Tag>;
+                    if (record.tracking === 2) return <Tag color="#52c41a">Đã gửi Manager</Tag>;
+                }
+            },
+        },
+        {
+            title: 'Họ và Tên',
+            dataIndex: 'userName',
+            key: 'userName',
+            ellipsis: true,
+            filters: getUniqueName(leader, 'userId', 'userName'),
+            filterSearch: true,
+            onFilter: (value, record) => record.userName.includes(value),
+            render: (_, record) => {
+                if (!record.managerApprovedDelete) {
+                    if (!record.managerApproved) {
+                        return (
+                            <Text strong style={{ color: '#1677ff' }}>
+                                {record.userName}
+                            </Text>
+                        );
+                    } else {
+                        return <Text strong>{record.userName}</Text>;
+                    }
+                } else {
+                    return (
+                        <Text delete strong type={'danger'}>
+                            {record.userName}
+                        </Text>
+                    );
+                }
+            },
+        },
+        {
+            title: 'Loại phép',
+            children: [
+                {
+                    title: 'Đăng ký',
+                    dataIndex: 'bookLeaveType',
+                    key: 'bookLeaveType',
+                    ellipsis: true,
+                },
+                {
+                    title: 'Thực tế',
+                    dataIndex: 'actualLeaveType',
+                    key: 'actualLeaveType',
+                    ellipsis: true,
+                    render: (_, record) => {
+                        if (record.actualLeaveTypeID) {
+                            if (record.managerApprovedLeaveType) {
+                                return (
+                                    <>
+                                        <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
+                                        {record.actualLeaveType}
+                                    </>
+                                );
+                            } else {
+                                return (
+                                    <Tag
+                                        bordered={false}
+                                        color="processing"
+                                        icon={<SyncOutlined spin />}
+                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                    >
+                                        {record.actualLeaveType}
+                                    </Tag>
+                                );
+                            }
+                        }
+                    },
+                },
+            ],
+        },
+        {
+            title: 'Số ngày',
+            children: [
+                {
+                    title: 'Đăng ký',
+                    dataIndex: 'bookLeaveDay',
+                    key: 'bookLeaveDay',
+                    ellipsis: true,
+                },
+                {
+                    title: 'Thực tế',
+                    dataIndex: 'actualLeaveDay',
+                    key: 'actualLeaveDay',
+                    ellipsis: true,
+                    render: (_, record) => {
+                        if (record.actualLeaveDay) {
+                            if (record.managerApprovedLeaveDay) {
+                                return (
+                                    <>
+                                        <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
+                                        {record.actualLeaveDay}
+                                    </>
+                                );
+                            } else {
+                                return (
+                                    <Tag
+                                        bordered={false}
+                                        color="processing"
+                                        icon={<SyncOutlined spin />}
+                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                    >
+                                        {record.actualLeaveDay}
+                                    </Tag>
+                                );
+                            }
+                        }
+                    },
+                },
+            ],
+        },
+        {
+            title: 'Từ ngày',
+            dataIndex: 'bookFromDate',
+            key: 'bookFromDate',
+            ellipsis: true,
+            render: (_, record) =>
+                record.actualFromDate && record.managerApprovedLeaveDay
+                    ? dayjs(record.actualFromDate).format('HH:mm DD/MM/YYYY')
+                    : dayjs(record.bookFromDate).format('HH:mm DD/MM/YYYY'),
+        },
+        {
+            title: 'Đến ngày',
+            dataIndex: 'bookToDate',
+            key: 'bookToDate',
+            ellipsis: true,
+            render: (_, record) =>
+                record.actualToDate && record.managerApprovedLeaveDay
+                    ? dayjs(record.actualToDate).format('HH:mm DD/MM/YYYY')
+                    : dayjs(record.bookToDate).format('HH:mm DD/MM/YYYY'),
+        },
+        {
+            title: 'Lý do',
+            dataIndex: 'reason',
+            key: 'reason',
+            ellipsis: true,
+        },
+        {
+            title: 'Ngày yêu cầu',
+            dataIndex: 'requestDate',
+            key: 'requestDate',
+            ellipsis: true,
+            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+        },
+        {
+            title: 'Xác nhận',
+            children: [
+                {
+                    title: 'Tổ trưởng',
+                    dataIndex: 'leaderApproved',
+                    key: 'leaderApproved',
+                    ellipsis: true,
+                    render: (_, record) => {
                         if (record.leaderApproved === 0)
                             return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
                         else if (record.leaderApproved === 1)
@@ -183,85 +408,53 @@ const columns = [
                                     Waiting...
                                 </Tag>
                             );
-                    }
+                    },
                 },
-            },
-            {
-                title: 'Quản lý',
-                dataIndex: 'managerApproved',
-                key: 'managerApproved',
-                ellipsis: true,
-                render: (_, record) => {
-                    if (!record.deleted) {
-                        if (record.managerApproved === 0)
-                            return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
-                        else if (record.managerApproved === 1)
-                            return <CheckCircleFilled style={{ color: '#52c41a' }} />;
-                        else if (!record.managerApprovedDelete)
-                            return (
-                                <Tag
-                                    bordered={false}
-                                    color="processing"
-                                    icon={<SyncOutlined spin />}
-                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
-                                >
-                                    Waiting...
-                                </Tag>
-                            );
-                    }
+                {
+                    title: 'Quản lý',
+                    dataIndex: 'managerApproved',
+                    key: 'managerApproved',
+                    ellipsis: true,
+                    render: (_, record) => {
+                        if (!record.deleteRequest) {
+                            if (record.managerApproved === 0)
+                                return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
+                            else if (record.managerApproved === 1)
+                                return <CheckCircleFilled style={{ color: '#52c41a' }} />;
+                            else if (record.leaderApproved === 1)
+                                return (
+                                    <Tag
+                                        bordered={false}
+                                        color="processing"
+                                        icon={<SyncOutlined spin />}
+                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                    >
+                                        Waiting...
+                                    </Tag>
+                                );
+                        }
+                    },
                 },
-            },
-        ],
-    },
-    {
-        title: 'Lý do từ chối',
-        children: [
-            {
-                title: 'Tổ trưởng',
-                dataIndex: 'leaderRejectReason',
-                key: 'leaderRejectReason',
-                ellipsis: true,
-            },
-            {
-                title: 'Quản lý',
-                dataIndex: 'managerRejectReason',
-                key: 'managerRejectReason',
-                ellipsis: true,
-            },
-        ],
-    },
-];
-
-const LeaderPage = () => {
-    console.log('Run LeaderPage...');
-
-    const [loading, setLoading] = useState(false);
-    const [dataSource, setDataSource] = useState([]);
-
-    const accessToken =
-        localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
-
-    useEffect(() => {
-        getLeaveList();
-    }, []);
-
-    const getLeaveList = async () => {
-        try {
-            setLoading(true);
-
-            const response = await axios.get(`${URL}/api/leave/list/leader`, {
-                headers: {
-                    Authorization: accessToken,
+            ],
+        },
+        {
+            title: 'Lý do từ chối',
+            children: [
+                {
+                    title: 'Tổ trưởng',
+                    dataIndex: 'leaderRejectReason',
+                    key: 'leaderRejectReason',
+                    ellipsis: true,
                 },
-            });
-
-            setDataSource(response.data.map(item => ({ ...item, key: item.id })));
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
-        }
-    };
+                {
+                    title: 'Quản lý',
+                    dataIndex: 'managerRejectReason',
+                    key: 'managerRejectReason',
+                    ellipsis: true,
+                },
+            ],
+        },
+    ];
 
     const itemsBreadcrumb = [
         {
@@ -277,9 +470,40 @@ const LeaderPage = () => {
             <Table
                 bordered
                 columns={columns}
-                dataSource={dataSource}
+                dataSource={leader}
                 scroll={{ x: true }}
                 showSorterTooltip={false}
+            />
+            <ModalConfirmComponent
+                onCancel={() => setModalConfirm({ open: false })}
+                onOk={modalConfirm.onOk}
+                open={modalConfirm.open}
+                message={modalConfirm.message}
+            />
+            <ModalErrorComponent
+                onOk={() => setModalError({ open: false })}
+                open={modalError.open}
+                error={modalError.error}
+            />
+            <ModalErrorOtherComponent
+                onOk={() => setModalErrorOther({ open: false })}
+                open={modalErrorOther.open}
+                title={modalErrorOther.title}
+                message={modalErrorOther.message}
+            />
+            <ModalReasonComponent
+                afterClose={() => formReason.resetFields()}
+                form={formReason}
+                loading={loading}
+                onCancel={() => setModalReason({ open: false })}
+                onFinish={modalReason.onFinish}
+                onOk={() => formReason.submit()}
+                open={modalReason.open}
+            />
+            <ModalSuccessComponent
+                onOk={() => setModalSuccess({ open: false })}
+                open={modalSuccess.open}
+                message={modalSuccess.message}
             />
         </ContentComponent>
     );

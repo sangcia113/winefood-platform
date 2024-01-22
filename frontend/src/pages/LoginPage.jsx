@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+
 import { Button, Card, Checkbox, Flex, Form, Input, Layout, Space, Typography } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+
 import { ModalConfirmComponent, ModalErrorComponent } from '../components';
-import { checkToken } from '../utils';
+
+import { checkToken, createConnection } from '../utils';
 
 const videoSource = require(`../assets/images/video.mp4`);
 
-const URL = process.env.REACT_APP_API_URL;
-
 const { Item } = Form;
-
 const { Password } = Input;
-
 const { Link, Text } = Typography;
 
 const LoginPage = () => {
@@ -38,7 +36,7 @@ const LoginPage = () => {
 
     const onFinish = async values => {
         try {
-            const response = await axios.post(`${URL}/api/leave/login`, values);
+            const response = await createConnection().post(`/leave/login`, values);
 
             const { accessToken } = response.data;
 

@@ -1,10 +1,10 @@
 const {
     checkIsExist,
-    checkStatus,
-    checkStatusLeaveType,
-    checkStatusLeaveDay,
-    checkStatusRequestDelete,
+    checkApprovedLeaveType,
+    checkApprovedLeaveDay,
+    checkApprovedRequestDelete,
     checkLeaderApprove,
+    checkManagerApprove,
 } = require('../services/leaveListService');
 
 const leaveListMiddleWare = {
@@ -67,9 +67,9 @@ const leaveListMiddleWare = {
             const results = await checkLeaderApprove(id);
 
             if (results[0].leaderApproved === 1)
-                return res.json({
+                return res.status(400).json({
                     error: 908,
-                    message: 'Bạn đã phê duyệt yêu cầu nghỉ phép này.!',
+                    message: 'Bạn đã phê duyệt yêu cầu nghỉ phép này!',
                 });
 
             next();
@@ -97,7 +97,9 @@ const leaveListMiddleWare = {
             const results = await checkLeaderApprove(id);
 
             if (results[0].leaderApproved === 0)
-                return res.json({ error: 909, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
+                return res
+                    .status(400)
+                    .json({ error: 909, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
 
             next();
         } catch (err) {
@@ -117,9 +119,9 @@ const leaveListMiddleWare = {
             const results = await checkManagerApprove(id);
 
             if (results[0].managerApproved === 1)
-                return res.json({
+                return res.status(400).json({
                     error: 908,
-                    message: 'Bạn đã phê duyệt yêu cầu nghỉ phép này.!',
+                    message: 'Bạn đã phê duyệt yêu cầu nghỉ phép này!',
                 });
 
             next();
@@ -147,7 +149,9 @@ const leaveListMiddleWare = {
             const results = await checkManagerApprove(id);
 
             if (results[0].managerApproved === 0)
-                return res.json({ error: 909, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
+                return res
+                    .status(400)
+                    .json({ error: 909, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
 
             next();
         } catch (err) {
@@ -164,7 +168,7 @@ const leaveListMiddleWare = {
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            const results = await checkStatusLeaveType(id);
+            const results = await checkApprovedLeaveType(id);
 
             if (!results[0].actualLeaveTypeID || !results[0].managerApprovedLeaveType)
                 return res.json({
@@ -188,7 +192,7 @@ const leaveListMiddleWare = {
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            const results = await checkStatusLeaveDay(id);
+            const results = await checkApprovedLeaveDay(id);
 
             if (!results[0].actualLeaveDay || !results[0].managerApprovedLeaveDay)
                 return res.json({
@@ -212,7 +216,7 @@ const leaveListMiddleWare = {
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
-            const results = await checkStatusRequestDelete(id);
+            const results = await checkApprovedRequestDelete(id);
 
             if (!results[0].deleteRequest || !results[0].managerApprovedDelete)
                 return res.json({

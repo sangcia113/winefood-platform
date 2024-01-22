@@ -82,16 +82,33 @@ const LeaderPage = () => {
         }
     };
 
-    const approveLeave = async id => {
+    const approveLeave = async (
+        id,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason,
+        userName
+    ) => {
         try {
             const response = await createConnection(accessToken).put(
-                `/leave/list/leader/approved/${id}`
+                `/leave/list/leader/approved/${id}`,
+                { bookLeaveType, bookLeaveDay, bookFromDate, bookToDate, reason, userName }
             );
 
             setModalConfirm({ open: false });
 
             setModalSuccess({
-                message: response.data.message,
+                message: (
+                    <Text style={{ textAlign: 'center' }}>
+                        Đã gửi yêu cầu lên cấp trên
+                        <br />
+                        <b>{response.data.superiorName}</b>
+                        <br />
+                        qua <b>Zalo</b>
+                    </Text>
+                ),
                 open: true,
             });
 
@@ -103,11 +120,28 @@ const LeaderPage = () => {
         }
     };
 
-    const rejectLeave = async (id, reason) => {
+    const rejectLeave = async (
+        id,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason,
+        rejectReason,
+        userName
+    ) => {
         try {
             const response = await createConnection(accessToken).put(
                 `/leave/list/leader/rejected/${id}`,
-                reason
+                {
+                    bookLeaveType,
+                    bookLeaveDay,
+                    bookFromDate,
+                    bookToDate,
+                    reason,
+                    rejectReason,
+                    userName,
+                }
             );
 
             setModalReason({ open: false });
@@ -169,7 +203,16 @@ const LeaderPage = () => {
                                                     <b>{record.userName}</b>
                                                 </Space>
                                             ),
-                                            onOk: () => approveLeave(record.id),
+                                            onOk: () =>
+                                                approveLeave(
+                                                    record.id,
+                                                    record.bookLeaveType,
+                                                    record.bookLeaveDay,
+                                                    record.bookFromDate,
+                                                    record.bookToDate,
+                                                    record.reason,
+                                                    record.userName
+                                                ),
                                             open: true,
                                         });
                                     }
@@ -210,7 +253,17 @@ const LeaderPage = () => {
                                     } else {
                                         setModalReason({
                                             open: true,
-                                            onFinish: reason => rejectLeave(record.id, reason),
+                                            onFinish: values =>
+                                                rejectLeave(
+                                                    record.id,
+                                                    record.bookLeaveType,
+                                                    record.bookLeaveDay,
+                                                    record.bookFromDate,
+                                                    record.bookToDate,
+                                                    record.reason,
+                                                    values.reason,
+                                                    record.userName
+                                                ),
                                         });
                                     }
                                 },
@@ -416,23 +469,21 @@ const LeaderPage = () => {
                     key: 'managerApproved',
                     ellipsis: true,
                     render: (_, record) => {
-                        if (!record.deleteRequest) {
-                            if (record.managerApproved === 0)
-                                return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
-                            else if (record.managerApproved === 1)
-                                return <CheckCircleFilled style={{ color: '#52c41a' }} />;
-                            else if (record.leaderApproved === 1)
-                                return (
-                                    <Tag
-                                        bordered={false}
-                                        color="processing"
-                                        icon={<SyncOutlined spin />}
-                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
-                                    >
-                                        Waiting...
-                                    </Tag>
-                                );
-                        }
+                        if (record.managerApproved === 0)
+                            return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
+                        else if (record.managerApproved === 1)
+                            return <CheckCircleFilled style={{ color: '#52c41a' }} />;
+                        else if (record.leaderApproved === 1)
+                            return (
+                                <Tag
+                                    bordered={false}
+                                    color="processing"
+                                    icon={<SyncOutlined spin />}
+                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                >
+                                    Waiting...
+                                </Tag>
+                            );
                     },
                 },
             ],

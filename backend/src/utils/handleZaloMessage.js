@@ -46,7 +46,7 @@ const handleZaloMessage = {
             dayjs().format('HH:mm DD/MM/YYYY') +
             '\n' +
             '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/' +
-            (superiorRoleId === 1 || superiorRoleId === 2 ? 'manager' : 'leader') +
+            (superiorRoleId === 2 || superiorRoleId === 3 ? 'manager' : 'leader') +
             '\n\n' +
             'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
             'Vui lòng trả lời 1 tin nhắn bất kỳ!'
@@ -166,6 +166,58 @@ const handleZaloMessage = {
             dayjs().format('HH:mm DD/MM/YYYY') +
             '\n' +
             '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/manager' +
+            '\n\n' +
+            'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
+            'Vui lòng trả lời 1 tin nhắn bất kỳ!'
+        );
+    },
+
+    messageLeaderReject: (
+        superiorName,
+        superiorRoleId,
+        name,
+        department,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason,
+        rejectReason
+    ) => {
+        return (
+            '<TỪ CHỐI> ĐƠN XIN NGHỈ PHÉP\n\n' +
+            '- Leader: ' +
+            superiorName +
+            ', đã từ chối yêu cầu nghỉ phép với lý do: ' +
+            rejectReason +
+            '\n' +
+            'Thông tin nghỉ phép của bạn:\n\n' +
+            '- Họ và tên: ' +
+            name +
+            '\n' +
+            '- Bộ phận: ' +
+            department +
+            '\n' +
+            '- Loại phép: ' +
+            bookLeaveType +
+            '\n' +
+            '- Số ngày nghỉ: ' +
+            bookLeaveDay +
+            '\n' +
+            '- Từ ngày: ' +
+            dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Đến ngày: ' +
+            dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Lý do: ' +
+            reason +
+            '\n' +
+            '- Ngày yêu cầu: ' +
+            dayjs().format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/' +
+            (superiorRoleId === 2 || superiorRoleId === 3 ? 'manager' : 'leader') +
             '\n\n' +
             'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
             'Vui lòng trả lời 1 tin nhắn bất kỳ!'

@@ -257,7 +257,7 @@ const HistoryPage = () => {
                                 label: 'Hủy phép',
                                 icon: <StopFilled />,
                                 onClick: () => {
-                                    if (record.deleted || record.deleteRequest) {
+                                    if (record.deleteRequest) {
                                         setModalErrorOther({
                                             message: (
                                                 <ul>
@@ -318,8 +318,10 @@ const HistoryPage = () => {
             render: (_, record) => {
                 if (record.managerApprovedDelete) return <Tag color="#ff4d4f">Đã hủy</Tag>;
                 else {
-                    if (record.tracking === 1) return <Tag color="#108ee9">Đã gửi Leader</Tag>;
-                    if (record.tracking === 2) return <Tag color="#52c41a">Đã gửi Manager</Tag>;
+                    if (record.tracking === 1 && [1, 6].includes(record.roleId))
+                        return <Tag color="#108ee9">Đã gửi Leader</Tag>;
+                    if (record.tracking === 2 || [2, 3, 4, 5].includes(record.roleId))
+                        return <Tag color="#52c41a">Đã gửi Manager</Tag>;
                 }
             },
         },
@@ -445,23 +447,21 @@ const HistoryPage = () => {
                     key: 'leaderApproved',
                     ellipsis: true,
                     render: (_, record) => {
-                        if (!record.deleted) {
-                            if (record.leaderApproved === 0)
-                                return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
-                            else if (record.leaderApproved === 1)
-                                return <CheckCircleFilled style={{ color: '#52c41a' }} />;
-                            else
-                                return (
-                                    <Tag
-                                        bordered={false}
-                                        color="processing"
-                                        icon={<SyncOutlined spin />}
-                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
-                                    >
-                                        Waiting...
-                                    </Tag>
-                                );
-                        }
+                        if (record.leaderApproved === 0)
+                            return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
+                        else if (record.leaderApproved === 1)
+                            return <CheckCircleFilled style={{ color: '#52c41a' }} />;
+                        else if ([1, 6].includes(record.roleId))
+                            return (
+                                <Tag
+                                    bordered={false}
+                                    color="processing"
+                                    icon={<SyncOutlined spin />}
+                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                >
+                                    Waiting...
+                                </Tag>
+                            );
                     },
                 },
                 {
@@ -470,7 +470,7 @@ const HistoryPage = () => {
                     key: 'managerApproved',
                     ellipsis: true,
                     render: (_, record) => {
-                        if (!record.deleted && !record.deleteRequest) {
+                        if (!record.deleteRequest) {
                             if (record.managerApproved === 0)
                                 return <CloseCircleFilled style={{ color: '#ff4d4f' }} />;
                             else if (record.managerApproved === 1)

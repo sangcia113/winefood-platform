@@ -33,6 +33,7 @@ const leaveListService = {
         // Truy vấn SQL để đọc
         const sql = `SELECT
                         l.*,
+                        u.roleId,
                         d.name AS department,
                         bt.nameVN AS bookLeaveType,
                         at.nameVN AS actualLeaveType
@@ -89,7 +90,9 @@ const leaveListService = {
                     WHERE
                         superiorId = ?
                     AND
-                        deleted IS NULL
+                        deleted IS NULL 
+                    AND 
+                        deleteRequest IS NULL
                     ORDER BY 
                         l.id 
                     DESC`;
@@ -304,7 +307,7 @@ const leaveListService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    checkStatusLeaveType: async id => {
+    checkApprovedLeaveType: async id => {
         // Truy vấn SQL để đọc
         const sql = `SELECT 
                         actualLeaveTypeID, 
@@ -321,7 +324,7 @@ const leaveListService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    checkStatusLeaveDay: async id => {
+    checkApprovedLeaveDay: async id => {
         // Truy vấn SQL để đọc
         const sql = `SELECT 
                         actualLeaveDay, 
@@ -338,7 +341,7 @@ const leaveListService = {
     },
 
     // Đọc trong cơ sở dữ liệu.
-    checkStatusRequestDelete: async id => {
+    checkApprovedRequestDelete: async id => {
         // Truy vấn SQL để đọc
         const sql = `SELECT 
                         deleteRequest, 
@@ -362,12 +365,13 @@ const leaveListService = {
                     SET 
                         leaderApproved = ?, 
                         leaderRejectReason = ?, 
-                        leaderApprovedDate = ? 
+                        leaderApprovedDate = ?, 
+                        tracking = ?
                     WHERE 
                         id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
-        await db.query(sql, [1, '', new Date(), id]);
+        await db.query(sql, [1, '', new Date(), 2, id]);
     },
 
     // Cập nhật trong cơ sở dữ liệu.

@@ -1,5 +1,6 @@
 const { encodePassword, decodePassword } = require('../utils/handleHashPassword');
 const {
+    messageLeaderReject,
     messageRequestCancel,
     messageRequestEdit,
     messageRequestLeave,
@@ -8,6 +9,7 @@ const {
 module.exports = {
     encodePassword,
     decodePassword,
+    messageLeaderReject,
     messageRequestCancel,
     messageRequestEdit,
     messageRequestLeave,

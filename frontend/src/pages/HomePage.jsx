@@ -77,7 +77,7 @@ const HomePage = () => {
                     <Text style={{ textAlign: 'center' }}>
                         Đã gửi yêu cầu lên cấp trên
                         <br />
-                        <b>{response.data.superiorName}</b>
+                        <b>{response.data.receiver}</b>
                         <br />
                         qua <b>Zalo</b>
                     </Text>

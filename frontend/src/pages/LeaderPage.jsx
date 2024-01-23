@@ -84,17 +84,26 @@ const LeaderPage = () => {
 
     const approveLeave = async (
         id,
+        userName,
+        department,
         bookLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason,
-        userName
+        reason
     ) => {
         try {
             const response = await createConnection(accessToken).put(
                 `/leave/list/leader/approved/${id}`,
-                { bookLeaveType, bookLeaveDay, bookFromDate, bookToDate, reason, userName }
+                {
+                    userName,
+                    department,
+                    bookLeaveType,
+                    bookLeaveDay,
+                    bookFromDate,
+                    bookToDate,
+                    reason,
+                }
             );
 
             setModalConfirm({ open: false });
@@ -104,7 +113,7 @@ const LeaderPage = () => {
                     <Text style={{ textAlign: 'center' }}>
                         Đã gửi yêu cầu lên cấp trên
                         <br />
-                        <b>{response.data.superiorName}</b>
+                        <b>{response.data.receiver}</b>
                         <br />
                         qua <b>Zalo</b>
                     </Text>
@@ -122,32 +131,44 @@ const LeaderPage = () => {
 
     const rejectLeave = async (
         id,
+        rejectReason,
+        userId,
+        userName,
+        department,
         bookLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason,
-        rejectReason,
-        userName
+        reason
     ) => {
         try {
             const response = await createConnection(accessToken).put(
                 `/leave/list/leader/rejected/${id}`,
                 {
+                    rejectReason,
+                    userId,
+                    userName,
+                    department,
                     bookLeaveType,
                     bookLeaveDay,
                     bookFromDate,
                     bookToDate,
                     reason,
-                    rejectReason,
-                    userName,
                 }
             );
 
             setModalReason({ open: false });
 
             setModalSuccess({
-                message: response.data.message,
+                message: (
+                    <Text style={{ textAlign: 'center' }}>
+                        Đã gửi thông báo từ chối đến nhân viên
+                        <br />
+                        <b>{response.data.receiver}</b>
+                        <br />
+                        qua <b>Zalo</b>
+                    </Text>
+                ),
                 open: true,
             });
 
@@ -206,12 +227,13 @@ const LeaderPage = () => {
                                             onOk: () =>
                                                 approveLeave(
                                                     record.id,
+                                                    record.userName,
+                                                    record.department,
                                                     record.bookLeaveType,
                                                     record.bookLeaveDay,
                                                     record.bookFromDate,
                                                     record.bookToDate,
-                                                    record.reason,
-                                                    record.userName
+                                                    record.reason
                                                 ),
                                             open: true,
                                         });
@@ -256,13 +278,15 @@ const LeaderPage = () => {
                                             onFinish: values =>
                                                 rejectLeave(
                                                     record.id,
+                                                    values.reason,
+                                                    record.userId,
+                                                    record.userName,
+                                                    record.department,
                                                     record.bookLeaveType,
                                                     record.bookLeaveDay,
                                                     record.bookFromDate,
                                                     record.bookToDate,
-                                                    record.reason,
-                                                    values.reason,
-                                                    record.userName
+                                                    record.reason
                                                 ),
                                         });
                                     }

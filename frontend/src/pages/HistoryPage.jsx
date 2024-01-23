@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-import { Dropdown, Form, Table, Tag } from 'antd';
+import { Dropdown, Form, Table, Tag, Typography } from 'antd';
 import {
     CheckCircleFilled,
     CloseCircleFilled,
@@ -22,6 +22,8 @@ import {
 } from '../components';
 
 import { createConnection } from '../utils';
+
+const { Text } = Typography;
 
 const HistoryPage = () => {
     console.log('Run HistoryPage...');
@@ -120,12 +122,12 @@ const HistoryPage = () => {
 
     const requestCancelLeave = async (
         id,
+        requestReason,
         bookLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason,
-        requestReason
+        reason
     ) => {
         try {
             setLoading(true);
@@ -133,19 +135,27 @@ const HistoryPage = () => {
             const response = await createConnection(accessToken).put(
                 `/leave/list/history/request-cancel/${id}`,
                 {
+                    requestReason,
                     bookLeaveType,
                     bookLeaveDay,
                     bookFromDate,
                     bookToDate,
                     reason,
-                    requestReason,
                 }
             );
 
             setModalReason({ open: false });
 
             setModalSuccess({
-                message: response.data.message,
+                message: (
+                    <Text style={{ textAlign: 'center' }}>
+                        Đã gửi yêu cầu lên cấp trên
+                        <br />
+                        <b>{response.data.receiver}</b>
+                        <br />
+                        qua <b>Zalo</b>
+                    </Text>
+                ),
                 open: true,
             });
 
@@ -159,15 +169,15 @@ const HistoryPage = () => {
 
     const requestEditLeave = async (
         id,
-        bookLeaveType,
-        bookLeaveDay,
-        bookFromDate,
-        bookToDate,
         actualLeaveTypeId,
         actualLeaveType,
         actualLeaveDay,
         actualFromDate,
         actualToDate,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
         reason
     ) => {
         try {
@@ -176,15 +186,15 @@ const HistoryPage = () => {
             const response = await createConnection(accessToken).put(
                 `/leave/list/history/request-edit/${id}`,
                 {
-                    bookLeaveType,
-                    bookLeaveDay,
-                    bookFromDate,
-                    bookToDate,
                     actualLeaveTypeId,
                     actualLeaveType,
                     actualLeaveDay,
                     actualFromDate,
                     actualToDate,
+                    bookLeaveType,
+                    bookLeaveDay,
+                    bookFromDate,
+                    bookToDate,
                     reason,
                 }
             );
@@ -192,7 +202,15 @@ const HistoryPage = () => {
             setModalEdit({ open: false });
 
             setModalSuccess({
-                message: response.data.message,
+                message: (
+                    <Text style={{ textAlign: 'center' }}>
+                        Đã gửi yêu cầu lên cấp trên
+                        <br />
+                        <b>{response.data.receiver}</b>
+                        <br />
+                        qua <b>Zalo</b>
+                    </Text>
+                ),
                 open: true,
             });
 
@@ -232,10 +250,6 @@ const HistoryPage = () => {
                                         onFinish: values =>
                                             requestEditLeave(
                                                 record.id,
-                                                record.bookLeaveType,
-                                                record.bookLeaveDay,
-                                                record.bookFromDate,
-                                                record.bookToDate,
                                                 values.actualLeaveTypeId,
                                                 leaveType.find(
                                                     l => l.id === values.actualLeaveTypeId
@@ -243,6 +257,10 @@ const HistoryPage = () => {
                                                 values.actualLeaveDay,
                                                 values.actualFromDate,
                                                 values.actualToDate,
+                                                record.bookLeaveType,
+                                                record.bookLeaveDay,
+                                                record.bookFromDate,
+                                                record.bookToDate,
                                                 record.reason
                                             ),
                                         open: true,
@@ -282,12 +300,12 @@ const HistoryPage = () => {
                                             onFinish: values =>
                                                 requestCancelLeave(
                                                     record.id,
+                                                    values.reason,
                                                     record.bookLeaveType,
                                                     record.bookLeaveDay,
                                                     record.bookFromDate,
                                                     record.bookToDate,
-                                                    record.reason,
-                                                    values.reason
+                                                    record.reason
                                                 ),
                                         });
                                     } else {

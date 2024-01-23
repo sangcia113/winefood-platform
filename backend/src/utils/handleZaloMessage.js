@@ -99,8 +99,7 @@ const handleZaloMessage = {
             '- Ngày yêu cầu: ' +
             dayjs().format('HH:mm DD/MM/YYYY') +
             '\n' +
-            '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/manager' +
-            '\n\n' +
+            '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/manager\n\n' +
             'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
             'Vui lòng trả lời 1 tin nhắn bất kỳ!'
         );
@@ -165,33 +164,28 @@ const handleZaloMessage = {
             '- Ngày yêu cầu: ' +
             dayjs().format('HH:mm DD/MM/YYYY') +
             '\n' +
-            '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/manager' +
-            '\n\n' +
+            '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/manager\n\n' +
             'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
             'Vui lòng trả lời 1 tin nhắn bất kỳ!'
         );
     },
 
-    messageLeaderReject: (
+    messageApprove: (
         superiorName,
-        superiorRoleId,
         name,
         department,
         bookLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason,
-        rejectReason
+        reason
     ) => {
         return (
-            '<TỪ CHỐI> ĐƠN XIN NGHỈ PHÉP\n\n' +
-            '- Leader: ' +
+            '<ĐÃ DUYỆT> ĐƠN XIN NGHỈ PHÉP\n\n' +
+            'Manager: ' +
             superiorName +
-            ', đã từ chối yêu cầu nghỉ phép với lý do: ' +
-            rejectReason +
-            '\n' +
-            'Thông tin nghỉ phép của bạn:\n\n' +
+            ', đã ký duyệt yêu cầu nghỉ phép\n' +
+            '***Thông tin nghỉ phép của bạn***\n\n' +
             '- Họ và tên: ' +
             name +
             '\n' +
@@ -216,9 +210,157 @@ const handleZaloMessage = {
             '- Ngày yêu cầu: ' +
             dayjs().format('HH:mm DD/MM/YYYY') +
             '\n' +
-            '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/' +
-            (superiorRoleId === 2 || superiorRoleId === 3 ? 'manager' : 'leader') +
-            '\n\n' +
+            '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/history\n\n' +
+            'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
+            'Vui lòng trả lời 1 tin nhắn bất kỳ!'
+        );
+    },
+
+    messageApproveLeaveType: (
+        superiorName,
+        actualLeaveType,
+        name,
+        department,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason
+    ) => {
+        return (
+            '<XÁC NHẬN> ĐIỀU CHỈNH NGHỈ PHÉP\n\n' +
+            'Manager: ' +
+            superiorName +
+            ', đã xác nhận điều chỉnh loại nghỉ phép thực tế\n' +
+            '***Thông tin nghỉ phép của bạn***\n\n' +
+            '- Họ và tên: ' +
+            name +
+            '\n' +
+            '- Bộ phận: ' +
+            department +
+            '\n' +
+            '- Loại phép (đăng ký): ' +
+            bookLeaveType +
+            '\n' +
+            '- Loại phép (thực tế): ' +
+            actualLeaveType +
+            '\n' +
+            '- Số ngày nghỉ: ' +
+            bookLeaveDay +
+            '\n' +
+            '- Từ ngày: ' +
+            dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Đến ngày: ' +
+            dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Lý do: ' +
+            reason +
+            '\n' +
+            '- Ngày yêu cầu: ' +
+            dayjs().format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/history\n\n' +
+            'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
+            'Vui lòng trả lời 1 tin nhắn bất kỳ!'
+        );
+    },
+
+    messageApproveLeaveDay: (
+        superiorName,
+        actualLeaveDay,
+        name,
+        department,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason
+    ) => {
+        return (
+            '<XÁC NHẬN> ĐIỀU CHỈNH NGHỈ PHÉP\n\n' +
+            'Manager: ' +
+            superiorName +
+            ', đã xác nhận điều chỉnh số ngày nghỉ phép thực tế\n' +
+            '***Thông tin nghỉ phép của bạn***\n\n' +
+            '- Họ và tên: ' +
+            name +
+            '\n' +
+            '- Bộ phận: ' +
+            department +
+            '\n' +
+            '- Loại phép: ' +
+            bookLeaveType +
+            '\n' +
+            '- Số ngày nghỉ (đăng ký): ' +
+            bookLeaveDay +
+            '\n' +
+            '- Số ngày nghỉ (thực tế): ' +
+            actualLeaveDay +
+            '\n' +
+            '- Từ ngày: ' +
+            dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Đến ngày: ' +
+            dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Lý do: ' +
+            reason +
+            '\n' +
+            '- Ngày yêu cầu: ' +
+            dayjs().format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/history\n\n' +
+            'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
+            'Vui lòng trả lời 1 tin nhắn bất kỳ!'
+        );
+    },
+
+    messageReject: (
+        superiorRoleId,
+        superiorName,
+        rejectReason,
+        name,
+        department,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason
+    ) => {
+        return (
+            '<TỪ CHỐI> ĐƠN XIN NGHỈ PHÉP\n\n' +
+            (superiorRoleId === 2 || superiorRoleId === 3 ? 'Manager: ' : 'Leader: ') +
+            superiorName +
+            ', đã từ chối yêu cầu nghỉ phép với lý do: ' +
+            rejectReason +
+            '\n' +
+            '***Thông tin nghỉ phép của bạn***\n\n' +
+            '- Họ và tên: ' +
+            name +
+            '\n' +
+            '- Bộ phận: ' +
+            department +
+            '\n' +
+            '- Loại phép: ' +
+            bookLeaveType +
+            '\n' +
+            '- Số ngày nghỉ: ' +
+            bookLeaveDay +
+            '\n' +
+            '- Từ ngày: ' +
+            dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Đến ngày: ' +
+            dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Lý do: ' +
+            reason +
+            '\n' +
+            '- Ngày yêu cầu: ' +
+            dayjs().format('HH:mm DD/MM/YYYY') +
+            '\n' +
+            '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/history\n\n' +
             'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
             'Vui lòng trả lời 1 tin nhắn bất kỳ!'
         );

@@ -90,6 +90,18 @@ const ManagerPage = () => {
         getLeaveListStatistics();
     }, []);
 
+    useEffect(() => {
+        const totalWaiting = leaveList.reduce(
+            (accumulator, currentValue) =>
+                currentValue.managerApproved === null && !currentValue.managerApprovedDelete
+                    ? accumulator + 1
+                    : accumulator,
+            0
+        );
+
+        setTotalWaiting(totalWaiting);
+    }, [leaveList]);
+
     const getDataSource = async (url, params = {}, setDataSource) => {
         try {
             setLoading(true);
@@ -113,8 +125,6 @@ const ManagerPage = () => {
 
     const getLeaveList = async () => {
         await getDataSource(`/leave/list/manager`, {}, setLeaveList);
-
-        getTotalWaiting();
     };
 
     const getLeaveListByDate = async (startDate, endDate) => {
@@ -126,8 +136,6 @@ const ManagerPage = () => {
             },
             setLeaveList
         );
-
-        getTotalWaiting();
     };
 
     const getLeaveListOther = async () => {
@@ -158,18 +166,6 @@ const ManagerPage = () => {
             },
             setLeaveListStatistics
         );
-    };
-
-    const getTotalWaiting = () => {
-        const total = leaveList.reduce(
-            (accumulator, currentValue) =>
-                !currentValue.managerApproved && !currentValue.deleteRequest
-                    ? accumulator + 1
-                    : accumulator,
-            0
-        );
-
-        setTotalWaiting(total);
     };
 
     const approveLeave = async (
@@ -373,7 +369,6 @@ const ManagerPage = () => {
                                             title: 'KHÔNG THỂ PHÊ DUYỆT',
                                         });
                                     } else {
-                                        console.log(record);
                                         setModalConfirm({
                                             message: (
                                                 <Space direction="vertical" align="center">

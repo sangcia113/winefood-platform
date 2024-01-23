@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-import { Button, DatePicker, Flex, Form, Input, InputNumber, Select, Typography } from 'antd';
+import { Button, DatePicker, Flex, Form, Input, InputNumber, Select, Tour, Typography } from 'antd';
 
 import {
     ContentComponent,
@@ -44,6 +44,8 @@ const HomePage = () => {
         message: '',
         open: false,
     });
+
+    const ref1 = useRef(null);
 
     const [form] = Form.useForm();
 
@@ -193,7 +195,18 @@ const HomePage = () => {
 
     return (
         <ContentComponent loading={loading} items={itemsBreadcrumb}>
+            <Tour
+                open={true}
+                steps={[
+                    {
+                        title: 'Upload File',
+                        description: 'Put your files here.',
+                        target: () => ref1.current,
+                    },
+                ]}
+            />
             <Form
+                ref={ref1}
                 colon={false}
                 form={form}
                 labelAlign={'left'}

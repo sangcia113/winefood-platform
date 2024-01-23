@@ -88,10 +88,11 @@ const userController = {
             );
 
             res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
-        } catch (err) {
-            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-
-            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!' });
+        } catch (error) {
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 
@@ -105,10 +106,11 @@ const userController = {
             await deleted(id);
 
             res.json({ error: 0, message: 'Xoá dữ liệu thành công!' });
-        } catch (err) {
-            console.error('Lỗi truy vấn cơ sở dữ liệu:', err);
-
-            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!' });
+        } catch (error) {
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 };

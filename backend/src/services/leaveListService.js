@@ -103,7 +103,7 @@ const leaveListService = {
         return results;
     },
 
-    readedManager: async (startDate, endDate, offset, page) => {
+    readedManager: async (startDate, endDate) => {
         const params = [];
 
         // Truy vấn SQL để đọc
@@ -142,12 +142,10 @@ const leaveListService = {
 
         sql += ` ORDER BY 
                     l.id 
-                DESC
-                LIMIT 
-                    ?, ?`;
+                DESC`;
 
-        params.push(endDate, startDate, offset, page);
-        console.log(db.format(sql, params));
+        params.push(endDate, startDate);
+
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, params);
 

@@ -17,20 +17,6 @@ const zaloAPIController = {
             });
         }
     },
-
-    sendZaloAPIV3: async (req, res) => {
-        const { zaloAPIUserId, zaloAPIText } = req.body;
-
-        try {
-            const response = await sendZaloAPIV3(zaloAPIUserId, zaloAPIText);
-
-            const { error, message } = response;
-
-            console.log(response);
-        } catch (error) {
-            res.status(500).json({ error: -1001, message: 'Send Zalo Notification V3 failed!' });
-        }
-    },
 };
 
 // Xuất các hàm xử lý yêu cầu để sử dụng trong module khác (router)

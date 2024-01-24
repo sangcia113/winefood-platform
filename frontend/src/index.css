@@ -25,3 +25,13 @@ code {
 input::placeholder, textarea::placeholder, .ant-select-selection-placeholder {
     font-size: 20px;
 }
+
+/* @media screen and (max-width:576px) {
+    .ant-tour {
+        width: 300px;
+    }
+} */
+
+.ant-tour {
+    width: 300px;
+}

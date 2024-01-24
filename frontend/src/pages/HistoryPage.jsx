@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-import { Dropdown, Form, Table, Tag, Typography } from 'antd';
+import { Alert, Dropdown, Form, Table, Tag, Tour, Typography } from 'antd';
 import {
     CheckCircleFilled,
     CloseCircleFilled,
@@ -59,6 +59,10 @@ const HistoryPage = () => {
         open: false,
         message: '',
     });
+
+    const [openTour, setOpenTour] = useState(true);
+
+    const ref1 = useRef(null);
 
     const [formEdit] = Form.useForm();
     const [formReason] = Form.useForm();
@@ -321,6 +325,7 @@ const HistoryPage = () => {
                     <ThreeDotsVertical />
                 </Dropdown>
             ),
+            onCell: (record, rowIndex) => ({ ref: (rowIndex === 0 && ref1) || null }),
         },
         {
             title: '#',
@@ -605,6 +610,39 @@ const HistoryPage = () => {
                 onOk={() => setModalSuccess({ open: false })}
                 open={modalSuccess.open}
                 message={modalSuccess.message}
+            />
+            <Tour
+                arrow
+                mask={{
+                    color: 'rgba(72,72,72,.4)',
+                }}
+                onClose={() => setOpenTour(prevState => !prevState)}
+                open={openTour}
+                placement="right"
+                steps={[
+                    {
+                        title: 'MENU CHỨC NĂNG',
+                        description: (
+                            <Alert
+                                message={
+                                    <>
+                                        <i>- Phê duyệt</i>
+                                        <br />
+                                        <i>- Từ chối</i>
+                                    </>
+                                }
+                                type="info"
+                            />
+                        ),
+                        cover: (
+                            <img
+                                alt="manual-avatar.png"
+                                src={require('../assets/images/manual/history-menu.PNG')}
+                            />
+                        ),
+                        target: () => ref1.current,
+                    },
+                ]}
             />
         </ContentComponent>
     );

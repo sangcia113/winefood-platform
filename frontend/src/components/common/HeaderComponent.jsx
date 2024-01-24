@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, Drawer, Dropdown, Flex, Image, Layout, Menu, Typography } from 'antd';
+import { Alert, Avatar, Drawer, Dropdown, Flex, Image, Layout, Menu, Tour, Typography } from 'antd';
 import {
     BookFill,
     ChatFill,
@@ -50,6 +50,12 @@ const items = [
 const HeaderComponent = ({ name }) => {
     const [openDrawer, setOpenDraw] = useState(false);
 
+    const [openTour, setOpenTour] = useState(true);
+
+    const ref1 = useRef(null);
+    const ref2 = useRef(null);
+    const ref3 = useRef(null);
+
     const navigate = useNavigate();
 
     return (
@@ -60,11 +66,13 @@ const HeaderComponent = ({ name }) => {
             }}
         >
             <Flex align="center" justify="space-between">
-                <List
-                    style={{ cursor: 'pointer', fontSize: 36 }}
-                    onClick={() => setOpenDraw(prevOpen => !prevOpen)}
-                />
-                <Link to="/">
+                <div ref={ref3}>
+                    <List
+                        onClick={() => setOpenDraw(prevOpen => !prevOpen)}
+                        style={{ cursor: 'pointer', fontSize: 36 }}
+                    />
+                </div>
+                <Link ref={ref2} to="/">
                     <Image alt="Logo WineFood" preview={false} src={imgSrc} width={240} />
                 </Link>
                 {name && (
@@ -87,6 +95,7 @@ const HeaderComponent = ({ name }) => {
                                     key: 'manual',
                                     label: 'Hướng dẫn sử dụng',
                                     icon: <BookFill size={18} />,
+                                    onClick: () => setOpenTour(prevState => !prevState),
                                 },
                                 {
                                     key: 'logout',
@@ -102,7 +111,7 @@ const HeaderComponent = ({ name }) => {
                         }}
                         placement="bottomLeft"
                     >
-                        <Avatar style={{ backgroundColor: '#00822d' }}>
+                        <Avatar ref={ref1} style={{ backgroundColor: '#00822d' }}>
                             {name.split(' ').pop()}
                         </Avatar>
                     </Dropdown>
@@ -111,10 +120,10 @@ const HeaderComponent = ({ name }) => {
             <Drawer
                 footer={
                     <Text style={{ fontSize: 16 }}>
-                        Version <b>1.0.0</b>
+                        Version <b>4.0.1</b>
                     </Text>
                 }
-                onClose={() => setOpenDraw(prevOpen => !prevOpen)}
+                onClose={() => setOpenDraw(prevState => !prevState)}
                 open={openDrawer}
                 placement="left"
                 title="Menu"
@@ -126,9 +135,82 @@ const HeaderComponent = ({ name }) => {
                     items={items}
                     mode="inline"
                     // Nếu navigate ./ thì sẽ đi vào route con
-                    onClick={e => navigate(`/${e.key}`)}
+                    onClick={e => {
+                        setOpenDraw(prevState => !prevState);
+                        navigate(`/${e.key}`);
+                    }}
                 />
             </Drawer>
+            <Tour
+                arrow
+                mask={{
+                    color: 'rgba(72,72,72,.4)',
+                }}
+                onClose={() => setOpenTour(prevState => !prevState)}
+                open={openTour}
+                placement="bottom"
+                steps={[
+                    {
+                        title: 'MENU PHỤ',
+                        description: (
+                            <Alert
+                                message={
+                                    <>
+                                        <i>- Đổi mật khẩu</i>
+                                        <br />
+                                        <i>- Góp ý - Báo lỗi</i>
+                                        <br />
+                                        <i>- Hướng dẫn sử dụng</i>
+                                    </>
+                                }
+                                type="info"
+                            />
+                        ),
+                        cover: (
+                            <img
+                                alt="manual-avatar.png"
+                                src={require('../../assets/images/manual/avatar.PNG')}
+                            />
+                        ),
+                        target: () => ref1.current,
+                    },
+                    {
+                        title: 'Logo',
+                        description: (
+                            <Alert message="Thao tác nhanh để quay về trang chủ" type="info" />
+                        ),
+                        target: () => ref2.current,
+                    },
+                    {
+                        title: 'MENU CHÍNH',
+                        description: (
+                            <Alert
+                                message={
+                                    <>
+                                        <i>- Trang chủ</i>
+                                        <br />
+                                        <i>- Lịch sử nghỉ phép</i>
+                                        <br />
+                                        <i>- Duyệt nghỉ phép</i>
+                                        <br />
+                                        <i>- Quản lý nghỉ phép</i>
+                                        <br />
+                                        <i>- Quản lý nhân viên</i>
+                                    </>
+                                }
+                                type="info"
+                            />
+                        ),
+                        cover: (
+                            <img
+                                alt="manual-menu.png"
+                                src={require('../../assets/images/manual/menu.PNG')}
+                            />
+                        ),
+                        target: () => ref3.current,
+                    },
+                ]}
+            />
         </Header>
     );
 };

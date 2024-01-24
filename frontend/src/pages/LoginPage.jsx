@@ -8,7 +8,7 @@ import { ModalConfirmComponent, ModalErrorComponent } from '../components';
 
 import { checkToken, createConnection } from '../utils';
 
-const videoSource = require(`../assets/images/video.mp4`);
+const videoSource = require(`../assets/videos/dna.mp4`);
 
 const { Item } = Form;
 const { Password } = Input;

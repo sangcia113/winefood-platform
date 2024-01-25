@@ -600,9 +600,9 @@ const LeaderPage = () => {
                             <Alert
                                 message={
                                     <>
-                                        <i>- Điều chỉnh phép</i>
+                                        <i>- Phê duyệt</i>
                                         <br />
-                                        <i>- Hủy phép</i>
+                                        <i>- Từ chối</i>
                                     </>
                                 }
                                 type="info"

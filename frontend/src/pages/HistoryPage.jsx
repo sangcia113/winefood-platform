@@ -626,9 +626,9 @@ const HistoryPage = () => {
                             <Alert
                                 message={
                                     <>
-                                        <i>- Phê duyệt</i>
+                                        <i>- Điều chỉnh</i>
                                         <br />
-                                        <i>- Từ chối</i>
+                                        <i>- Hủy phép</i>
                                     </>
                                 }
                                 type="info"

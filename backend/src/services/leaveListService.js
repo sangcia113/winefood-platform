@@ -108,25 +108,25 @@ const leaveListService = {
 
         // Truy vấn SQL để đọc
         let sql = `SELECT
-                        l.*,
+                        cl.*,
                         u.name AS userName,
                         d.name AS department,
                         bt.nameVN AS bookLeaveType,
                         at.nameVN AS actualLeaveType
-                    FROM list AS
-                        l
+                    FROM collection_list AS
+                        cl
                     LEFT JOIN user AS u
                     ON
-                        u.id = l.userId
+                        u.id = cl.userId
                     LEFT JOIN department AS d
                     ON
                         d.id = u.departmentId
                     LEFT JOIN type AS bt
                     ON
-                        bt.id = l.bookLeaveTypeId
+                        bt.id = cl.bookLeaveTypeId
                     LEFT JOIN type AS at
                     ON 
-                        at.id = l.actualLeaveTypeID
+                        at.id = cl.actualLeaveTypeID
                     WHERE
                         deleted IS NULL 
                     AND (
@@ -141,7 +141,7 @@ const leaveListService = {
         }
 
         sql += ` ORDER BY 
-                    l.id 
+                    cl.id 
                 DESC`;
 
         params.push(endDate, startDate);

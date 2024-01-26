@@ -54,7 +54,7 @@ const leaveListService = {
                     WHERE
                         userId = ? 
                     AND
-                        deleted IS NULL 
+                        l.deleted IS NULL 
                     ORDER BY 
                         l.id 
                     DESC`;
@@ -90,7 +90,7 @@ const leaveListService = {
                     WHERE
                         superiorId = ?
                     AND
-                        deleted IS NULL 
+                        l.deleted IS NULL 
                     AND 
                         deleteRequest IS NULL
                     ORDER BY 
@@ -108,27 +108,27 @@ const leaveListService = {
 
         // Truy vấn SQL để đọc
         let sql = `SELECT
-                        cl.*,
+                        l.*,
                         u.name AS userName,
                         d.name AS department,
                         bt.nameVN AS bookLeaveType,
                         at.nameVN AS actualLeaveType
-                    FROM collection_list AS
-                        cl
+                    FROM list AS
+                        l
                     LEFT JOIN user AS u
                     ON
-                        u.id = cl.userId
+                        u.id = l.userId
                     LEFT JOIN department AS d
                     ON
                         d.id = u.departmentId
                     LEFT JOIN type AS bt
                     ON
-                        bt.id = cl.bookLeaveTypeId
+                        bt.id = l.bookLeaveTypeId
                     LEFT JOIN type AS at
                     ON 
-                        at.id = cl.actualLeaveTypeID
+                        at.id = l.actualLeaveTypeID
                     WHERE
-                        deleted IS NULL 
+                        l.deleted IS NULL 
                     AND (
                         superiorId IN (SELECT id FROM user WHERE roleId IN (1, 2))
                         OR leaderApproved = 1 )`;
@@ -141,7 +141,7 @@ const leaveListService = {
         }
 
         sql += ` ORDER BY 
-                    cl.id 
+                    l.id 
                 DESC`;
 
         params.push(endDate, startDate);
@@ -167,7 +167,7 @@ const leaveListService = {
                         bookToDate,
                         reason,
                         requestDate,
-                        deleted
+                        l.deleted
                     FROM
                         list AS l
                     LEFT JOIN user AS u

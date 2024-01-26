@@ -50,6 +50,8 @@ const userService = {
                         * 
                     FROM 
                         user 
+                    WHERE
+                        deleted IS NULL
                     ORDER BY 
                         id 
                     ASC`;
@@ -75,6 +77,8 @@ const userService = {
                     ON
                         za.zaloNumberPhone = l.numberPhone
                     WHERE
+                        deleted IS NULL
+                    AND
                         l.id = (
                         SELECT
                             l.superiorId
@@ -102,6 +106,8 @@ const userService = {
                     ON
                         za.zaloNumberPhone = l.numberPhone
                     WHERE
+                        l.deleted IS NULL
+                    AND
                         l.id = ?`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
@@ -124,6 +130,8 @@ const userService = {
                     ON
                         za.zaloNumberPhone = l.numberPhone
                     WHERE
+                        l.deleted IS NULL
+                    AND
                         l.roleId = ?`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
@@ -181,13 +189,16 @@ const userService = {
     // Xóa khỏi cơ sở dữ liệu.
     deleted: async id => {
         // Truy vấn SQL để xoá
-        const sql = `DELETE FROM 
+        const sql = `UPDATE
                         user 
+                    SET 
+                        deleted = ?,
+                        deletedDate = ?
                     WHERE 
                         id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
-        await db.query(sql, [id]);
+        await db.query(sql, [1, new Date(), id]);
     },
 
     // Đọc trong cơ sở dữ liệu.
@@ -204,7 +215,9 @@ const userService = {
                         department d
                     ON
                         d.id = u.departmentId
-                    WHERE `;
+                    WHERE 
+                        deleted IS NULL
+                    AND `;
 
         if (code && numberPhone) {
             sql += `code = ? 

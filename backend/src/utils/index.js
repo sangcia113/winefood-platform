@@ -7,6 +7,7 @@ const {
     messageRequestCancel,
     messageRequestEdit,
     messageRequestLeave,
+    messageWebhookIReporter,
 } = require('../utils/handleZaloMessage');
 
 module.exports = {
@@ -19,4 +20,5 @@ module.exports = {
     messageRequestCancel,
     messageRequestEdit,
     messageRequestLeave,
+    messageWebhookIReporter,
 };

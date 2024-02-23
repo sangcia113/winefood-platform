@@ -14,7 +14,7 @@ import {
 } from 'react-bootstrap-icons';
 import { LogoutOutlined } from '@ant-design/icons';
 
-const imgSrc = require('../../assets/images/logoWFC.png');
+const imgSrc = require('../../assets/images/logo/logoWFC.png');
 
 const { Text } = Typography;
 const { Header } = Layout;

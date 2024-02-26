@@ -20,7 +20,7 @@ const {
 const { readedInfoSuperior, readedInfoManager } = require('../services/userService');
 
 const {
-    messageLeaderReject,
+    messageReject,
     messageRequestCancel,
     messageRequestEdit,
     messageRequestLeave,
@@ -286,13 +286,13 @@ const leaveListController = {
         const { department } = req.decoded;
 
         try {
-            await updatedLeaderApproved(id);
+            await updatedLeaderRejected(id, reason);
 
             const response = await readedInfoSuperior(userId);
 
             const { superiorName, superiorRoleId, superiorZaloUserID } = response[0];
 
-            const zaloAPIText = messageLeaderReject(
+            const zaloAPIText = messageReject(
                 superiorName,
                 superiorRoleId,
                 userName,

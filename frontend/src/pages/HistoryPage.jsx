@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-import { Alert, Dropdown, Form, Table, Tag, Tour, Typography } from 'antd';
+import { Alert, Dropdown, Form, Space, Table, Tag, Tour, Typography } from 'antd';
 import {
     CheckCircleFilled,
     CloseCircleFilled,
@@ -14,6 +14,7 @@ import { ThreeDotsVertical } from 'react-bootstrap-icons';
 
 import {
     ContentComponent,
+    ModalConfirmComponent,
     ModalEditComponent,
     ModalErrorComponent,
     ModalErrorOtherComponent,
@@ -33,6 +34,12 @@ const HistoryPage = () => {
     const [history, setHistory] = useState([]);
 
     const [leaveType, setLeaveType] = useState([]);
+
+    const [modalConfirm, setModalConfirm] = useState({
+        onOk: () => {},
+        open: false,
+        message: '',
+    });
 
     const [modalEdit, setModalEdit] = useState({
         open: false,
@@ -110,6 +117,8 @@ const HistoryPage = () => {
             const response = await createConnection(accessToken).put(
                 `/leave/list/history/cancel/${id}`
             );
+
+            setModalConfirm({ open: false });
 
             setModalSuccess({
                 message: response.data.message,
@@ -313,7 +322,16 @@ const HistoryPage = () => {
                                                 ),
                                         });
                                     } else {
-                                        cancelLeave(record.id);
+                                        setModalConfirm({
+                                            message: (
+                                                <Space direction="vertical" align="center">
+                                                    Bạn có chắc huỷ yêu cầu nghỉ phép này không?
+                                                    <b>{record.userName}</b>
+                                                </Space>
+                                            ),
+                                            onOk: () => cancelLeave(record.id),
+                                            open: true,
+                                        });
                                     }
                                 },
                                 style: { color: '#ff4d4f' },
@@ -575,6 +593,12 @@ const HistoryPage = () => {
                 dataSource={history}
                 scroll={{ x: true }}
                 showSorterTooltip={false}
+            />
+            <ModalConfirmComponent
+                onCancel={() => setModalConfirm({ open: false })}
+                onOk={modalConfirm.onOk}
+                open={modalConfirm.open}
+                message={modalConfirm.message}
             />
             <ModalEditComponent
                 afterClose={() => formEdit.resetFields()}

@@ -250,6 +250,40 @@ const leaveListService = {
         return results;
     },
 
+    readLeaveListToday: async () => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT
+                        u.name AS userName,
+                        d.name AS department,
+                        bookLeaveDay,
+                        bookFromDate,
+                        bookToDate
+                    FROM 
+                        list l
+                    LEFT JOIN 
+                        user u
+                    ON
+                        u.id = l.userId
+                    LEFT JOIN 
+                        department AS d
+                    ON
+                        d.id = u.departmentId
+                    WHERE
+                        l.deleted IS NULL 
+                    AND
+                        CURDATE() BETWEEN bookFromDate AND bookToDate
+                    AND (
+                        superiorId IN (SELECT id FROM user WHERE roleId IN (1, 2))
+                        OR leaderApproved = 1 )  
+                    ORDER BY 
+                        l.id 
+                    DESC`;
+
+        const [results] = await db.query(sql);
+
+        return results;
+    },
+
     // Đọc trong cơ sở dữ liệu.
     checkIsExist: async (userID, bookFromDate, bookToDate) => {
         // Truy vấn SQL để đọc

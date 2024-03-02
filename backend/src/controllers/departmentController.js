@@ -8,8 +8,11 @@ const departmentController = {
             const results = await readed();
 
             res.json(results);
-        } catch (err) {
-            res.status(500).json({ error: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+        } catch (error) {
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 };

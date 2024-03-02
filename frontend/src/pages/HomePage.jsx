@@ -15,6 +15,7 @@ import {
 import { createConnection } from '../utils';
 
 const { TextArea } = Input;
+
 const { Text } = Typography;
 
 const HomePage = () => {
@@ -145,7 +146,6 @@ const HomePage = () => {
                     ...values,
                     bookFromDate: dayjs(bookFromDate).format('YYYY-MM-DD HH:mm'),
                     bookToDate: dayjs(bookToDate).format('YYYY-MM-DD HH:mm'),
-                    bookLeaveType: leaveType.find(l => l.id === values.bookLeaveTypeId)?.nameVN,
                 });
             } else {
                 setModalWarning({

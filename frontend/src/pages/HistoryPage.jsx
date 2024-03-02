@@ -251,33 +251,48 @@ const HistoryPage = () => {
                                 label: 'Điều chỉnh',
                                 icon: <EditFilled />,
                                 onClick: () => {
-                                    formEdit.setFieldsValue({
-                                        id: record.id,
-                                        actualLeaveTypeId: record.bookLeaveTypeId,
-                                        actualLeaveDay: record.bookLeaveDay,
-                                        actualFromDate: dayjs(record.bookFromDate),
-                                        actualToDate: dayjs(record.bookToDate),
-                                    });
-
-                                    setModalEdit({
-                                        onFinish: values =>
-                                            requestEditLeave(
-                                                record.id,
-                                                values.actualLeaveTypeId,
-                                                leaveType.find(
-                                                    l => l.id === values.actualLeaveTypeId
-                                                )?.nameVN,
-                                                values.actualLeaveDay,
-                                                values.actualFromDate,
-                                                values.actualToDate,
-                                                record.bookLeaveType,
-                                                record.bookLeaveDay,
-                                                record.bookFromDate,
-                                                record.bookToDate,
-                                                record.reason
+                                    if (record.deleteRequest) {
+                                        setModalErrorOther({
+                                            message: (
+                                                <ul>
+                                                    <li>
+                                                        <b>Bạn đã yêu cầu hủy</b> yêu cầu nghỉ phép
+                                                        này.
+                                                    </li>
+                                                </ul>
                                             ),
-                                        open: true,
-                                    });
+                                            open: true,
+                                            title: 'KHÔNG THỂ ĐIỀU CHỈNH',
+                                        });
+                                    } else {
+                                        formEdit.setFieldsValue({
+                                            id: record.id,
+                                            actualLeaveTypeId: record.bookLeaveTypeId,
+                                            actualLeaveDay: record.bookLeaveDay,
+                                            actualFromDate: dayjs(record.bookFromDate),
+                                            actualToDate: dayjs(record.bookToDate),
+                                        });
+
+                                        setModalEdit({
+                                            onFinish: values =>
+                                                requestEditLeave(
+                                                    record.id,
+                                                    values.actualLeaveTypeId,
+                                                    leaveType.find(
+                                                        l => l.id === values.actualLeaveTypeId
+                                                    )?.nameVN,
+                                                    values.actualLeaveDay,
+                                                    values.actualFromDate,
+                                                    values.actualToDate,
+                                                    record.bookLeaveType,
+                                                    record.bookLeaveDay,
+                                                    record.bookFromDate,
+                                                    record.bookToDate,
+                                                    record.reason
+                                                ),
+                                            open: true,
+                                        });
+                                    }
                                 },
                                 style: {
                                     color: '#faad14',

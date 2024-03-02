@@ -33,6 +33,21 @@ const leaveTypeService = {
         return results;
     },
 
+    readedById: async id => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT 
+                        * 
+                    FROM 
+                        type 
+                    WHERE 
+                        id = ?`;
+
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, [id]);
+
+        return results;
+    },
+
     // Cập nhật trong cơ sở dữ liệu.
     updated: async (code, nameVN, nameEN, id) => {
         // Truy vấn SQL để cập nhật

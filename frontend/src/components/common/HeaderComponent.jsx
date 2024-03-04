@@ -1,6 +1,18 @@
 import React, { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Alert, Avatar, Drawer, Dropdown, Flex, Image, Layout, Menu, Tour, Typography } from 'antd';
+import {
+    Alert,
+    Avatar,
+    Drawer,
+    Dropdown,
+    Flex,
+    Form,
+    Image,
+    Layout,
+    Menu,
+    Tour,
+    Typography,
+} from 'antd';
 import {
     BookFill,
     ChatFill,
@@ -13,7 +25,10 @@ import {
     Search,
 } from 'react-bootstrap-icons';
 import { LogoutOutlined } from '@ant-design/icons';
-import ModalChangePassword from '../feature/modal/ModalChangePassword';
+
+import { ModalChangePassword, ModalErrorComponent, ModalWarningComponent } from '../../components';
+
+import { createConnection } from '../../utils';
 
 const imgSrc = require('../../assets/images/logo/logoWFC.png');
 
@@ -49,19 +64,74 @@ const items = [
 ];
 
 const HeaderComponent = ({ name }) => {
+    const [loading, setLoading] = useState(false);
+
     const [openDrawer, setOpenDraw] = useState(false);
 
     const [openTour, setOpenTour] = useState(true);
 
     const [modalChangePass, setModalChangePass] = useState({
+        onFinish: () => {},
         open: false,
     });
+
+    const [modalError, setModalError] = useState({
+        open: false,
+        error: '',
+    });
+
+    const [modalWarning, setModalWarning] = useState({
+        message: '',
+        open: false,
+    });
+
+    const navigate = useNavigate();
 
     const ref1 = useRef(null);
     const ref2 = useRef(null);
     const ref3 = useRef(null);
 
-    const navigate = useNavigate();
+    const [form] = Form.useForm();
+
+    const accessToken =
+        localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+    const changePass = async (oldPassword, newPassword, confirmPassword) => {
+        try {
+            setLoading(true);
+
+            const response = await createConnection(accessToken).post(
+                '/leave/user/change-password',
+                {
+                    oldPassword,
+                    newPassword,
+                    confirmPassword,
+                }
+            );
+
+            console.log(response);
+        } catch (error) {
+            const errorCode = error?.response?.data?.error;
+
+            if (errorCode === -1084) {
+                setModalWarning({
+                    message: <Text style={{ textAlign: 'center' }}>Sai mật khẩu cũ!</Text>,
+                    open: true,
+                });
+            } else if (errorCode === -1085) {
+                setModalWarning({
+                    message: (
+                        <Text style={{ textAlign: 'center' }}>Mật khẩu không trùng khớp!</Text>
+                    ),
+                    open: true,
+                });
+            } else {
+                setModalError({ open: true, error });
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <Header
@@ -90,8 +160,15 @@ const HeaderComponent = ({ name }) => {
                                     label: 'Đổi mật khẩu',
                                     icon: <KeyFill size={20} />,
                                     onClick: () => {
-                                        console.log(modalChangePass.open);
-                                        setModalChangePass({ open: true });
+                                        setModalChangePass({
+                                            onFinish: values =>
+                                                changePass(
+                                                    values.oldPassword,
+                                                    values.newPassword,
+                                                    values.confirmPassword
+                                                ),
+                                            open: true,
+                                        });
                                     },
                                 },
 
@@ -220,7 +297,25 @@ const HeaderComponent = ({ name }) => {
                     },
                 ]}
             />
-            <ModalChangePassword open={modalChangePass.open} />
+            <ModalChangePassword
+                afterClose={() => form.resetFields()}
+                form={form}
+                loading={loading}
+                onCancel={() => setModalChangePass({ open: false })}
+                onOk={() => form.submit()}
+                open={modalChangePass.open}
+                onFinish={modalChangePass.onFinish}
+            />
+            <ModalErrorComponent
+                onOk={() => setModalError({ open: false })}
+                open={modalError.open}
+                error={modalError.error}
+            />
+            <ModalWarningComponent
+                onOk={() => setModalWarning({ open: false })}
+                open={modalWarning.open}
+                message={modalWarning.message}
+            />
         </Header>
     );
 };

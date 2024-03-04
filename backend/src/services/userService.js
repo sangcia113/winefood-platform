@@ -140,6 +140,21 @@ const userService = {
         return results;
     },
 
+    readedPassword: async id => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT 
+                        password
+                    FROM
+                        user
+                    WHERE
+                        id = ?`;
+
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, [id]);
+
+        return results;
+    },
+
     // Cập nhật trong cơ sở dữ liệu.
     updated: async (
         code,
@@ -157,7 +172,7 @@ const userService = {
         const sql = `UPDATE 
                         user 
                     SET 
-                        code= ?, 
+                        code = ?, 
                         name = ?, 
                         birthday = ?, 
                         gender = ?, 
@@ -184,6 +199,20 @@ const userService = {
             new Date(),
             id,
         ]);
+    },
+
+    // Cập nhật trong cơ sở dữ liệu.
+    updatedPassword: async (newPassword, id) => {
+        // Truy vấn SQL để cập nhật
+        const sql = `UPDATE 
+                        user 
+                    SET 
+                        password = ?
+                    WHERE 
+                        id = ?`;
+
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [newPassword, id]);
     },
 
     // Xóa khỏi cơ sở dữ liệu.

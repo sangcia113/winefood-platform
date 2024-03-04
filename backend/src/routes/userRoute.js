@@ -1,12 +1,21 @@
 const router = require('express').Router();
 
 // Import các hàm xử lý yêu cầu từ controller
-const { created, deleted, readed, updated } = require('../controllers/userController');
+const {
+    created,
+    deleted,
+    readed,
+    updated,
+    updatedPassword,
+} = require('../controllers/userController');
 
 const { checkBody, checkIsExist, checkParam } = require('../middleWares/userMiddleWare');
 
 // End point POST
 router.post('/', checkBody, checkIsExist, created);
+
+// End point POST
+router.post('/change-password', updatedPassword);
 
 // End point GET
 router.get('/', readed);

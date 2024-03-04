@@ -1,6 +1,13 @@
-const { created, deleted, readed, updated } = require('../services/userService');
+const {
+    created,
+    deleted,
+    readed,
+    readedPassword,
+    updated,
+    updatedPassword,
+} = require('../services/userService');
 
-const { encodePassword } = require('../utils');
+const { encodePassword, decodePassword } = require('../utils');
 
 const userController = {
     // Xử lý yêu cầu thêm mới dữ liệu.
@@ -88,6 +95,40 @@ const userController = {
             );
 
             res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+        } catch (error) {
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
+        }
+    },
+
+    updatedPassword: async (req, res) => {
+        // Lấy thông tin từ body của yêu cầu
+        const { oldPassword, newPassword, confirmPassword } = req.body;
+
+        if (!(oldPassword && newPassword && confirmPassword))
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
+
+        if (newPassword !== confirmPassword)
+            return res
+                .status(400)
+                .json({ error: -1085, message: 'Mật khẩu mới không trùng khớp!' });
+
+        // Lấy thông tin từ auth của yêu cầu
+        const { userId } = req.decoded;
+
+        try {
+            // Gọi hàm service để đọc dữ liệu
+            const results = await readedPassword(userId);
+
+            if (!decodePassword(oldPassword, results[0].password))
+                return res.status(400).json({ error: -1084, message: 'Sai mật khẩu cũ!' });
+
+            // Gọi hàm service để cập nhật vào cơ sở dữ liệu
+            await updatedPassword(encodePassword(newPassword), userId);
+
+            res.json({ error: 0, message: 'Thay đổi mật khẩu thành công!' });
         } catch (error) {
             res.status(500).json({
                 error: -1001,

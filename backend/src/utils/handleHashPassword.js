@@ -8,8 +8,8 @@ const encodePassword = password => {
     return bcrypt.hashSync(password, salt);
 };
 
-const decodePassword = (password, hash) => {
-    return bcrypt.compareSync(password, hash);
+const decodePassword = (password, hashedPassword) => {
+    return bcrypt.compareSync(password, hashedPassword);
 };
 
 module.exports = { encodePassword, decodePassword };

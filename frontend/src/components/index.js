@@ -3,6 +3,7 @@ import FormComponent from './feature/FormComponent';
 import FooterComponent from './common/FooterComponent';
 import HeaderComponent from './common/HeaderComponent';
 import SiderComponent from './common/SiderComponent';
+import ModalChangePassword from './feature/modal/ModalChangePassword.jsx';
 import ModalConfirmComponent from './feature/modal/ModalConfirmComponent';
 import ModalEditComponent from './feature/modal/ModalEditComponent.jsx';
 import ModalErrorComponent from './feature/modal/ModalErrorComponent';
@@ -17,6 +18,7 @@ export {
     FormComponent,
     FooterComponent,
     HeaderComponent,
+    ModalChangePassword,
     ModalConfirmComponent,
     ModalEditComponent,
     ModalErrorComponent,

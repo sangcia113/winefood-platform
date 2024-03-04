@@ -1,23 +1,15 @@
 import React from 'react';
 
-import { DatePicker, Form, InputNumber, Modal, Select, Space, Typography } from 'antd';
+import { Form, Modal, Space, Typography } from 'antd';
 import { LockFilled, LockOutlined } from '@ant-design/icons';
 
-import dayjs from 'dayjs';
 import Password from 'antd/es/input/Password';
 
 const { Text } = Typography;
 
-const ModalEditComponent = ({
-    afterClose,
-    form,
-    leaveType = [],
-    loading,
-    onCancel,
-    onOk,
-    open,
-    onFinish,
-}) => {
+const { Item } = Form;
+
+const ModalChangePassword = ({ afterClose, form, loading, onCancel, onOk, open, onFinish }) => {
     return (
         <Modal
             afterClose={afterClose}
@@ -50,16 +42,16 @@ const ModalEditComponent = ({
                 labelAlign={'left'}
                 labelCol={{
                     xs: { span: 24 },
-                    md: { span: 12 },
+                    md: { span: 10 },
                 }}
                 labelWrap
                 wrapperCol={{
                     xs: { span: 24 },
-                    md: { span: 12 },
+                    md: { span: 14 },
                 }}
                 onFinish={onFinish}
             >
-                <Form.Item
+                <Item
                     label={
                         <Text style={{ fontSize: 18 }}>
                             <Text strong style={{ fontSize: 16 }}>
@@ -77,15 +69,10 @@ const ModalEditComponent = ({
                         },
                     ]}
                 >
-                    <Password
-                        allowClear
-                        prefix={<LockOutlined />}
-                        placeholder="Password"
-                        style={{ borderRadius: 24, height: 48 }}
-                    />
-                </Form.Item>
+                    <Password allowClear prefix={<LockOutlined />} placeholder="Nhập mật khẩu cũ" />
+                </Item>
 
-                <Form.Item
+                <Item
                     label={
                         <Text style={{ fontSize: 18 }}>
                             <Text strong style={{ fontSize: 16 }}>
@@ -95,7 +82,7 @@ const ModalEditComponent = ({
                             <small className="text-muted">New Password</small>
                         </Text>
                     }
-                    name="oldPassword"
+                    name="newPassword"
                     rules={[
                         {
                             required: true,
@@ -106,18 +93,21 @@ const ModalEditComponent = ({
                     <Password
                         allowClear
                         prefix={<LockOutlined />}
-                        placeholder="Password"
-                        style={{ borderRadius: 24, height: 48 }}
+                        placeholder="Nhập mật khẩu mới"
                     />
-                </Form.Item>
+                </Item>
 
-                <Form.Item
+                <Item
                     label={
-                        <Text strong style={{ fontSize: 16 }}>
-                            MẬT KHẨU CŨ
+                        <Text style={{ fontSize: 18 }}>
+                            <Text strong style={{ fontSize: 16 }}>
+                                XÁC NHẬN MẬT KHẨU
+                            </Text>
+                            <br />
+                            <small className="text-muted">Confirm Password</small>
                         </Text>
                     }
-                    name="oldPassword"
+                    name="confirmPassword"
                     rules={[
                         {
                             required: true,
@@ -128,13 +118,12 @@ const ModalEditComponent = ({
                     <Password
                         allowClear
                         prefix={<LockOutlined />}
-                        placeholder="Password"
-                        style={{ borderRadius: 24, height: 48 }}
+                        placeholder="Nhập lại mật khẩu mới"
                     />
-                </Form.Item>
+                </Item>
             </Form>
         </Modal>
     );
 };
 
-export default ModalEditComponent;
+export default ModalChangePassword;

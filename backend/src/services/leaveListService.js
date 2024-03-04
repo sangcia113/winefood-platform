@@ -517,6 +517,23 @@ const leaveListService = {
     },
 
     // Cập nhật trong cơ sở dữ liệu.
+    updatedEdit: async (id, actualLeaveTypeId, actualLeaveDay, actualFromDate, actualToDate) => {
+        // Truy vấn SQL để đọc
+        const sql = `UPDATE 
+                        list 
+                    SET
+                        bookLeaveTypeID = ?,
+                        bookLeaveDay = ?, 
+                        bookFromDate = ?, 
+                        bookToDate = ?
+                    WHERE 
+                        id = ?`;
+
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [actualLeaveTypeId, actualLeaveDay, actualFromDate, actualToDate, id]);
+    },
+
+    // Cập nhật trong cơ sở dữ liệu.
     updatedRequestCancel: async (id, reason) => {
         // Truy vấn SQL để đọc
         const sql = `UPDATE 
@@ -540,11 +557,11 @@ const leaveListService = {
         actualToDate
     ) => {
         // Truy vấn SQL để đọc
-        let sql = `UPDATE 
+        const sql = `UPDATE 
                         list 
                     SET
                         actualLeaveTypeID = ?,
-                        actualLeaveDay	 = ?, 
+                        actualLeaveDay = ?, 
                         actualFromDate = ?, 
                         actualToDate = ?
                     WHERE 

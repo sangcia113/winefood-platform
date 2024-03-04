@@ -27,7 +27,7 @@ const loginController = {
 
             const payload = {
                 userId: results[0].id,
-                name: results[0].name,
+                userName: results[0].name,
                 department: results[0].department,
                 roleId: results[0].roleId,
             };

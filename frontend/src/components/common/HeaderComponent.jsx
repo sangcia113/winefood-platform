@@ -13,6 +13,7 @@ import {
     Search,
 } from 'react-bootstrap-icons';
 import { LogoutOutlined } from '@ant-design/icons';
+import ModalChangePassword from '../feature/modal/ModalChangePassword';
 
 const imgSrc = require('../../assets/images/logo/logoWFC.png');
 
@@ -52,6 +53,10 @@ const HeaderComponent = ({ name }) => {
 
     const [openTour, setOpenTour] = useState(true);
 
+    const [modalChangePass, setModalChangePass] = useState({
+        open: false,
+    });
+
     const ref1 = useRef(null);
     const ref2 = useRef(null);
     const ref3 = useRef(null);
@@ -84,6 +89,10 @@ const HeaderComponent = ({ name }) => {
                                     key: 'password',
                                     label: 'Đổi mật khẩu',
                                     icon: <KeyFill size={20} />,
+                                    onClick: () => {
+                                        console.log(modalChangePass.open);
+                                        setModalChangePass({ open: true });
+                                    },
                                 },
 
                                 {
@@ -211,6 +220,7 @@ const HeaderComponent = ({ name }) => {
                     },
                 ]}
             />
+            <ModalChangePassword open={modalChangePass.open} />
         </Header>
     );
 };

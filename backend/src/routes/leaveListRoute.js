@@ -19,6 +19,7 @@ const {
     updatedApprovedRequestDelete,
     updatedManagerRejected,
     updateCancel,
+    updateEdit,
     updateRequestCancel,
     updateRequestEdit,
 } = require('../controllers/leaveListController');
@@ -66,6 +67,9 @@ router.get('/manager/statistics/search', checkDate, readedManagerStatisticsByDat
 
 // End point PUT
 router.put('/history/cancel/:id', checkParam, updateCancel);
+
+// End point PUT
+router.put('/history/edit/:id', checkParam, updateEdit);
 
 // End point PUT
 router.put('/history/request-cancel/:id', checkParam, updateRequestCancel);

@@ -91,9 +91,9 @@ const ManagerPage = () => {
         localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
     useEffect(() => {
-        getLeaveList();
-        getLeaveListOther();
-        getLeaveListStatistics();
+        getManager();
+        getManagerOther();
+        getManagerStatistics();
     }, []);
 
     useEffect(() => {
@@ -129,11 +129,11 @@ const ManagerPage = () => {
         }
     };
 
-    const getLeaveList = async () => {
+    const getManager = async () => {
         await getDataSource(`/leave/list/manager`, {}, setLeaveList);
     };
 
-    const getLeaveListByDate = async (startDate, endDate) => {
+    const getManagerByDate = async (startDate, endDate) => {
         await getDataSource(
             `/leave/list/manager/search`,
             {
@@ -144,11 +144,11 @@ const ManagerPage = () => {
         );
     };
 
-    const getLeaveListOther = async () => {
+    const getManagerOther = async () => {
         await getDataSource(`/leave/list/manager/other`, {}, setLeaveListOther);
     };
 
-    const getLeaveListOtherByDate = async (startDate, endDate) => {
+    const getManagerOtherByDate = async (startDate, endDate) => {
         await getDataSource(
             `/leave/list/manager/other/search`,
             {
@@ -159,11 +159,11 @@ const ManagerPage = () => {
         );
     };
 
-    const getLeaveListStatistics = async () => {
+    const getManagerStatistics = async () => {
         await getDataSource(`/leave/list/manager/statistics`, {}, setLeaveListStatistics);
     };
 
-    const getLeaveListStatisticsByDate = async (startDate, endDate) => {
+    const getManagerStatisticsByDate = async (startDate, endDate) => {
         await getDataSource(
             `/leave/list/manager/statistics/search`,
             {
@@ -176,20 +176,19 @@ const ManagerPage = () => {
 
     const approveLeave = async (
         id,
-        userId,
         userName,
         department,
         bookLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) => {
         try {
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved/${id}`,
                 {
-                    userId,
                     userName,
                     department,
                     bookLeaveType,
@@ -197,17 +196,26 @@ const ManagerPage = () => {
                     bookFromDate,
                     bookToDate,
                     reason,
+                    requestDate,
                 }
             );
 
             setModalConfirm({ open: false });
 
             setModalSuccess({
-                message: response.data.message,
+                message: (
+                    <Text style={{ textAlign: 'center' }}>
+                        Đã gửi thông báo phê duyệt đến nhân viên
+                        <br />
+                        <b>{response.data.receiver}</b>
+                        <br />
+                        qua <b>Zalo</b>
+                    </Text>
+                ),
                 open: true,
             });
 
-            getLeaveList();
+            getManager();
         } catch (error) {
             setModalConfirm({ open: false });
 
@@ -218,21 +226,20 @@ const ManagerPage = () => {
     const rejectLeave = async (
         id,
         rejectReason,
-        userId,
         userName,
         department,
         bookLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) => {
         try {
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/rejected/${id}`,
                 {
                     rejectReason,
-                    userId,
                     userName,
                     department,
                     bookLeaveType,
@@ -240,6 +247,7 @@ const ManagerPage = () => {
                     bookFromDate,
                     bookToDate,
                     reason,
+                    requestDate,
                 }
             );
 
@@ -258,7 +266,7 @@ const ManagerPage = () => {
                 open: true,
             });
 
-            getLeaveList();
+            getManager();
         } catch (error) {
             setModalReason({ open: false });
 
@@ -266,18 +274,50 @@ const ManagerPage = () => {
         }
     };
 
-    const approveLeaveType = async id => {
+    const approveLeaveType = async (
+        id,
+        actualLeaveType,
+        userName,
+        department,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason,
+        requestDate
+    ) => {
         try {
             const response = await createConnection(accessToken).put(
-                `/leave/list/manager/approved-leave-type/${id}`
+                `/leave/list/manager/approved-leave-type/${id}`,
+                {
+                    actualLeaveType,
+                    userName,
+                    department,
+                    bookLeaveType,
+                    bookLeaveDay,
+                    bookFromDate,
+                    bookToDate,
+                    reason,
+                    requestDate,
+                }
             );
 
             setModalConfirm({ open: false });
 
             setModalSuccess({
-                message: response.data.message,
+                message: (
+                    <Text style={{ textAlign: 'center' }}>
+                        Đã gửi thông báo phê duyệt đến nhân viên
+                        <br />
+                        <b>{response.data.receiver}</b>
+                        <br />
+                        qua <b>Zalo</b>
+                    </Text>
+                ),
                 open: true,
             });
+
+            getManager();
         } catch (error) {
             setModalConfirm({ open: false });
 
@@ -288,21 +328,20 @@ const ManagerPage = () => {
     const approveLeaveDay = async (
         id,
         actualLeaveDay,
-        userId,
         userName,
         department,
         bookLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) => {
         try {
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved-leave-day/${id}`,
                 {
                     actualLeaveDay,
-                    userId,
                     userName,
                     department,
                     bookLeaveType,
@@ -310,15 +349,26 @@ const ManagerPage = () => {
                     bookFromDate,
                     bookToDate,
                     reason,
+                    requestDate,
                 }
             );
 
             setModalConfirm({ open: false });
 
             setModalSuccess({
-                message: response.data.message,
+                message: (
+                    <Text style={{ textAlign: 'center' }}>
+                        Đã gửi thông báo phê duyệt đến nhân viên
+                        <br />
+                        <b>{response.data.receiver}</b>
+                        <br />
+                        qua <b>Zalo</b>
+                    </Text>
+                ),
                 open: true,
             });
+
+            getManager();
         } catch (error) {
             setModalConfirm({ open: false });
 
@@ -326,18 +376,48 @@ const ManagerPage = () => {
         }
     };
 
-    const approveRequestDelete = async id => {
+    const approveCancelLeave = async (
+        id,
+        userName,
+        department,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason,
+        requestDate
+    ) => {
         try {
             const response = await createConnection(accessToken).put(
-                `/leave/list/manager/approved-request-delete/${id}`
+                `/leave/list/manager/approved-request-delete/${id}`,
+                {
+                    userName,
+                    department,
+                    bookLeaveType,
+                    bookLeaveDay,
+                    bookFromDate,
+                    bookToDate,
+                    reason,
+                    requestDate,
+                }
             );
 
             setModalConfirm({ open: false });
 
             setModalSuccess({
-                message: response.data.message,
+                message: (
+                    <Text style={{ textAlign: 'center' }}>
+                        Đã gửi thông báo phê duyệt đến nhân viên
+                        <br />
+                        <b>{response.data.receiver}</b>
+                        <br />
+                        qua <b>Zalo</b>
+                    </Text>
+                ),
                 open: true,
             });
+
+            getManager();
         } catch (error) {
             setModalConfirm({ open: false });
 
@@ -385,14 +465,14 @@ const ManagerPage = () => {
                                             onOk: () =>
                                                 approveLeave(
                                                     record.id,
-                                                    record.userId,
                                                     record.userName,
                                                     record.department,
                                                     record.bookLeaveType,
                                                     record.bookLeaveDay,
                                                     record.bookFromDate,
                                                     record.bookToDate,
-                                                    record.reason
+                                                    record.reason,
+                                                    record.requestDate
                                                 ),
                                             open: true,
                                         });
@@ -424,14 +504,14 @@ const ManagerPage = () => {
                                                 rejectLeave(
                                                     record.id,
                                                     values.reason,
-                                                    record.userId,
                                                     record.userName,
                                                     record.department,
                                                     record.bookLeaveType,
                                                     record.bookLeaveDay,
                                                     record.bookFromDate,
                                                     record.bookToDate,
-                                                    record.reason
+                                                    record.reason,
+                                                    record.requestDate
                                                 ),
                                         });
                                     }
@@ -481,14 +561,14 @@ const ManagerPage = () => {
                                                         approveLeaveType(
                                                             record.id,
                                                             record.actualLeaveType,
-                                                            record.userId,
                                                             record.userName,
                                                             record.department,
                                                             record.bookLeaveType,
                                                             record.bookLeaveDay,
                                                             record.bookFromDate,
                                                             record.bookToDate,
-                                                            record.reason
+                                                            record.reason,
+                                                            record.requestDate
                                                         ),
                                                     open: true,
                                                 });
@@ -534,14 +614,14 @@ const ManagerPage = () => {
                                                         approveLeaveDay(
                                                             record.id,
                                                             record.actualLeaveDay,
-                                                            record.userId,
                                                             record.userName,
                                                             record.department,
                                                             record.bookLeaveType,
                                                             record.bookLeaveDay,
                                                             record.bookFromDate,
                                                             record.bookToDate,
-                                                            record.reason
+                                                            record.reason,
+                                                            record.requestDate
                                                         ),
                                                     open: true,
                                                 });
@@ -581,7 +661,18 @@ const ManagerPage = () => {
                                                             <b>{record.userName}</b>
                                                         </Space>
                                                     ),
-                                                    onOk: () => approveRequestDelete(record.id),
+                                                    onOk: () =>
+                                                        approveCancelLeave(
+                                                            record.id,
+                                                            record.userName,
+                                                            record.department,
+                                                            record.bookLeaveType,
+                                                            record.bookLeaveDay,
+                                                            record.bookFromDate,
+                                                            record.bookToDate,
+                                                            record.reason,
+                                                            record.requestDate
+                                                        ),
                                                     open: true,
                                                 });
                                             }
@@ -1002,9 +1093,9 @@ const ManagerPage = () => {
                                             const [startDate, endDate] = dates || [];
 
                                             if (startDate && endDate) {
-                                                getLeaveListByDate(startDate, endDate);
+                                                getManagerByDate(startDate, endDate);
                                             } else if (!startDate && !endDate) {
-                                                getLeaveList();
+                                                getManager();
                                             }
                                         }}
                                     />
@@ -1032,9 +1123,9 @@ const ManagerPage = () => {
                                             const [startDate, endDate] = dates || [];
 
                                             if (startDate && endDate) {
-                                                getLeaveListOtherByDate(startDate, endDate);
+                                                getManagerOtherByDate(startDate, endDate);
                                             } else if (!startDate && !endDate) {
-                                                getLeaveListOther();
+                                                getManagerOther();
                                             }
                                         }}
                                     />
@@ -1062,9 +1153,9 @@ const ManagerPage = () => {
                                             const [startDate, endDate] = dates || [];
 
                                             if (startDate && endDate) {
-                                                getLeaveListStatisticsByDate(startDate, endDate);
+                                                getManagerStatisticsByDate(startDate, endDate);
                                             } else if (!startDate && !endDate) {
-                                                getLeaveListStatistics();
+                                                getManagerStatistics();
                                             }
                                         }}
                                     />

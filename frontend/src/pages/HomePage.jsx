@@ -144,6 +144,7 @@ const HomePage = () => {
             ) {
                 insertData({
                     ...values,
+                    bookLeaveType: leaveType.find(l => l.id === values.bookLeaveTypeId)?.nameVN,
                     bookFromDate: dayjs(bookFromDate).format('YYYY-MM-DD HH:mm'),
                     bookToDate: dayjs(bookToDate).format('YYYY-MM-DD HH:mm'),
                 });
@@ -329,6 +330,7 @@ const HomePage = () => {
                         allowClear={false}
                         changeOnBlur={true}
                         format={'HH:mm DD/MM/YYYY'}
+                        inputReadOnly
                         placeholder="Chọn ngày bắt đầu..."
                         showTime={{ defaultValue: dayjs('07:30', 'HH:mm') }}
                         size={'large'}
@@ -357,6 +359,7 @@ const HomePage = () => {
                         allowClear={false}
                         changeOnBlur={true}
                         format={'HH:mm DD/MM/YYYY'}
+                        inputReadOnly
                         placeholder="Chọn ngày kết thúc..."
                         showTime={{ defaultValue: dayjs('16:30', 'HH:mm') }}
                         size={'large'}

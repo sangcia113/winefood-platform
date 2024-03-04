@@ -94,7 +94,8 @@ const LeaderPage = () => {
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) => {
         try {
             const response = await createConnection(accessToken).put(
@@ -107,6 +108,7 @@ const LeaderPage = () => {
                     bookFromDate,
                     bookToDate,
                     reason,
+                    requestDate,
                 }
             );
 
@@ -143,7 +145,8 @@ const LeaderPage = () => {
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) => {
         try {
             const response = await createConnection(accessToken).put(
@@ -158,6 +161,7 @@ const LeaderPage = () => {
                     bookFromDate,
                     bookToDate,
                     reason,
+                    requestDate,
                 }
             );
 
@@ -237,7 +241,8 @@ const LeaderPage = () => {
                                                     record.bookLeaveDay,
                                                     record.bookFromDate,
                                                     record.bookToDate,
-                                                    record.reason
+                                                    record.reason,
+                                                    record.requestDate
                                                 ),
                                             open: true,
                                         });
@@ -290,7 +295,8 @@ const LeaderPage = () => {
                                                     record.bookLeaveDay,
                                                     record.bookFromDate,
                                                     record.bookToDate,
-                                                    record.reason
+                                                    record.reason,
+                                                    record.requestDate
                                                 ),
                                         });
                                     }

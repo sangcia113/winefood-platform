@@ -13,11 +13,11 @@ const PrivatePage = ({ roles, children }) => {
 
     if (!checkToken()) return <Navigate to="/login" />;
 
-    const { name, roleId } = checkToken();
+    const { userName, roleId } = checkToken();
 
     return roles.includes(roleId) ? (
         <Layout style={{ minHeight: '100vh' }}>
-            <HeaderComponent name={name} />
+            <HeaderComponent name={userName} />
             {children}
             <FooterComponent />
         </Layout>

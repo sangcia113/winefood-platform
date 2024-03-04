@@ -135,12 +135,15 @@ const HistoryPage = () => {
 
     const requestCancelLeave = async (
         id,
+        userName,
+        department,
         requestReason,
         bookLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) => {
         try {
             setLoading(true);
@@ -148,12 +151,15 @@ const HistoryPage = () => {
             const response = await createConnection(accessToken).put(
                 `/leave/list/history/request-cancel/${id}`,
                 {
+                    userName,
+                    department,
                     requestReason,
                     bookLeaveType,
                     bookLeaveDay,
                     bookFromDate,
                     bookToDate,
                     reason,
+                    requestDate,
                 }
             );
 
@@ -182,6 +188,8 @@ const HistoryPage = () => {
 
     const requestEditLeave = async (
         id,
+        userName,
+        department,
         actualLeaveTypeId,
         actualLeaveType,
         actualLeaveDay,
@@ -191,7 +199,8 @@ const HistoryPage = () => {
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) => {
         try {
             setLoading(true);
@@ -199,6 +208,8 @@ const HistoryPage = () => {
             const response = await createConnection(accessToken).put(
                 `/leave/list/history/request-edit/${id}`,
                 {
+                    userName,
+                    department,
                     actualLeaveTypeId,
                     actualLeaveType,
                     actualLeaveDay,
@@ -209,6 +220,7 @@ const HistoryPage = () => {
                     bookFromDate,
                     bookToDate,
                     reason,
+                    requestDate,
                 }
             );
 
@@ -251,10 +263,14 @@ const HistoryPage = () => {
                                 label: 'Điều chỉnh',
                                 icon: <EditFilled />,
                                 onClick: () => {
-                                    if (record.deleteRequest) {
+                                    if (record.deleteRequest || !record.managerApproved) {
                                         setModalErrorOther({
                                             message: (
                                                 <ul>
+                                                    <li>
+                                                        <b>Manager chưa phê duyệt</b> yêu cầu nghỉ
+                                                        phép này.
+                                                    </li>
                                                     <li>
                                                         <b>Bạn đã yêu cầu hủy</b> yêu cầu nghỉ phép
                                                         này.
@@ -277,6 +293,8 @@ const HistoryPage = () => {
                                             onFinish: values =>
                                                 requestEditLeave(
                                                     record.id,
+                                                    record.userName,
+                                                    record.department,
                                                     values.actualLeaveTypeId,
                                                     leaveType.find(
                                                         l => l.id === values.actualLeaveTypeId
@@ -288,7 +306,8 @@ const HistoryPage = () => {
                                                     record.bookLeaveDay,
                                                     record.bookFromDate,
                                                     record.bookToDate,
-                                                    record.reason
+                                                    record.reason,
+                                                    record.requestDate
                                                 ),
                                             open: true,
                                         });
@@ -328,12 +347,15 @@ const HistoryPage = () => {
                                             onFinish: values =>
                                                 requestCancelLeave(
                                                     record.id,
+                                                    record.userName,
+                                                    record.department,
                                                     values.reason,
                                                     record.bookLeaveType,
                                                     record.bookLeaveDay,
                                                     record.bookFromDate,
                                                     record.bookToDate,
-                                                    record.reason
+                                                    record.reason,
+                                                    record.requestDate
                                                 ),
                                         });
                                     } else {
@@ -396,7 +418,10 @@ const HistoryPage = () => {
                     key: 'actualLeaveType',
                     ellipsis: true,
                     render: (_, record) => {
-                        if (record.actualLeaveTypeID) {
+                        if (
+                            record.bookLeaveTypeId !== record.actualLeaveTypeID &&
+                            record.actualLeaveTypeID
+                        ) {
                             if (record.managerApprovedLeaveType) {
                                 return (
                                     <>
@@ -436,7 +461,12 @@ const HistoryPage = () => {
                     key: 'actualLeaveDay',
                     ellipsis: true,
                     render: (_, record) => {
-                        if (record.actualLeaveDay) {
+                        if (
+                            record.bookLeaveDay !== record.actualLeaveDay &&
+                            record.bookFromDate !== record.actualFromDate &&
+                            record.bookToDate !== record.actualToDate &&
+                            record.actualLeaveDay
+                        ) {
                             if (record.managerApprovedLeaveDay) {
                                 return (
                                     <>

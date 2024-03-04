@@ -53,17 +53,17 @@ const handleZaloMessage = {
     messageRequestCancel: (
         managerGender,
         managerName,
+        requestReason,
         name,
         department,
-        leaveType,
-        leaveDay,
-        fromDate,
-        toDate,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
         reason,
-        requestReason
+        requestDate
     ) =>
-        'ĐƠN XIN HUỶ PHÉP\n\n' +
-        'Dear ' +
+        'ĐƠN XIN HUỶ PHÉP\n\nDear ' +
         (managerGender === 1 ? 'Mr. ' : 'Ms. ') +
         managerName +
         ', xin gửi đến ' +
@@ -78,22 +78,22 @@ const handleZaloMessage = {
         department +
         '\n' +
         '- Loại phép: ' +
-        leaveType +
+        bookLeaveType +
         '\n' +
         '- Số ngày nghỉ: ' +
-        leaveDay +
+        bookLeaveDay +
         '\n' +
         '- Từ ngày: ' +
-        dayjs(fromDate).format('HH:mm DD/MM/YYYY') +
+        dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
         '\n' +
         '- Đến ngày: ' +
-        dayjs(toDate).format('HH:mm DD/MM/YYYY') +
+        dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
         '\n' +
         '- Lý do: ' +
         reason +
         '\n' +
         '- Ngày yêu cầu: ' +
-        dayjs().format('HH:mm DD/MM/YYYY') +
+        dayjs(requestDate).format('HH:mm DD/MM/YYYY') +
         '\n' +
         '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/manager\n\n' +
         'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
@@ -112,10 +112,10 @@ const handleZaloMessage = {
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) =>
-        'ĐƠN XIN ĐIỀU CHỈNH THÔNG TIN NGHỈ PHÉP THỰC TẾ\n\n' +
-        'Dear ' +
+        'ĐƠN XIN ĐIỀU CHỈNH THÔNG TIN NGHỈ PHÉP THỰC TẾ\n\nDear ' +
         (managerGender === 1 ? 'Mr. ' : 'Ms. ') +
         managerName +
         ', xin gửi đến ' +
@@ -155,25 +155,25 @@ const handleZaloMessage = {
         reason +
         '\n' +
         '- Ngày yêu cầu: ' +
-        dayjs().format('HH:mm DD/MM/YYYY') +
+        dayjs(requestDate).format('HH:mm DD/MM/YYYY') +
         '\n' +
         '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/manager\n\n' +
         'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
         'Vui lòng trả lời 1 tin nhắn bất kỳ!',
 
-    messageApprove: (
-        superiorName,
+    messageManagerApproval: (
+        managerName,
         name,
         department,
         bookLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) =>
-        '<ĐÃ DUYỆT> ĐƠN XIN NGHỈ PHÉP\n\n' +
-        'Manager: ' +
-        superiorName +
+        '<ĐÃ DUYỆT> ĐƠN XIN NGHỈ PHÉP\n\nManager: ' +
+        managerName +
         ', đã ký duyệt yêu cầu nghỉ phép\n' +
         '***Thông tin nghỉ phép của bạn***\n\n' +
         '- Họ và tên: ' +
@@ -198,14 +198,152 @@ const handleZaloMessage = {
         reason +
         '\n' +
         '- Ngày yêu cầu: ' +
-        dayjs().format('HH:mm DD/MM/YYYY') +
+        dayjs(requestDate).format('HH:mm DD/MM/YYYY') +
+        '\n' +
+        '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/history\n\n' +
+        'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
+        'Vui lòng trả lời 1 tin nhắn bất kỳ!',
+
+    messageManagerReject: (
+        managerName,
+        rejectReason,
+        name,
+        department,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason,
+        requestDate
+    ) =>
+        '<TỪ CHỐI> ĐƠN XIN NGHỈ PHÉP\n\nManager: ' +
+        managerName +
+        ', đã từ chối yêu cầu nghỉ phép với lý do: ' +
+        rejectReason +
+        '\n' +
+        '***Thông tin nghỉ phép của bạn***\n\n' +
+        '- Họ và tên: ' +
+        name +
+        '\n' +
+        '- Bộ phận: ' +
+        department +
+        '\n' +
+        '- Loại phép: ' +
+        bookLeaveType +
+        '\n' +
+        '- Số ngày nghỉ: ' +
+        bookLeaveDay +
+        '\n' +
+        '- Từ ngày: ' +
+        dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
+        '\n' +
+        '- Đến ngày: ' +
+        dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
+        '\n' +
+        '- Lý do: ' +
+        reason +
+        '\n' +
+        '- Ngày yêu cầu: ' +
+        dayjs(requestDate).format('HH:mm DD/MM/YYYY') +
+        '\n' +
+        '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/history\n\n' +
+        'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
+        'Vui lòng trả lời 1 tin nhắn bất kỳ!',
+
+    messageLeaderAproval: (
+        managerGender,
+        managerName,
+        name,
+        department,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason,
+        requestDate
+    ) =>
+        'ĐƠN XIN NGHỈ PHÉP\n\nDear ' +
+        (managerGender === 1 ? 'Mr. ' : 'Ms. ') +
+        managerName +
+        ', xin gửi đến ' +
+        (managerGender === 1 ? 'anh' : 'chị') +
+        ' với các thông tin như sau:\n\n' +
+        '- Họ và tên: ' +
+        name +
+        '\n' +
+        '- Bộ phận: ' +
+        department +
+        '\n' +
+        '- Loại phép: ' +
+        bookLeaveType +
+        '\n' +
+        '- Số ngày nghỉ: ' +
+        bookLeaveDay +
+        '\n' +
+        '- Từ ngày: ' +
+        dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
+        '\n' +
+        '- Đến ngày: ' +
+        dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
+        '\n' +
+        '- Lý do: ' +
+        reason +
+        '\n' +
+        '- Ngày yêu cầu: ' +
+        dayjs(requestDate).format('HH:mm DD/MM/YYYY') +
+        '\n' +
+        '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/manager\n\n' +
+        'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
+        'Vui lòng trả lời 1 tin nhắn bất kỳ!',
+
+    messageLeaderReject: (
+        leaderName,
+        rejectReason,
+        name,
+        department,
+        bookLeaveType,
+        bookLeaveDay,
+        bookFromDate,
+        bookToDate,
+        reason,
+        requestDate
+    ) =>
+        '<TỪ CHỐI> ĐƠN XIN NGHỈ PHÉP\n\nLeader: ' +
+        leaderName +
+        ', đã từ chối yêu cầu nghỉ phép với lý do: ' +
+        rejectReason +
+        '\n' +
+        '***Thông tin nghỉ phép của bạn***\n\n' +
+        '- Họ và tên: ' +
+        name +
+        '\n' +
+        '- Bộ phận: ' +
+        department +
+        '\n' +
+        '- Loại phép: ' +
+        bookLeaveType +
+        '\n' +
+        '- Số ngày nghỉ: ' +
+        bookLeaveDay +
+        '\n' +
+        '- Từ ngày: ' +
+        dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
+        '\n' +
+        '- Đến ngày: ' +
+        dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
+        '\n' +
+        '- Lý do: ' +
+        reason +
+        '\n' +
+        '- Ngày yêu cầu: ' +
+        dayjs(requestDate).format('HH:mm DD/MM/YYYY') +
         '\n' +
         '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/history\n\n' +
         'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
         'Vui lòng trả lời 1 tin nhắn bất kỳ!',
 
     messageApproveLeaveType: (
-        superiorName,
+        managerName,
         actualLeaveType,
         name,
         department,
@@ -213,11 +351,11 @@ const handleZaloMessage = {
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) =>
-        '<XÁC NHẬN> ĐIỀU CHỈNH NGHỈ PHÉP\n\n' +
-        'Manager: ' +
-        superiorName +
+        '<XÁC NHẬN> ĐIỀU CHỈNH NGHỈ PHÉP\n\nManager: ' +
+        managerName +
         ', đã xác nhận điều chỉnh loại nghỉ phép thực tế\n' +
         '***Thông tin nghỉ phép của bạn***\n\n' +
         '- Họ và tên: ' +
@@ -245,14 +383,14 @@ const handleZaloMessage = {
         reason +
         '\n' +
         '- Ngày yêu cầu: ' +
-        dayjs().format('HH:mm DD/MM/YYYY') +
+        dayjs(requestDate).format('HH:mm DD/MM/YYYY') +
         '\n' +
         '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/history\n\n' +
         'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
         'Vui lòng trả lời 1 tin nhắn bất kỳ!',
 
     messageApproveLeaveDay: (
-        superiorName,
+        managerName,
         actualLeaveDay,
         name,
         department,
@@ -260,11 +398,11 @@ const handleZaloMessage = {
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) =>
-        '<XÁC NHẬN> ĐIỀU CHỈNH NGHỈ PHÉP\n\n' +
-        'Manager: ' +
-        superiorName +
+        '<XÁC NHẬN> ĐIỀU CHỈNH NGHỈ PHÉP\n\nManager: ' +
+        managerName +
         ', đã xác nhận điều chỉnh số ngày nghỉ phép thực tế\n' +
         '***Thông tin nghỉ phép của bạn***\n\n' +
         '- Họ và tên: ' +
@@ -292,30 +430,26 @@ const handleZaloMessage = {
         reason +
         '\n' +
         '- Ngày yêu cầu: ' +
-        dayjs().format('HH:mm DD/MM/YYYY') +
+        dayjs(requestDate).format('HH:mm DD/MM/YYYY') +
         '\n' +
         '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/history\n\n' +
         'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
         'Vui lòng trả lời 1 tin nhắn bất kỳ!',
 
-    messageReject: (
-        superiorRoleId,
-        superiorName,
-        rejectReason,
+    messageApproveCancelLeave: (
+        managerName,
         name,
         department,
         bookLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
-        reason
+        reason,
+        requestDate
     ) =>
-        '<TỪ CHỐI> ĐƠN XIN NGHỈ PHÉP\n\n' +
-        (superiorRoleId === 2 || superiorRoleId === 3 ? 'Manager: ' : 'Leader: ') +
-        superiorName +
-        ', đã từ chối yêu cầu nghỉ phép với lý do: ' +
-        rejectReason +
-        '\n' +
+        '<XÁC NHẬN> HỦY PHÉP\n\nManager: ' +
+        managerName +
+        ', đã xác nhận hủy phép\n' +
         '***Thông tin nghỉ phép của bạn***\n\n' +
         '- Họ và tên: ' +
         name +
@@ -339,7 +473,7 @@ const handleZaloMessage = {
         reason +
         '\n' +
         '- Ngày yêu cầu: ' +
-        dayjs().format('HH:mm DD/MM/YYYY') +
+        dayjs(requestDate).format('HH:mm DD/MM/YYYY') +
         '\n' +
         '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/history\n\n' +
         'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +

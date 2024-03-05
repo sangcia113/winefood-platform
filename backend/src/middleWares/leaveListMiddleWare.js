@@ -171,7 +171,7 @@ const leaveListMiddleWare = {
             const results = await checkApprovedLeaveType(id);
 
             if (!results[0].actualLeaveTypeID || !results[0].managerApprovedLeaveType)
-                return res.json({
+                return res.status(400).json({
                     error: 908,
                     message:
                         'Không có yêu cầu điều chỉnh loại nghỉ phép thực tế.\nBạn đã xác nhận điều chỉnh loại nghỉ phép thực tế này.',
@@ -195,7 +195,7 @@ const leaveListMiddleWare = {
             const results = await checkApprovedLeaveDay(id);
 
             if (!results[0].actualLeaveDay || !results[0].managerApprovedLeaveDay)
-                return res.json({
+                return res.status(400).json({
                     error: 908,
                     message:
                         'Không có yêu cầu điều chỉnh số ngày nghỉ phép thực tế.\nBạn đã xác nhận điều chỉnh số ngày nghỉ phép thực tế này.',
@@ -219,7 +219,7 @@ const leaveListMiddleWare = {
             const results = await checkApprovedRequestDelete(id);
 
             if (!results[0].deleteRequest || !results[0].managerApprovedDelete)
-                return res.json({
+                return res.status(400).json({
                     error: 908,
                     message: 'Không có yêu cầu hủy phép.\nBạn đã xác nhận hủy phép này.',
                 });

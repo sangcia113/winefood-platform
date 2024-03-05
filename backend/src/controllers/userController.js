@@ -41,9 +41,12 @@ const userController = {
                 roleId
             );
 
-            res.json({ error: 0, message: 'Thêm dữ liệu thành công!' });
-        } catch (err) {
-            res.status(500).json({ error: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!' });
+            res.status(200).json({ error: 0, message: 'Thêm dữ liệu thành công!' });
+        } catch (error) {
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
         }
     },
 
@@ -53,9 +56,12 @@ const userController = {
             // Gọi hàm service để đọc dữ liệu
             const results = await readed();
 
-            res.json(results);
+            res.status(200).json(results);
         } catch (err) {
-            res.status(500).json({ error: `Lỗi truy vấn cơ sở dữ liệu: ${err.message}` });
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 
@@ -94,7 +100,7 @@ const userController = {
                 id
             );
 
-            res.json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
+            res.status(200).json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
         } catch (error) {
             res.status(500).json({
                 error: -1001,
@@ -128,7 +134,7 @@ const userController = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedPassword(encodePassword(newPassword), userId);
 
-            res.json({ error: 0, message: 'Thay đổi mật khẩu thành công!' });
+            res.status(200).json({ error: 0, message: 'Thay đổi mật khẩu thành công!' });
         } catch (error) {
             res.status(500).json({
                 error: -1001,
@@ -146,7 +152,7 @@ const userController = {
             // Gọi hàm service để xoá dữ liệu
             await deleted(id);
 
-            res.json({ error: 0, message: 'Xoá dữ liệu thành công!' });
+            res.status(200).json({ error: 0, message: 'Xoá dữ liệu thành công!' });
         } catch (error) {
             res.status(500).json({
                 error: -1001,

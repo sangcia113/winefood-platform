@@ -23,7 +23,7 @@ const loginController = {
                     .json({ error: -1080, message: 'Tài khoản không tồn tại trong hệ thống!' });
 
             if (!decodePassword(password, results[0].password))
-                return res.status(403).json({ error: -1081, message: 'Sai mật khẩu!' });
+                return res.status(400).json({ error: -1081, message: 'Sai mật khẩu!' });
 
             const payload = {
                 userId: results[0].id,
@@ -34,9 +34,12 @@ const loginController = {
 
             const accessToken = jwt.sign(payload, process.env.PRIVATE_KEY);
 
-            res.json({ error: 0, message: 'Đăng nhập thành công!', accessToken });
+            res.status(200).json({ error: 0, message: 'Đăng nhập thành công!', accessToken });
         } catch (error) {
-            res.status(500).json({ error: `Lỗi truy vấn cơ sở dữ liệu: ${error.message}` });
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
         }
     },
 };

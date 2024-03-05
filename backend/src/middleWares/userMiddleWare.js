@@ -6,7 +6,8 @@ const userMiddleWare = {
         const { id } = req.params;
 
         // Kiểm tra tính hợp lệ của dữ liệu đầu vào
-        if (!id) return res.status(400).json({ error: 'Dữ liệu đầu vào không hợp lệ!' });
+        if (!id)
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
 
         next();
     },

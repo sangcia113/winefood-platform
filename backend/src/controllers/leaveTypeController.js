@@ -10,11 +10,11 @@ const leaveTypeController = {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
             await created(code, nameVN, nameEN);
 
-            res.json({ message: 'Thêm dữ liệu thành công!' });
+            res.status(200).json({ error: 0, message: 'Thêm dữ liệu thành công!' });
         } catch (error) {
             res.status(500).json({
-                error: -1001,
-                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },
@@ -25,7 +25,7 @@ const leaveTypeController = {
             // Gọi hàm service để đọc dữ liệu
             const results = await readed();
 
-            res.json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({
                 error: -1001,
@@ -46,11 +46,11 @@ const leaveTypeController = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updated(code, nameVN, nameEN, id);
 
-            res.json({ message: 'Cập nhật dữ liệu thành công!' });
+            res.status(200).json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
         } catch (error) {
             res.status(500).json({
-                error: -1001,
-                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },
@@ -64,11 +64,11 @@ const leaveTypeController = {
             // Gọi hàm service để xoá dữ liệu
             await deleted(id);
 
-            res.json({ message: 'Xoá dữ liệu thành công!' });
+            res.status(200).json({ error: 0, message: 'Xoá dữ liệu thành công!' });
         } catch (error) {
             res.status(500).json({
-                error: -1001,
-                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },

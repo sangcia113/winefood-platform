@@ -9,7 +9,7 @@ const zaloAPIController = {
             // Gọi hàm service để đọc dữ liệu
             const results = await readedUser();
 
-            res.json(results);
+            res.status(200).json(results);
         } catch (err) {
             res.status(500).json({
                 error: -1001,

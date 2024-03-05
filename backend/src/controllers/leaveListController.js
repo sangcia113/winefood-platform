@@ -93,7 +93,7 @@ const leaveListController = {
             // Gọi hàm service để đọc dữ liệu
             const results = await readedHistory(userId);
 
-            res.json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({
                 error: -1001,
@@ -111,7 +111,7 @@ const leaveListController = {
             // Gọi hàm service để đọc dữ liệu
             const results = await readedLeader(userId);
 
-            res.json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({
                 error: -1001,
@@ -126,7 +126,7 @@ const leaveListController = {
             // Gọi hàm service để đọc dữ liệu
             const results = await readedManager();
 
-            res.json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({
                 error: -1001,
@@ -144,7 +144,7 @@ const leaveListController = {
             // Gọi hàm service để đọc dữ liệu
             const results = await readedManager(startDate, endDate);
 
-            res.json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({
                 error: -1001,
@@ -159,7 +159,7 @@ const leaveListController = {
             // Gọi hàm service để đọc dữ liệu
             const results = await readedManagerOther();
 
-            res.json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({
                 error: -1001,
@@ -177,7 +177,7 @@ const leaveListController = {
             // Gọi hàm service để đọc dữ liệu
             const results = await readedManagerOther(startDate, endDate);
 
-            res.json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({
                 error: -1001,
@@ -192,7 +192,7 @@ const leaveListController = {
             // Gọi hàm service để đọc dữ liệu
             const results = await readedManagerStatistics();
 
-            res.json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({
                 error: -1001,
@@ -210,7 +210,7 @@ const leaveListController = {
             // Gọi hàm service để đọc dữ liệu
             const results = await readedManagerStatistics(startDate, endDate);
 
-            res.json(results);
+            res.status(200).json(results);
         } catch (error) {
             res.status(500).json({
                 error: -1001,
@@ -613,7 +613,7 @@ const leaveListController = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedCancel(id);
 
-            res.json({ error: 0, message: 'Huỷ phép thành công!' });
+            res.status(200).json({ error: 0, message: 'Huỷ phép thành công!' });
         } catch (error) {
             res.status(500).json({
                 error: -1000,
@@ -633,7 +633,7 @@ const leaveListController = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedEdit(id, actualLeaveTypeId, actualLeaveDay, actualFromDate, actualToDate);
 
-            res.json({ error: 0, message: 'Sửa phép thành công!' });
+            res.status(200).json({ error: 0, message: 'Sửa phép thành công!' });
         } catch (error) {
             res.status(500).json({
                 error: -1000,

@@ -4,7 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Card, Checkbox, Flex, Form, Input, Layout, Space, Typography } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
-import { ModalConfirmComponent, ModalErrorComponent } from '../components';
+import {
+    ModalConfirmComponent,
+    ModalErrorComponent,
+    ModalErrorOtherComponent,
+} from '../components';
 
 import { checkToken, createConnection } from '../utils';
 
@@ -28,6 +32,12 @@ const LoginPage = () => {
         error: '',
     });
 
+    const [modalErrorOther, setModalErrorOther] = useState({
+        open: false,
+        title: '',
+        message: '',
+    });
+
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -48,7 +58,39 @@ const LoginPage = () => {
 
             navigate('/');
         } catch (error) {
-            setModalError({ error, open: true });
+            const errorCode = error?.response?.data?.error;
+
+            if (errorCode === -1080) {
+                setModalErrorOther({
+                    message: (
+                        <Text>
+                            Vui lòng liên hệ{' '}
+                            <Link href="https://zalo.me/0972868740" target="_blank">
+                                Mr.Sang
+                            </Link>{' '}
+                            để được hỗ trợ!
+                        </Text>
+                    ),
+                    open: true,
+                    title: 'TÀI KHOẢN KHÔNG TỒN TẠI',
+                });
+            } else if (errorCode === -1081) {
+                setModalErrorOther({
+                    message: (
+                        <Text>
+                            Vui lòng liên hệ{' '}
+                            <Link href="https://zalo.me/0972868740" target="_blank">
+                                Mr.Sang
+                            </Link>{' '}
+                            để được hỗ trợ!
+                        </Text>
+                    ),
+                    open: true,
+                    title: 'SAI MẬT KHẨU',
+                });
+            } else {
+                setModalError({ error, open: true });
+            }
         }
     };
 
@@ -156,6 +198,12 @@ const LoginPage = () => {
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
                 error={modalError.error}
+            />
+            <ModalErrorOtherComponent
+                onOk={() => setModalErrorOther({ open: false })}
+                open={modalErrorOther.open}
+                title={modalErrorOther.title}
+                message={modalErrorOther.message}
             />
         </Layout>
     );

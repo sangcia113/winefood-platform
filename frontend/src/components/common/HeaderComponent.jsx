@@ -26,7 +26,12 @@ import {
 } from 'react-bootstrap-icons';
 import { LogoutOutlined } from '@ant-design/icons';
 
-import { ModalChangePassword, ModalErrorComponent, ModalWarningComponent } from '../../components';
+import {
+    ModalChangePassword,
+    ModalErrorComponent,
+    ModalSuccessComponent,
+    ModalWarningComponent,
+} from '../../components';
 
 import { createConnection } from '../../utils';
 
@@ -80,6 +85,11 @@ const HeaderComponent = ({ name }) => {
         error: '',
     });
 
+    const [modalSuccess, setModalSuccess] = useState({
+        open: false,
+        message: '',
+    });
+
     const [modalWarning, setModalWarning] = useState({
         message: '',
         open: false,
@@ -96,7 +106,7 @@ const HeaderComponent = ({ name }) => {
     const accessToken =
         localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
-    const changePass = async (oldPassword, newPassword, confirmPassword) => {
+    const changePassword = async (oldPassword, newPassword, confirmPassword) => {
         try {
             setLoading(true);
 
@@ -109,7 +119,12 @@ const HeaderComponent = ({ name }) => {
                 }
             );
 
-            console.log(response);
+            setModalChangePass({ open: false });
+
+            setModalSuccess({
+                message: response?.data?.message,
+                open: true,
+            });
         } catch (error) {
             const errorCode = error?.response?.data?.error;
 
@@ -162,7 +177,7 @@ const HeaderComponent = ({ name }) => {
                                     onClick: () => {
                                         setModalChangePass({
                                             onFinish: values =>
-                                                changePass(
+                                                changePassword(
                                                     values.oldPassword,
                                                     values.newPassword,
                                                     values.confirmPassword
@@ -310,6 +325,11 @@ const HeaderComponent = ({ name }) => {
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
                 error={modalError.error}
+            />
+            <ModalSuccessComponent
+                onOk={() => setModalSuccess({ open: false })}
+                open={modalSuccess.open}
+                message={modalSuccess.message}
             />
             <ModalWarningComponent
                 onOk={() => setModalWarning({ open: false })}

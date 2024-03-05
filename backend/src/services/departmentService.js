@@ -59,6 +59,20 @@ const departmentService = {
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [id]);
     },
+
+    // Kiểm tra tồn tại
+    checkIsExist: async code => {
+        const sql = `SELECT
+                        *
+                    FROM
+                        department
+                    WHERE
+                        code = ?`;
+
+        const [results] = await db.query(sql, [code]);
+
+        return results;
+    },
 };
 
 // Xuất các hàm để sử dụng trong module khác

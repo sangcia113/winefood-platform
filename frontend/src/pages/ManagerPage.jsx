@@ -42,6 +42,8 @@ import {
 
 import { createConnection, getUniqueName } from '../utils';
 
+const imgManagerMenu = require('../assets/images/manual/manager-menu.PNG');
+
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
 
@@ -791,19 +793,19 @@ const ManagerPage = () => {
                 </Tooltip>
             ),
         },
-        {
-            title: 'QR',
-            dataIndex: 'qr',
-            key: 'qr',
-            ellipsis: true,
-            render: (_, record) => (
-                <QRCode
-                    bordered={false}
-                    size={80}
-                    value={`${record.userName} | ${record.bookLeaveType} | ${record.bookLeaveDay}`}
-                />
-            ),
-        },
+        // {
+        //     title: 'QR',
+        //     dataIndex: 'qr',
+        //     key: 'qr',
+        //     ellipsis: true,
+        //     render: (_, record) => (
+        //         <QRCode
+        //             bordered={false}
+        //             size={80}
+        //             value={`${record.userName} | ${record.bookLeaveType} | ${record.bookLeaveDay}`}
+        //         />
+        //     ),
+        // },
         {
             title: 'Họ và Tên',
             dataIndex: 'userName',
@@ -846,6 +848,30 @@ const ManagerPage = () => {
                     dataIndex: 'actualLeaveType',
                     key: 'actualLeaveType',
                     ellipsis: true,
+                    render: (_, record) => {
+                        if (
+                            record.bookLeaveTypeId !== record.actualLeaveTypeID &&
+                            record.actualLeaveTypeID
+                        ) {
+                            if (record.managerApprovedLeaveType)
+                                return (
+                                    <>
+                                        <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
+                                        {record.actualLeaveType}
+                                    </>
+                                );
+                            return (
+                                <Tag
+                                    bordered={false}
+                                    color="processing"
+                                    icon={<SyncOutlined spin />}
+                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                >
+                                    {record.actualLeaveType}
+                                </Tag>
+                            );
+                        }
+                    },
                 },
             ],
         },
@@ -869,6 +895,32 @@ const ManagerPage = () => {
                     dataIndex: 'actualLeaveDay',
                     key: 'actualLeaveDay',
                     ellipsis: true,
+                    render: (_, record) => {
+                        if (
+                            record.bookLeaveDay !== record.actualLeaveDay &&
+                            record.bookFromDate !== record.actualFromDate &&
+                            record.bookToDate !== record.actualToDate &&
+                            record.actualLeaveDay
+                        ) {
+                            if (record.managerApprovedLeaveDay)
+                                return (
+                                    <>
+                                        <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
+                                        {record.actualLeaveDay}
+                                    </>
+                                );
+                            return (
+                                <Tag
+                                    bordered={false}
+                                    color="processing"
+                                    icon={<SyncOutlined spin />}
+                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                >
+                                    {record.actualLeaveDay}
+                                </Tag>
+                            );
+                        }
+                    },
                 },
             ],
         },
@@ -1280,12 +1332,7 @@ const ManagerPage = () => {
                                 type="info"
                             />
                         ),
-                        cover: (
-                            <img
-                                alt="manual-avatar.png"
-                                src={require('../assets/images/manual/manager-menu.PNG')}
-                            />
-                        ),
+                        cover: <img alt="manager-menu.png" src={imgManagerMenu} />,
                         target: () => ref1.current,
                     },
                 ]}

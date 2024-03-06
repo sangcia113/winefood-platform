@@ -15,7 +15,6 @@ import {
 import { createConnection } from '../utils';
 
 const { TextArea } = Input;
-
 const { Text } = Typography;
 
 const HomePage = () => {

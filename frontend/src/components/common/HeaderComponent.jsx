@@ -29,13 +29,15 @@ import { LogoutOutlined } from '@ant-design/icons';
 import {
     ModalChangePassword,
     ModalErrorComponent,
+    ModalErrorOtherComponent,
     ModalSuccessComponent,
-    ModalWarningComponent,
 } from '../../components';
 
 import { createConnection } from '../../utils';
 
 const imgSrc = require('../../assets/images/logo/logoWFC.png');
+const imgSubMenu = require('../../assets/images/manual/sub-menu.PNG');
+const imgMainMenu = require('../../assets/images/manual/main-menu.PNG');
 
 const { Text } = Typography;
 const { Header } = Layout;
@@ -85,14 +87,15 @@ const HeaderComponent = ({ name }) => {
         error: '',
     });
 
-    const [modalSuccess, setModalSuccess] = useState({
+    const [modalErrorOther, setModalErrorOther] = useState({
         open: false,
+        title: '',
         message: '',
     });
 
-    const [modalWarning, setModalWarning] = useState({
-        message: '',
+    const [modalSuccess, setModalSuccess] = useState({
         open: false,
+        message: '',
     });
 
     const navigate = useNavigate();
@@ -129,19 +132,19 @@ const HeaderComponent = ({ name }) => {
             const errorCode = error?.response?.data?.error;
 
             if (errorCode === -1084) {
-                setModalWarning({
-                    message: <Text style={{ textAlign: 'center' }}>Sai mật khẩu cũ!</Text>,
+                setModalErrorOther({
+                    title: 'THẤT BẠI',
                     open: true,
+                    message: 'Mật khẩu cũ không chính xác!',
                 });
             } else if (errorCode === -1085) {
-                setModalWarning({
-                    message: (
-                        <Text style={{ textAlign: 'center' }}>Mật khẩu không trùng khớp!</Text>
-                    ),
+                setModalErrorOther({
+                    title: 'THẤT BẠI',
                     open: true,
+                    message: 'Mật khẩu mới không trùng khớp!',
                 });
             } else {
-                setModalError({ open: true, error });
+                setModalError({ error, open: true });
             }
         } finally {
             setLoading(false);
@@ -267,16 +270,11 @@ const HeaderComponent = ({ name }) => {
                                 type="info"
                             />
                         ),
-                        cover: (
-                            <img
-                                alt="manual-avatar.png"
-                                src={require('../../assets/images/manual/avatar.PNG')}
-                            />
-                        ),
+                        cover: <img alt="sub-menu.png" src={imgSubMenu} />,
                         target: () => ref1.current,
                     },
                     {
-                        title: 'Logo',
+                        title: 'LOGO',
                         description: (
                             <Alert message="Thao tác nhanh để quay về trang chủ" type="info" />
                         ),
@@ -302,12 +300,7 @@ const HeaderComponent = ({ name }) => {
                                 type="info"
                             />
                         ),
-                        cover: (
-                            <img
-                                alt="manual-menu.png"
-                                src={require('../../assets/images/manual/menu.PNG')}
-                            />
-                        ),
+                        cover: <img alt="main-menu.png" src={imgMainMenu} />,
                         target: () => ref3.current,
                     },
                 ]}
@@ -322,19 +315,21 @@ const HeaderComponent = ({ name }) => {
                 onFinish={modalChangePass.onFinish}
             />
             <ModalErrorComponent
+                message={modalError.message}
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
-                error={modalError.error}
+                title={modalError.title}
+            />
+            <ModalErrorOtherComponent
+                onOk={() => setModalErrorOther({ open: false })}
+                open={modalErrorOther.open}
+                title={modalErrorOther.title}
+                message={modalErrorOther.message}
             />
             <ModalSuccessComponent
                 onOk={() => setModalSuccess({ open: false })}
                 open={modalSuccess.open}
                 message={modalSuccess.message}
-            />
-            <ModalWarningComponent
-                onOk={() => setModalWarning({ open: false })}
-                open={modalWarning.open}
-                message={modalWarning.message}
             />
         </Header>
     );

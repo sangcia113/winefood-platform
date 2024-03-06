@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import { Alert, Dropdown, Form, Space, Table, Tag, Tour, Typography } from 'antd';
+
 import {
     CheckCircleFilled,
     CloseCircleFilled,
@@ -23,6 +24,8 @@ import {
 } from '../components';
 
 import { createConnection } from '../utils';
+
+const imgHistoryMenu = require('../assets/images/manual/history-menu.PNG');
 
 const { Text } = Typography;
 
@@ -422,25 +425,23 @@ const HistoryPage = () => {
                             record.bookLeaveTypeId !== record.actualLeaveTypeID &&
                             record.actualLeaveTypeID
                         ) {
-                            if (record.managerApprovedLeaveType) {
+                            if (record.managerApprovedLeaveType)
                                 return (
                                     <>
                                         <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
                                         {record.actualLeaveType}
                                     </>
                                 );
-                            } else {
-                                return (
-                                    <Tag
-                                        bordered={false}
-                                        color="processing"
-                                        icon={<SyncOutlined spin />}
-                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
-                                    >
-                                        {record.actualLeaveType}
-                                    </Tag>
-                                );
-                            }
+                            return (
+                                <Tag
+                                    bordered={false}
+                                    color="processing"
+                                    icon={<SyncOutlined spin />}
+                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                >
+                                    {record.actualLeaveType}
+                                </Tag>
+                            );
                         }
                     },
                 },
@@ -467,25 +468,23 @@ const HistoryPage = () => {
                             record.bookToDate !== record.actualToDate &&
                             record.actualLeaveDay
                         ) {
-                            if (record.managerApprovedLeaveDay) {
+                            if (record.managerApprovedLeaveDay)
                                 return (
                                     <>
                                         <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
                                         {record.actualLeaveDay}
                                     </>
                                 );
-                            } else {
-                                return (
-                                    <Tag
-                                        bordered={false}
-                                        color="processing"
-                                        icon={<SyncOutlined spin />}
-                                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
-                                    >
-                                        {record.actualLeaveDay}
-                                    </Tag>
-                                );
-                            }
+                            return (
+                                <Tag
+                                    bordered={false}
+                                    color="processing"
+                                    icon={<SyncOutlined spin />}
+                                    style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                                >
+                                    {record.actualLeaveDay}
+                                </Tag>
+                            );
                         }
                     },
                 },
@@ -703,12 +702,7 @@ const HistoryPage = () => {
                                 type="info"
                             />
                         ),
-                        cover: (
-                            <img
-                                alt="manual-avatar.png"
-                                src={require('../assets/images/manual/history-menu.PNG')}
-                            />
-                        ),
+                        cover: <img alt="history-menu.png" src={imgHistoryMenu} />,
                         target: () => ref1.current,
                     },
                 ]}

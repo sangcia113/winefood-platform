@@ -41,19 +41,17 @@ const LoginPage = () => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        if (checkToken()) navigate('/');
+        if (checkToken()) return navigate('/');
     }, []);
 
     const onFinish = async values => {
         try {
             const response = await createConnection().post(`/leave/login`, values);
 
-            const { accessToken } = response.data;
-
             if (values.remember) {
-                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('accessToken', response.data);
             } else {
-                sessionStorage.setItem('accessToken', accessToken);
+                sessionStorage.setItem('accessToken', response.data);
             }
 
             navigate('/');
@@ -64,6 +62,8 @@ const LoginPage = () => {
                 setModalErrorOther({
                     message: (
                         <Text>
+                            Tài khoản không tồn tại trong hệ thống!
+                            <br />
                             Vui lòng liên hệ{' '}
                             <Link href="https://zalo.me/0972868740" target="_blank">
                                 Mr.Sang
@@ -72,12 +72,14 @@ const LoginPage = () => {
                         </Text>
                     ),
                     open: true,
-                    title: 'TÀI KHOẢN KHÔNG TỒN TẠI',
+                    title: 'THẤT BẠI',
                 });
             } else if (errorCode === -1081) {
                 setModalErrorOther({
                     message: (
                         <Text>
+                            Sai mật khẩu
+                            <br />
                             Vui lòng liên hệ{' '}
                             <Link href="https://zalo.me/0972868740" target="_blank">
                                 Mr.Sang
@@ -86,7 +88,7 @@ const LoginPage = () => {
                         </Text>
                     ),
                     open: true,
-                    title: 'SAI MẬT KHẨU',
+                    title: 'THẤT BẠI',
                 });
             } else {
                 setModalError({ error, open: true });
@@ -178,7 +180,7 @@ const LoginPage = () => {
             </Card>
             <ModalConfirmComponent
                 onCancel={() => setModalConfirm({ open: false })}
-                onOk={() => setModalConfirm({ open: false })}
+                onOk={() => window.open('https://zalo.me/0972868740', '_blank')}
                 open={modalConfirm.open}
                 title="THẤT BẠI"
                 message={

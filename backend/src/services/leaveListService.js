@@ -130,7 +130,7 @@ const leaveListService = {
                     WHERE
                         l.deleted IS NULL 
                     AND (
-                        superiorId IN (SELECT id FROM user WHERE roleId IN (1, 2))
+                        superiorId IN (SELECT id FROM user WHERE roleId IN (2, 3))
                         OR leaderApproved = 1 )`;
 
         if (startDate && endDate) {
@@ -273,7 +273,7 @@ const leaveListService = {
                     AND
                         CURDATE() BETWEEN bookFromDate AND bookToDate
                     AND (
-                        superiorId IN (SELECT id FROM user WHERE roleId IN (1, 2))
+                        superiorId IN (SELECT id FROM user WHERE roleId IN (2, 3))
                         OR leaderApproved = 1 )  
                     ORDER BY 
                         l.id 

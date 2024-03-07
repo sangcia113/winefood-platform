@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { readedUser, sendZaloAPIV3 } = require('../services/zaloAPIService');
+const { readedUser, sendZaloAPIV3, getFollower } = require('../services/zaloAPIService');
 const { readedInfoSuperior, readedInfoManager } = require('../services/userService');
 const {
     messageApproveCancelLeave,
@@ -27,6 +27,20 @@ const zaloAPIController = {
             res.status(500).json({
                 error: -1001,
                 message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
+        }
+    },
+
+    readedFollower: async (req, res) => {
+        try {
+            const [results] = await getFollower(0);
+
+            res.status(200).json(results);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },

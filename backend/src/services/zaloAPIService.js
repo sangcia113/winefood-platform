@@ -54,10 +54,23 @@ const zaloAPIService = {
         await db.query(sql, [accessToken, refreshToken, new Date()]);
     },
 
-    refreshToken: async () => {
-        const zaloAPIInfo = await zaloAPIService.readed();
+    getFollower: async offset => {
+        const [{ accessToken }] = await zaloAPIService.readed();
 
-        const { refreshToken, secretKey, appId } = zaloAPIInfo[0];
+        const config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `https://openapi.zalo.me/v2.0/oa/getfollowers?data={"offset":${offset},"count":50}`,
+            headers: {
+                access_token: accessToken,
+            },
+        };
+
+        return await axios.request(config);
+    },
+
+    refreshToken: async () => {
+        const [{ refreshToken, secretKey, appId }] = await zaloAPIService.readed();
 
         const data = qs.stringify({
             refresh_token: refreshToken,
@@ -80,9 +93,7 @@ const zaloAPIService = {
     },
 
     sendZaloAPIV3: async (zaloAPIUserId, zaloAPIText, retryCount = 1) => {
-        const zaloAPIInfo = await zaloAPIService.readed();
-
-        const { accessToken } = zaloAPIInfo[0];
+        const [{ accessToken }] = await zaloAPIService.readed();
 
         const data = JSON.stringify({
             recipient: {

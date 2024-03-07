@@ -102,6 +102,20 @@ const UserPage = () => {
         }
     };
 
+    const getUser = async () => {
+        try {
+            setLoading(true);
+
+            const response = await createConnection(accessToken).get(`/leave/user`);
+
+            setUser(response.data.map(item => ({ ...item, key: item.id })));
+        } catch (error) {
+            setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const getZaloAPIInfo = async () => {
         try {
             setLoading(true);
@@ -116,13 +130,13 @@ const UserPage = () => {
         }
     };
 
-    const getUser = async () => {
+    const getFollower = async () => {
         try {
             setLoading(true);
 
-            const response = await createConnection(accessToken).get(`/leave/user`);
+            const response = await createConnection(accessToken).get(`/zalo/get-follower`);
 
-            setUser(response.data.map(item => ({ ...item, key: item.id })));
+            console.log(response.data);
         } catch (error) {
             setModalError({ error, open: true });
         } finally {
@@ -564,7 +578,10 @@ const UserPage = () => {
                         children: (
                             <Flex vertical gap={'large'}>
                                 <Flex justify={'center'} gap={'large'}>
-                                    <Button style={{ backgroundColor: '#f759ab', color: 'white' }}>
+                                    <Button
+                                        onClick={() => getFollower()}
+                                        style={{ backgroundColor: '#f759ab', color: 'white' }}
+                                    >
                                         Get All User
                                     </Button>
                                     <Button style={{ backgroundColor: '#2db7f5', color: 'white' }}>

@@ -171,7 +171,8 @@ const LeaderPage = () => {
             setModalSuccess({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
-                        Đã gửi thông báo từ chối đến nhân viên
+                        Đã gửi thông báo <Text style={{ color: '#ff4d4f' }}>từ chối</Text> đến nhân
+                        viên
                         <br />
                         <b>{response.data.receiver}</b>
                         <br />
@@ -375,7 +376,7 @@ const LeaderPage = () => {
                     key: 'actualLeaveType',
                     ellipsis: true,
                     render: (_, record) => {
-                        if (record.actualLeaveTypeID) {
+                        if (record.actualLeaveTypeId) {
                             if (record.managerApprovedLeaveType) {
                                 return (
                                     <>

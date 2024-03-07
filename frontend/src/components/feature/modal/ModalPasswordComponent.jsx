@@ -1,9 +1,9 @@
-import { SafetyCertificateFilled } from '@ant-design/icons';
-import { Form, Input, Modal, Space, Typography } from 'antd';
 import React from 'react';
 
-const { Text } = Typography;
+import { Form, Input, Modal, Space, Typography } from 'antd';
+import { SafetyCertificateFilled } from '@ant-design/icons';
 
+const { Text } = Typography;
 const { Password } = Input;
 
 const ModalPasswordComponent = ({ afterClose, onCancel, onOk, open, form, onFinish }) => (

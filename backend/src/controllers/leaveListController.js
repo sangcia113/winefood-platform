@@ -18,64 +18,19 @@ const {
     updatedRequestEdit,
 } = require('../services/leaveListService');
 
-const { readedInfoSuperior, readedInfoManager } = require('../services/userService');
-
-const { sendZaloAPIV3 } = require('../services/zaloAPIService');
-
-const {
-    messageApproveCancelLeave,
-    messageApproveLeaveDay,
-    messageApproveLeaveType,
-    messageLeaderAproval,
-    messageLeaderReject,
-    messageManagerApproval,
-    messageManagerReject,
-    messageRequestCancel,
-    messageRequestEdit,
-    messageRequestLeave,
-} = require('../utils');
-
 const leaveListController = {
-    created: async (req, res) => {
+    created: async (req, res, next) => {
         // Lấy thông tin từ auth của yêu cầu
-        const { userId, userName, department } = req.decoded;
+        const { userId } = req.decoded;
 
         // Lấy thông tin từ body của yêu cầu
-        const { bookLeaveTypeId, bookLeaveType, bookLeaveDay, bookFromDate, bookToDate, reason } =
-            req.body;
+        const { bookLeaveTypeId, bookLeaveDay, bookFromDate, bookToDate, reason } = req.body;
 
         try {
             // Gọi hàm service để thêm mới vào cơ sở dữ liệu
             await created(userId, bookLeaveTypeId, bookLeaveDay, bookFromDate, bookToDate, reason);
 
-            // Lấy thông tin Superior
-            const [{ superiorName, superiorGender, superiorRoleId, superiorZaloUserID }] =
-                await readedInfoSuperior(userId);
-
-            const zaloAPIText = messageRequestLeave(
-                superiorGender,
-                superiorName,
-                superiorRoleId,
-                userName,
-                department,
-                bookLeaveType,
-                bookLeaveDay,
-                bookFromDate,
-                bookToDate,
-                reason
-            );
-
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
-
-            if (response.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
-                    receiver: superiorName,
-                });
-            } else {
-                res.status(400).json(response);
-            }
+            next();
         } catch (error) {
             res.status(500).json({
                 error: -1000,
@@ -220,52 +175,15 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updatedLeaderApproved: async (req, res) => {
+    updatedLeaderApproved: async (req, res, next) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
-
-        // Lấy thông tin từ body của yêu cầu
-        const {
-            userName,
-            department,
-            bookLeaveType,
-            bookLeaveDay,
-            bookFromDate,
-            bookToDate,
-            reason,
-            requestDate,
-        } = req.body;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedLeaderApproved(id);
 
-            const [{ managerGender, managerName, managerZaloUserID }] = await readedInfoManager();
-
-            const zaloAPIText = messageLeaderAproval(
-                managerGender,
-                managerName,
-                userName,
-                department,
-                bookLeaveType,
-                bookLeaveDay,
-                bookFromDate,
-                bookToDate,
-                reason,
-                requestDate
-            );
-
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
-
-            if (responseSend.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
-                    receiver: managerName,
-                });
-            } else {
-                res.status(400).json(responseSend);
-            }
+            next();
         } catch (error) {
             res.status(500).json({
                 error: -1000,
@@ -275,53 +193,17 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updatedLeaderRejected: async (req, res) => {
+    updatedLeaderRejected: async (req, res, next) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
         // Lấy thông tin từ body của yêu cầu
-        const {
-            rejectReason,
-            userId,
-            userName,
-            department,
-            bookLeaveType,
-            bookLeaveDay,
-            bookFromDate,
-            bookToDate,
-            reason,
-            requestDate,
-        } = req.body;
+        const { rejectReason } = req.body;
 
         try {
             await updatedLeaderRejected(id, rejectReason);
 
-            const [{ superiorName, superiorZaloUserID }] = await readedInfoSuperior(userId);
-
-            const zaloAPIText = messageLeaderReject(
-                superiorName,
-                rejectReason,
-                userName,
-                department,
-                bookLeaveType,
-                bookLeaveDay,
-                bookFromDate,
-                bookToDate,
-                reason,
-                requestDate
-            );
-
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
-
-            if (responseSend.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi thông báo từ chối qua Zalo!',
-                    receiver: userName,
-                });
-            } else {
-                res.status(400).json(responseSend);
-            }
+            next();
         } catch (error) {
             res.status(500).json({
                 error: -1000,
@@ -331,50 +213,15 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updatedManagerApproved: async (req, res) => {
+    updatedManagerApproved: async (req, res, next) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
-
-        const {
-            userName,
-            department,
-            bookLeaveType,
-            bookLeaveDay,
-            bookFromDate,
-            bookToDate,
-            reason,
-            requestDate,
-        } = req.body;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedManagerApproved(id);
 
-            const [{ managerName, managerZaloUserID }] = await readedInfoManager();
-
-            const zaloAPIText = messageManagerApproval(
-                managerName,
-                userName,
-                department,
-                bookLeaveType,
-                bookLeaveDay,
-                bookFromDate,
-                bookToDate,
-                reason,
-                requestDate
-            );
-
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
-
-            if (responseSend.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi thông báo phê duyệt qua Zalo!',
-                    receiver: userName,
-                });
-            } else {
-                res.status(400).json(responseSend);
-            }
+            next();
         } catch (error) {
             res.status(500).json({
                 error: -1000,
@@ -384,53 +231,18 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updatedManagerRejected: async (req, res) => {
+    updatedManagerRejected: async (req, res, next) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
         // Lấy thông tin từ body của yêu cầu
-        const {
-            rejectReason,
-            userName,
-            department,
-            bookLeaveType,
-            bookLeaveDay,
-            bookFromDate,
-            bookToDate,
-            reason,
-            requestDate,
-        } = req.body;
+        const { reason } = req.body;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedManagerRejected(id, reason);
 
-            const [{ managerName, managerZaloUserID }] = await readedInfoManager();
-
-            const zaloAPIText = messageManagerReject(
-                managerName,
-                rejectReason,
-                userName,
-                department,
-                bookLeaveType,
-                bookLeaveDay,
-                bookFromDate,
-                bookToDate,
-                reason,
-                requestDate
-            );
-
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
-
-            if (responseSend.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi thông báo từ chối qua Zalo!',
-                    receiver: userName,
-                });
-            } else {
-                res.status(400).json(responseSend);
-            }
+            next();
         } catch (error) {
             res.status(500).json({
                 error: -1000,
@@ -440,53 +252,15 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updatedApprovedLeaveType: async (req, res) => {
+    updatedApprovedLeaveType: async (req, res, next) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
-
-        // Lấy thông tin từ body của yêu cầu
-        const {
-            actualLeaveType,
-            userName,
-            department,
-            bookLeaveType,
-            bookLeaveDay,
-            bookFromDate,
-            bookToDate,
-            reason,
-            requestDate,
-        } = req.body;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedApprovedLeaveType(id);
 
-            const [{ managerName, managerZaloUserID }] = await readedInfoManager();
-
-            const zaloAPIText = messageApproveLeaveType(
-                managerName,
-                actualLeaveType,
-                userName,
-                department,
-                bookLeaveType,
-                bookLeaveDay,
-                bookFromDate,
-                bookToDate,
-                reason,
-                requestDate
-            );
-
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
-
-            if (responseSend.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi thông báo phê duyệt qua Zalo!',
-                    receiver: userName,
-                });
-            } else {
-                res.status(400).json(responseSend);
-            }
+            next();
         } catch (error) {
             res.status(500).json({
                 error: -1000,
@@ -496,53 +270,15 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updatedApprovedLeaveDay: async (req, res) => {
+    updatedApprovedLeaveDay: async (req, res, next) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
-
-        // Lấy thông tin từ body của yêu cầu
-        const {
-            actualLeaveDay,
-            userName,
-            department,
-            bookLeaveType,
-            bookLeaveDay,
-            bookFromDate,
-            bookToDate,
-            reason,
-            requestDate,
-        } = req.body;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedApprovedLeaveDay(id);
 
-            const [{ managerName, managerZaloUserID }] = await readedInfoManager();
-
-            const zaloAPIText = messageApproveLeaveDay(
-                managerName,
-                actualLeaveDay,
-                userName,
-                department,
-                bookLeaveType,
-                bookLeaveDay,
-                bookFromDate,
-                bookToDate,
-                reason,
-                requestDate
-            );
-
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
-
-            if (responseSend.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi thông báo phê duyệt qua Zalo!',
-                    receiver: userName,
-                });
-            } else {
-                res.status(400).json(responseSend);
-            }
+            next();
         } catch (error) {
             res.status(500).json({
                 error: -1000,
@@ -552,51 +288,15 @@ const leaveListController = {
     },
 
     // Xử lý yêu cầu cập nhật dữ liệu.
-    updatedApprovedRequestDelete: async (req, res) => {
+    updatedApprovedRequestDelete: async (req, res, next) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
-
-        // Lấy thông tin từ body của yêu cầu
-        const {
-            userName,
-            department,
-            bookLeaveType,
-            bookLeaveDay,
-            bookFromDate,
-            bookToDate,
-            reason,
-            requestDate,
-        } = req.body;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedApprovedRequestDelete(id);
 
-            const [{ managerName, managerZaloUserID }] = await readedInfoManager();
-
-            const zaloAPIText = messageApproveCancelLeave(
-                managerName,
-                userName,
-                department,
-                bookLeaveType,
-                bookLeaveDay,
-                bookFromDate,
-                bookToDate,
-                reason,
-                requestDate
-            );
-
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
-
-            if (responseSend.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi thông báo phê duyệt qua Zalo!',
-                    receiver: userName,
-                });
-            } else {
-                res.status(400).json(responseSend);
-            }
+            next();
         } catch (error) {
             res.status(500).json({
                 error: -1000,
@@ -642,54 +342,18 @@ const leaveListController = {
         }
     },
 
-    updateRequestCancel: async (req, res) => {
+    updateRequestCancel: async (req, res, next) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
         // Lấy thông tin từ body của yêu cầu
-        const {
-            userName,
-            department,
-            requestReason,
-            bookLeaveType,
-            bookLeaveDay,
-            bookFromDate,
-            bookToDate,
-            reason,
-            requestDate,
-        } = req.body;
+        const { requestReason } = req.body;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             await updatedRequestCancel(id, requestReason);
 
-            const [{ managerGender, managerName, managerZaloUserID }] = await readedInfoManager();
-
-            const zaloAPIText = messageRequestCancel(
-                managerGender,
-                managerName,
-                requestReason,
-                userName,
-                department,
-                bookLeaveType,
-                bookLeaveDay,
-                bookFromDate,
-                bookToDate,
-                reason,
-                requestDate
-            );
-
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
-
-            if (responseSend.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
-                    receiver: managerName,
-                });
-            } else {
-                res.status(400).json(responseSend);
-            }
+            next();
         } catch (error) {
             res.status(500).json({
                 error: -1000,
@@ -698,26 +362,12 @@ const leaveListController = {
         }
     },
 
-    updateRequestEdit: async (req, res) => {
+    updateRequestEdit: async (req, res, next) => {
         // Lấy ID từ params của yêu cầu
         const { id } = req.params;
 
         // Lấy thông tin từ body của yêu cầu
-        const {
-            userName,
-            department,
-            actualLeaveTypeId,
-            actualLeaveType,
-            actualLeaveDay,
-            actualFromDate,
-            actualToDate,
-            bookLeaveType,
-            bookLeaveDay,
-            bookFromDate,
-            bookToDate,
-            reason,
-            requestDate,
-        } = req.body;
+        const { actualLeaveTypeId, actualLeaveDay, actualFromDate, actualToDate } = req.body;
 
         try {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
@@ -729,36 +379,7 @@ const leaveListController = {
                 actualToDate
             );
 
-            const [{ managerGender, managerName, managerZaloUserID }] = await readedInfoManager();
-
-            const zaloAPIText = messageRequestEdit(
-                managerGender,
-                managerName,
-                userName,
-                department,
-                actualLeaveType,
-                actualLeaveDay,
-                actualFromDate,
-                actualToDate,
-                bookLeaveType,
-                bookLeaveDay,
-                bookFromDate,
-                bookToDate,
-                reason,
-                requestDate
-            );
-
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
-
-            if (response.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
-                    receiver: managerName,
-                });
-            } else {
-                res.status(400).json(response);
-            }
+            next();
         } catch (error) {
             res.status(500).json({
                 error: -1000,

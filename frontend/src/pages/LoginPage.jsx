@@ -49,9 +49,9 @@ const LoginPage = () => {
             const response = await createConnection().post(`/leave/login`, values);
 
             if (values.remember) {
-                localStorage.setItem('accessToken', response.data);
+                localStorage.setItem('accessToken', response.data.accessToken);
             } else {
-                sessionStorage.setItem('accessToken', response.data);
+                sessionStorage.setItem('accessToken', response.data.accessToken);
             }
 
             navigate('/');

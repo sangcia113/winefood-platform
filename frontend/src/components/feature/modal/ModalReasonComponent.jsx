@@ -1,9 +1,9 @@
-import { SmileFilled } from '@ant-design/icons';
-import { Form, Input, Modal, Space, Typography } from 'antd';
 import React from 'react';
 
-const { Text } = Typography;
+import { Form, Input, Modal, Space, Typography } from 'antd';
+import { SmileFilled } from '@ant-design/icons';
 
+const { Text } = Typography;
 const { TextArea } = Input;
 
 const ModalReasonComponent = ({ afterClose, form, loading, onCancel, onFinish, onOk, open }) => (
@@ -13,7 +13,7 @@ const ModalReasonComponent = ({ afterClose, form, loading, onCancel, onFinish, o
         cancelText="Hủy Bỏ"
         centered
         closeIcon={false}
-        okButtonProps={{ loading: loading, style: { borderRadius: 20 } }}
+        okButtonProps={{ loading, style: { borderRadius: 20 } }}
         okText="Đồng Ý"
         onCancel={onCancel}
         onOk={onOk}

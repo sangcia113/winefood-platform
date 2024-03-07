@@ -24,7 +24,7 @@ const ModalEditComponent = ({
             cancelText="Hủy Bỏ"
             centered
             closeIcon={false}
-            okButtonProps={{ loading: loading, style: { borderRadius: 20 } }}
+            okButtonProps={{ loading, style: { borderRadius: 20 } }}
             okText="Đồng Ý"
             onCancel={onCancel}
             onOk={onOk}

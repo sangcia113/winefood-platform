@@ -50,7 +50,7 @@ const leaveListMiddleWare = {
                 });
 
             next();
-        } catch (err) {
+        } catch (error) {
             res.status(500).json({
                 error: -1000,
                 message: 'Lỗi truy vấn cơ sở dữ liệu!',
@@ -73,7 +73,7 @@ const leaveListMiddleWare = {
                 });
 
             next();
-        } catch (err) {
+        } catch (error) {
             res.status(500).json({
                 error: -1000,
                 message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
@@ -102,7 +102,7 @@ const leaveListMiddleWare = {
                     .json({ error: 909, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
 
             next();
-        } catch (err) {
+        } catch (error) {
             res.status(500).json({
                 error: -1000,
                 message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
@@ -125,7 +125,7 @@ const leaveListMiddleWare = {
                 });
 
             next();
-        } catch (err) {
+        } catch (error) {
             res.status(500).json({
                 error: -1000,
                 message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
@@ -154,7 +154,7 @@ const leaveListMiddleWare = {
                     .json({ error: 909, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
 
             next();
-        } catch (err) {
+        } catch (error) {
             res.status(500).json({
                 error: -1000,
                 message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
@@ -170,7 +170,7 @@ const leaveListMiddleWare = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             const results = await checkApprovedLeaveType(id);
 
-            if (!results[0].actualLeaveTypeID || !results[0].managerApprovedLeaveType)
+            if (!results[0].actualLeaveTypeID || results[0].managerApprovedLeaveType)
                 return res.status(400).json({
                     error: 908,
                     message:
@@ -178,7 +178,7 @@ const leaveListMiddleWare = {
                 });
 
             next();
-        } catch (err) {
+        } catch (error) {
             res.status(500).json({
                 error: -1000,
                 message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
@@ -194,7 +194,7 @@ const leaveListMiddleWare = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             const results = await checkApprovedLeaveDay(id);
 
-            if (!results[0].actualLeaveDay || !results[0].managerApprovedLeaveDay)
+            if (!results[0].actualLeaveDay || results[0].managerApprovedLeaveDay)
                 return res.status(400).json({
                     error: 908,
                     message:
@@ -202,7 +202,7 @@ const leaveListMiddleWare = {
                 });
 
             next();
-        } catch (err) {
+        } catch (error) {
             res.status(500).json({
                 error: -1000,
                 message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
@@ -218,14 +218,14 @@ const leaveListMiddleWare = {
             // Gọi hàm service để cập nhật vào cơ sở dữ liệu
             const results = await checkApprovedRequestDelete(id);
 
-            if (!results[0].deleteRequest || !results[0].managerApprovedDelete)
+            if (!results[0].deleteRequest || results[0].managerApprovedDelete)
                 return res.status(400).json({
                     error: 908,
                     message: 'Không có yêu cầu hủy phép.\nBạn đã xác nhận hủy phép này.',
                 });
 
             next();
-        } catch (err) {
+        } catch (error) {
             res.status(500).json({
                 error: -1000,
                 message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',

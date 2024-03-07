@@ -25,6 +25,19 @@ const {
 } = require('../controllers/leaveListController');
 
 const {
+    memberSendMessageRequestToSuperior,
+    memberSendMessageRequestCancelToManager,
+    memberSendMessageRequestEditToManager,
+    leaderSendMessageApproveToManager,
+    leaderSendMessageRejectToMember,
+    managerSendMessageApproveToMember,
+    managerSendMessageRejectToMember,
+    managerSendMessageApproveLeaveTypeToMember,
+    managerSendMessageApproveLeaveDayToMember,
+    managerSendMessageApproveRequestDeleteToMember,
+} = require('../controllers/zaloAPIController');
+
+const {
     checkLeaderApproved,
     checkLeaderRejected,
     checkManagerApproved,
@@ -39,7 +52,7 @@ const {
 } = require('../middleWares/leaveListMiddleWare');
 
 // End point POST
-router.post('/', checkBody, checkIsExist, created);
+router.post('/', checkBody, checkIsExist, created, memberSendMessageRequestToSuperior);
 
 // End point GET
 router.get('/history', readedHistory);
@@ -72,29 +85,64 @@ router.put('/history/cancel/:id', checkParam, updateCancel);
 router.put('/history/edit/:id', checkParam, updateEdit);
 
 // End point PUT
-router.put('/history/request-cancel/:id', checkParam, updateRequestCancel);
+router.put(
+    '/history/request-cancel/:id',
+    checkParam,
+    updateRequestCancel,
+    memberSendMessageRequestCancelToManager
+);
 
 // End point PUT
-router.put('/history/request-edit/:id', checkParam, updateRequestEdit);
+router.put(
+    '/history/request-edit/:id',
+    checkParam,
+    updateRequestEdit,
+    memberSendMessageRequestEditToManager
+);
 
 // End point PUT
-router.put('/leader/approved/:id', checkParam, checkLeaderApproved, updatedLeaderApproved);
+router.put(
+    '/leader/approved/:id',
+    checkParam,
+    checkLeaderApproved,
+    updatedLeaderApproved,
+    leaderSendMessageApproveToManager
+);
 
 // End point PUT
-router.put('/leader/rejected/:id', checkParam, checkLeaderRejected, updatedLeaderRejected);
+router.put(
+    '/leader/rejected/:id',
+    checkParam,
+    checkLeaderRejected,
+    updatedLeaderRejected,
+    leaderSendMessageRejectToMember
+);
 
 // End point PUT
-router.put('/manager/approved/:id', checkParam, checkManagerApproved, updatedManagerApproved);
+router.put(
+    '/manager/approved/:id',
+    checkParam,
+    checkManagerApproved,
+    updatedManagerApproved,
+    managerSendMessageApproveToMember
+);
 
 // End point PUT
-router.put('/manager/rejected/:id', checkParam, checkManagerRejected, updatedManagerRejected);
+router.put(
+    '/manager/rejected/:id',
+    checkParam,
+    checkManagerRejected,
+    updatedManagerRejected,
+    managerSendMessageRejectToMember
+);
 
 // End point PUT
 router.put(
     '/manager/approved-leave-type/:id',
     checkParam,
     checkApprovedLeaveType,
-    updatedApprovedLeaveType
+    updatedApprovedLeaveType,
+    managerSendMessageApproveLeaveTypeToMember
 );
 
 // End point PUT
@@ -102,7 +150,8 @@ router.put(
     '/manager/approved-leave-day/:id',
     checkParam,
     checkApprovedLeaveDay,
-    updatedApprovedLeaveDay
+    updatedApprovedLeaveDay,
+    managerSendMessageApproveLeaveDayToMember
 );
 
 // End point PUT
@@ -110,7 +159,8 @@ router.put(
     '/manager/approved-request-delete/:id',
     checkParam,
     checkApprovedRequestDelete,
-    updatedApprovedRequestDelete
+    updatedApprovedRequestDelete,
+    managerSendMessageApproveRequestDeleteToMember
 );
 
 // Xuất router để sử dụng trong module khác index.js

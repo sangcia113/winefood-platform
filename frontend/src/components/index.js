@@ -8,6 +8,7 @@ import ModalConfirmComponent from './feature/modal/ModalConfirmComponent';
 import ModalEditComponent from './feature/modal/ModalEditComponent.jsx';
 import ModalErrorComponent from './feature/modal/ModalErrorComponent';
 import ModalErrorOtherComponent from './feature/modal/ModalErrorOtherComponent.jsx';
+import ModalFeedback from './feature/modal/ModalFeedback.jsx';
 import ModalPasswordComponent from './feature/modal/ModalPasswordComponent';
 import ModalReasonComponent from './feature/modal/ModalReasonComponent';
 import ModalSuccessComponent from './feature/modal/ModalSuccessComponent';
@@ -23,6 +24,7 @@ export {
     ModalEditComponent,
     ModalErrorComponent,
     ModalErrorOtherComponent,
+    ModalFeedback,
     ModalPasswordComponent,
     ModalReasonComponent,
     ModalSuccessComponent,

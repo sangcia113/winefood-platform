@@ -344,10 +344,9 @@ const handleZaloMessage = {
 
     messageApproveLeaveType: (
         managerName,
-        actualLeaveType,
         name,
         department,
-        bookLeaveType,
+        actualLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
@@ -363,9 +362,6 @@ const handleZaloMessage = {
         '\n' +
         '- Bộ phận: ' +
         department +
-        '\n' +
-        '- Loại phép (đăng ký): ' +
-        bookLeaveType +
         '\n' +
         '- Loại phép (thực tế): ' +
         actualLeaveType +
@@ -391,13 +387,12 @@ const handleZaloMessage = {
 
     messageApproveLeaveDay: (
         managerName,
-        actualLeaveDay,
         name,
         department,
         bookLeaveType,
-        bookLeaveDay,
-        bookFromDate,
-        bookToDate,
+        actualLeaveDay,
+        actualFromDate,
+        actualToDate,
         reason,
         requestDate
     ) =>
@@ -414,17 +409,14 @@ const handleZaloMessage = {
         '- Loại phép: ' +
         bookLeaveType +
         '\n' +
-        '- Số ngày nghỉ (đăng ký): ' +
-        bookLeaveDay +
-        '\n' +
         '- Số ngày nghỉ (thực tế): ' +
         actualLeaveDay +
         '\n' +
-        '- Từ ngày: ' +
-        dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
+        '- Từ ngày (thực tế): ' +
+        dayjs(actualFromDate).format('HH:mm DD/MM/YYYY') +
         '\n' +
-        '- Đến ngày: ' +
-        dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
+        '- Đến ngày (thực tế): ' +
+        dayjs(actualToDate).format('HH:mm DD/MM/YYYY') +
         '\n' +
         '- Lý do: ' +
         reason +

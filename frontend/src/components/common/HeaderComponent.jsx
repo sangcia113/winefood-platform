@@ -30,6 +30,7 @@ import {
     ModalChangePassword,
     ModalErrorComponent,
     ModalErrorOtherComponent,
+    ModalFeedback,
     ModalSuccessComponent,
 } from '../../components';
 
@@ -87,6 +88,11 @@ const HeaderComponent = ({ name }) => {
         error: '',
     });
 
+    const [modalFeedback, setModalFeedback] = useState({
+        onFinish: () => {},
+        open: false,
+    });
+
     const [modalErrorOther, setModalErrorOther] = useState({
         open: false,
         title: '',
@@ -105,11 +111,12 @@ const HeaderComponent = ({ name }) => {
     const ref3 = useRef(null);
 
     const [form] = Form.useForm();
+    const [formFeedback] = new FormData();
 
     const accessToken =
         localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 
-    const changePassword = async (oldPassword, newPassword, confirmPassword) => {
+    const changePassword = async ({ oldPassword, newPassword, confirmPassword }) => {
         try {
             setLoading(true);
 
@@ -151,6 +158,17 @@ const HeaderComponent = ({ name }) => {
         }
     };
 
+    const feedback = async ({ feedback, fileList }) => {
+        formFeedback.append('feedBack', feedback);
+        formFeedback.append('fileList', fileList);
+
+        try {
+            console.log(formFeedback);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <Header
             style={{
@@ -179,12 +197,7 @@ const HeaderComponent = ({ name }) => {
                                     icon: <KeyFill size={20} />,
                                     onClick: () => {
                                         setModalChangePass({
-                                            onFinish: values =>
-                                                changePassword(
-                                                    values.oldPassword,
-                                                    values.newPassword,
-                                                    values.confirmPassword
-                                                ),
+                                            onFinish: values => changePassword(values),
                                             open: true,
                                         });
                                     },
@@ -194,6 +207,11 @@ const HeaderComponent = ({ name }) => {
                                     key: 'feedback',
                                     label: 'Góp ý - Báo lỗi',
                                     icon: <ChatFill size={18} />,
+                                    onClick: () =>
+                                        setModalFeedback({
+                                            onFinish: values => console.log(values),
+                                            open: true,
+                                        }),
                                 },
                                 {
                                     key: 'manual',
@@ -325,6 +343,12 @@ const HeaderComponent = ({ name }) => {
                 open={modalErrorOther.open}
                 title={modalErrorOther.title}
                 message={modalErrorOther.message}
+            />
+            <ModalFeedback
+                loading={loading}
+                onClick={() => setModalFeedback({ open: false })}
+                open={modalFeedback.open}
+                onFinish={modalFeedback.onFinish}
             />
             <ModalSuccessComponent
                 onOk={() => setModalSuccess({ open: false })}

@@ -9,8 +9,6 @@ const checkToken = () => {
     try {
         return jwtDecode(accessToken);
     } catch (error) {
-        console.log('Không thể xác thực Token!', error);
-
         return null;
     }
 };

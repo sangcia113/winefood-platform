@@ -33,6 +33,7 @@ const leaveListService = {
         // Truy vấn SQL để đọc
         const sql = `SELECT
                         l.*,
+                        u.name AS userName,
                         u.roleId,
                         d.name AS department,
                         bt.nameVN AS bookLeaveType,
@@ -463,7 +464,7 @@ const leaveListService = {
                         list 
                     SET 
                         managerApprovedLeaveType = ?, 
-                        managerApprovedLeaveTypeDate = ?, 
+                        managerApprovedLeaveTypeDate = ? 
                     WHERE 
                         id = ?`;
 
@@ -478,7 +479,7 @@ const leaveListService = {
                         list 
                     SET 
                         managerApprovedLeaveDay = ?, 
-                        managerApprovedLeaveDayDate = ?, 
+                        managerApprovedLeaveDayDate = ? 
                     WHERE 
                         id = ?`;
 
@@ -493,7 +494,7 @@ const leaveListService = {
                         list 
                     SET 
                         managerApprovedDelete = ?, 
-                        managerApprovedLeaveDayDate = ?, 
+                        managerApprovedLeaveDayDate = ? 
                     WHERE 
                         id = ?`;
 

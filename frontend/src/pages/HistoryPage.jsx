@@ -422,8 +422,8 @@ const HistoryPage = () => {
                     ellipsis: true,
                     render: (_, record) => {
                         if (
-                            record.bookLeaveTypeId !== record.actualLeaveTypeID &&
-                            record.actualLeaveTypeID
+                            record.bookLeaveTypeId !== record.actualLeaveTypeId &&
+                            record.actualLeaveTypeId
                         ) {
                             if (record.managerApprovedLeaveType)
                                 return (

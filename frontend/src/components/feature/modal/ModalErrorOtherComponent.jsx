@@ -1,6 +1,7 @@
-import { CloseCircleFilled } from '@ant-design/icons';
-import { Alert, Modal, Space, Typography } from 'antd';
 import React from 'react';
+
+import { Alert, Modal, Space, Typography } from 'antd';
+import { CloseCircleFilled } from '@ant-design/icons';
 
 const { Text } = Typography;
 

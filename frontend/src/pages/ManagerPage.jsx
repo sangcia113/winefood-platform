@@ -207,7 +207,8 @@ const ManagerPage = () => {
             setModalSuccess({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
-                        Đã gửi thông báo phê duyệt đến nhân viên
+                        Đã gửi thông báo <Text style={{ color: '#52c41a' }}>phê duyệt</Text> đến
+                        nhân viên
                         <br />
                         <b>{response.data.receiver}</b>
                         <br />
@@ -258,7 +259,8 @@ const ManagerPage = () => {
             setModalSuccess({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
-                        Đã gửi thông báo từ chối đến nhân viên
+                        Đã gửi thông báo <Text style={{ color: '#ff4d4f' }}>từ chối</Text> đến nhân
+                        viên
                         <br />
                         <b>{response.data.receiver}</b>
                         <br />
@@ -278,10 +280,9 @@ const ManagerPage = () => {
 
     const approveLeaveType = async (
         id,
-        actualLeaveType,
         userName,
         department,
-        bookLeaveType,
+        actualLeaveType,
         bookLeaveDay,
         bookFromDate,
         bookToDate,
@@ -292,10 +293,9 @@ const ManagerPage = () => {
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved-leave-type/${id}`,
                 {
-                    actualLeaveType,
                     userName,
                     department,
-                    bookLeaveType,
+                    actualLeaveType,
                     bookLeaveDay,
                     bookFromDate,
                     bookToDate,
@@ -309,7 +309,8 @@ const ManagerPage = () => {
             setModalSuccess({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
-                        Đã gửi thông báo phê duyệt đến nhân viên
+                        Đã gửi thông báo <Text style={{ color: '#52c41a' }}>phê duyệt</Text> đến
+                        nhân viên
                         <br />
                         <b>{response.data.receiver}</b>
                         <br />
@@ -329,13 +330,12 @@ const ManagerPage = () => {
 
     const approveLeaveDay = async (
         id,
-        actualLeaveDay,
         userName,
         department,
         bookLeaveType,
-        bookLeaveDay,
-        bookFromDate,
-        bookToDate,
+        actualLeaveDay,
+        actualFromDate,
+        actualToDate,
         reason,
         requestDate
     ) => {
@@ -343,13 +343,12 @@ const ManagerPage = () => {
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved-leave-day/${id}`,
                 {
-                    actualLeaveDay,
                     userName,
                     department,
                     bookLeaveType,
-                    bookLeaveDay,
-                    bookFromDate,
-                    bookToDate,
+                    actualLeaveDay,
+                    actualFromDate,
+                    actualToDate,
                     reason,
                     requestDate,
                 }
@@ -360,7 +359,8 @@ const ManagerPage = () => {
             setModalSuccess({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
-                        Đã gửi thông báo phê duyệt đến nhân viên
+                        Đã gửi thông báo <Text style={{ color: '#52c41a' }}>phê duyệt</Text> đến
+                        nhân viên
                         <br />
                         <b>{response.data.receiver}</b>
                         <br />
@@ -409,7 +409,8 @@ const ManagerPage = () => {
             setModalSuccess({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
-                        Đã gửi thông báo phê duyệt đến nhân viên
+                        Đã gửi thông báo <Text style={{ color: '#52c41a' }}>phê duyệt</Text> đến
+                        nhân viên
                         <br />
                         <b>{response.data.receiver}</b>
                         <br />
@@ -562,10 +563,9 @@ const ManagerPage = () => {
                                                     onOk: () =>
                                                         approveLeaveType(
                                                             record.id,
-                                                            record.actualLeaveType,
                                                             record.userName,
                                                             record.department,
-                                                            record.bookLeaveType,
+                                                            record.actualLeaveType,
                                                             record.bookLeaveDay,
                                                             record.bookFromDate,
                                                             record.bookToDate,
@@ -615,13 +615,12 @@ const ManagerPage = () => {
                                                     onOk: () =>
                                                         approveLeaveDay(
                                                             record.id,
-                                                            record.actualLeaveDay,
                                                             record.userName,
                                                             record.department,
                                                             record.bookLeaveType,
-                                                            record.bookLeaveDay,
-                                                            record.bookFromDate,
-                                                            record.bookToDate,
+                                                            record.actualLeaveDay,
+                                                            record.actualFromDate,
+                                                            record.actualToDate,
                                                             record.reason,
                                                             record.requestDate
                                                         ),
@@ -850,8 +849,8 @@ const ManagerPage = () => {
                     ellipsis: true,
                     render: (_, record) => {
                         if (
-                            record.bookLeaveTypeId !== record.actualLeaveTypeID &&
-                            record.actualLeaveTypeID
+                            record.actualLeaveTypeId &&
+                            record.bookLeaveTypeId !== record.actualLeaveTypeId
                         ) {
                             if (record.managerApprovedLeaveType)
                                 return (
@@ -897,10 +896,10 @@ const ManagerPage = () => {
                     ellipsis: true,
                     render: (_, record) => {
                         if (
-                            record.bookLeaveDay !== record.actualLeaveDay &&
-                            record.bookFromDate !== record.actualFromDate &&
-                            record.bookToDate !== record.actualToDate &&
-                            record.actualLeaveDay
+                            record.actualLeaveDay &&
+                            (record.bookLeaveDay !== record.actualLeaveDay ||
+                                record.bookFromDate !== record.actualFromDate ||
+                                record.bookToDate !== record.actualToDate)
                         ) {
                             if (record.managerApprovedLeaveDay)
                                 return (

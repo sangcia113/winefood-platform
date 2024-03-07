@@ -1,6 +1,7 @@
-import { CheckCircleFilled } from '@ant-design/icons';
-import { Flex, Modal, Space, Typography } from 'antd';
 import React from 'react';
+
+import { Flex, Modal, Space, Typography } from 'antd';
+import { CheckCircleFilled } from '@ant-design/icons';
 
 const { Text } = Typography;
 

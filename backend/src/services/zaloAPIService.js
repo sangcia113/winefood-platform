@@ -9,6 +9,17 @@ const db = require('../configs/databaseZaloAPIConfig');
 const { created } = require('../services/errorService');
 
 const zaloAPIService = {
+    created: async zaloUserId => {
+        const sql = `INSERT INTO  
+                        user (
+                            zaloUserId
+                        ) VALUES ?`;
+
+        const data = zaloUserId.map(item => [item]);
+
+        await db.query(sql, [data]);
+    },
+
     // Đọc trong cơ sở dữ liệu.
     readed: async () => {
         // Truy vấn SQL để đọc
@@ -54,6 +65,19 @@ const zaloAPIService = {
         await db.query(sql, [accessToken, refreshToken, new Date()]);
     },
 
+    updatedUser: async (zaloNumberPhone, zaloUserId) => {
+        // Truy vấn SQL để cập nhật
+        const sql = `UPDATE 
+                        user
+                    SET
+                        zaloNumberPhone = ?
+                    WHERE
+                        zaloUserId = ?`;
+
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [zaloNumberPhone, zaloUserId]);
+    },
+
     getFollower: async offset => {
         const [{ accessToken }] = await zaloAPIService.readed();
 
@@ -64,6 +88,60 @@ const zaloAPIService = {
             headers: {
                 access_token: accessToken,
             },
+        };
+
+        return await axios.request(config);
+    },
+
+    getProfile: async id => {
+        const [{ accessToken }] = await zaloAPIService.readed();
+
+        const config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `https://openapi.zalo.me/v2.0/oa/getprofile?data={"user_id":${id}}`,
+            headers: {
+                access_token: accessToken,
+            },
+        };
+
+        return await axios.request(config);
+    },
+
+    requestUserInfo: async zaloUserId => {
+        const [{ accessToken }] = await zaloAPIService.readed();
+
+        const data = JSON.stringify({
+            recipient: {
+                user_id: zaloUserId,
+            },
+            message: {
+                attachment: {
+                    type: 'template',
+                    payload: {
+                        template_type: 'request_user_info',
+                        elements: [
+                            {
+                                title: 'OA Chatbot of Wine Food',
+                                subtitle:
+                                    'Đây là yêu cầu cung cấp thông tin nhằm mục đích phục vụ cho việc lưu trữ dữ liệu',
+                                image_url: 'https://www.winefood.com.vn/images/logo.jpg',
+                            },
+                        ],
+                    },
+                },
+            },
+        });
+
+        const config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'https://openapi.zalo.me/v3.0/oa/message/cs',
+            headers: {
+                'Content-Type': 'application/json',
+                access_token: accessToken,
+            },
+            data,
         };
 
         return await axios.request(config);

@@ -20,7 +20,13 @@ import {
     Typography,
 } from 'antd';
 import { DeleteFilled, SyncOutlined } from '@ant-design/icons';
-import { PencilFill, PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons';
+import {
+    HandIndexFill,
+    PencilFill,
+    PlusCircleFill,
+    TelephoneInboundFill,
+    ThreeDotsVertical,
+} from 'react-bootstrap-icons';
 
 import {
     ContentComponent,
@@ -78,8 +84,8 @@ const UserPage = () => {
     useEffect(() => {
         getDepartment();
         getRole();
-        getZaloAPIInfo();
         getUser();
+        getZaloAPIInfo();
     }, []);
 
     const getDepartment = async () => {
@@ -130,13 +136,59 @@ const UserPage = () => {
         }
     };
 
+    const getProfile = async zaloUserId => {
+        try {
+            setLoading(true);
+
+            const response = await createConnection(accessToken).get(
+                `/zalo/get-profile/${zaloUserId}`
+            );
+
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
+
+            getZaloAPIInfo();
+        } catch (error) {
+            console.log(error);
+            setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const getFollower = async () => {
         try {
             setLoading(true);
 
             const response = await createConnection(accessToken).get(`/zalo/get-follower`);
 
-            console.log(response.data);
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
+
+            getZaloAPIInfo();
+        } catch (error) {
+            setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const requestUserInfo = async zaloUserId => {
+        try {
+            setLoading(true);
+
+            const response = await createConnection(accessToken).post(
+                `/zalo/request-user-info/${zaloUserId}`
+            );
+
+            setModalSuccess({
+                message: response.data.message,
+                open: true,
+            });
         } catch (error) {
             setModalError({ error, open: true });
         } finally {
@@ -361,6 +413,38 @@ const UserPage = () => {
 
     const columnsZaloUser = [
         {
+            title: '',
+            dataIndex: 'action',
+            key: 'action',
+            fixed: 'left',
+            render: (_, record) => (
+                <Dropdown
+                    arrow={true}
+                    menu={{
+                        items: [
+                            {
+                                key: '1',
+                                label: 'Request User Info',
+                                icon: <HandIndexFill />,
+                                onClick: () => requestUserInfo(record.zaloUserId),
+                                style: { color: '#2db7f5' },
+                            },
+                            {
+                                key: '2',
+                                label: 'Get Profile',
+                                icon: <TelephoneInboundFill />,
+                                onClick: () => getProfile(record.zaloUserId),
+                                style: { color: '#73d13d' },
+                            },
+                        ],
+                    }}
+                    placement={'bottomLeft'}
+                >
+                    <ThreeDotsVertical />
+                </Dropdown>
+            ),
+        },
+        {
             title: '#',
             dataIndex: 'id',
             key: 'id',
@@ -583,12 +667,6 @@ const UserPage = () => {
                                         style={{ backgroundColor: '#f759ab', color: 'white' }}
                                     >
                                         Get All User
-                                    </Button>
-                                    <Button style={{ backgroundColor: '#2db7f5', color: 'white' }}>
-                                        Request API
-                                    </Button>
-                                    <Button style={{ backgroundColor: '#73d13d', color: 'white' }}>
-                                        Get Number Phone
                                     </Button>
                                 </Flex>
                                 <Table

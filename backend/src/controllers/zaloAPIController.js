@@ -1,6 +1,14 @@
 require('dotenv').config();
 
-const { readedUser, sendZaloAPIV3, getFollower } = require('../services/zaloAPIService');
+const {
+    readedUser,
+    sendZaloAPIV3,
+    getFollower,
+    created,
+    requestUserInfo,
+    getProfile,
+    updatedUser,
+} = require('../services/zaloAPIService');
 const { readedInfoSuperior, readedInfoManager } = require('../services/userService');
 const {
     messageApproveCancelLeave,
@@ -31,13 +39,97 @@ const zaloAPIController = {
         }
     },
 
-    readedFollower: async (req, res) => {
-        try {
-            const [results] = await getFollower(0);
+    getFollower: async (req, res) => {
+        let offset = 0;
+        let totalFollower = 0;
 
-            res.status(200).json(results);
+        try {
+            const results = await readedUser();
+            const zaloUserId = results.map(item => item.zaloUserId);
+
+            do {
+                const response = await getFollower(offset);
+                totalFollower = response.data.data.total;
+                const followers = response.data.data.followers;
+
+                if (totalFollower > 0) {
+                    const newFollower = followers
+                        .map(item => item.user_id)
+                        .filter(item => !zaloUserId.includes(item));
+
+                    if (newFollower.length > 0) await created(newFollower);
+
+                    offset += 50;
+                }
+            } while (offset < totalFollower);
+
+            res.status(200).json({
+                error: 0,
+                message: `Cập nhật thành công ${totalFollower} user`,
+            });
         } catch (error) {
-            console.log(error);
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
+        }
+    },
+
+    requestUserInfo: async (req, res) => {
+        const { id } = req.params;
+
+        if (!id)
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
+
+        try {
+            const response = await requestUserInfo(id);
+
+            if (response.data.error === 0) {
+                res.status(200).json({
+                    error: 0,
+                    message: 'Đã gửi yêu cầu cung cấp thông tin đến người dùng qua Zalo!',
+                });
+            } else {
+                res.status(400).json(response.data);
+            }
+        } catch (error) {
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
+            });
+        }
+    },
+
+    getProfile: async (req, res) => {
+        const { id } = req.params;
+
+        if (!id)
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
+
+        try {
+            const response = await getProfile(id);
+
+            const { error, data } = response.data;
+
+            if (error !== 0) return res.status(400).json(response.data);
+
+            const { shared_info } = data;
+
+            if (!shared_info || !shared_info.phone)
+                return res
+                    .status(400)
+                    .json({
+                        error: -1010,
+                        message: 'Người dùng chưa chia sẻ thông tin với Wine Food!',
+                    });
+
+            await updatedUser(shared_info.phone);
+
+            res.status(200).json({
+                error: 0,
+                message: 'Cập nhật số điện thoại cho User thành công!',
+            });
+        } catch (error) {
             res.status(500).json({
                 error: -1000,
                 message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',

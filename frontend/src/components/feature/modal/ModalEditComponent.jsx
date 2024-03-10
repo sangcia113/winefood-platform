@@ -5,6 +5,7 @@ import { SmileFilled } from '@ant-design/icons';
 
 import dayjs from 'dayjs';
 
+const { Item } = Form;
 const { Text } = Typography;
 
 const ModalEditComponent = ({
@@ -58,7 +59,7 @@ const ModalEditComponent = ({
                 }}
                 onFinish={onFinish}
             >
-                <Form.Item
+                <Item
                     label={
                         <Text style={{ fontSize: 18 }}>
                             <Text strong style={{ fontSize: 16 }}>
@@ -86,8 +87,8 @@ const ModalEditComponent = ({
                             </Select.Option>
                         ))}
                     </Select>
-                </Form.Item>
-                <Form.Item
+                </Item>
+                <Item
                     label={
                         <Text style={{ fontSize: 18 }}>
                             <Text strong style={{ fontSize: 16 }}>
@@ -113,9 +114,9 @@ const ModalEditComponent = ({
                         step={0.25}
                         style={{ width: '100%' }}
                     />
-                </Form.Item>
+                </Item>
 
-                <Form.Item
+                <Item
                     label={
                         <Text style={{ fontSize: 18 }}>
                             <Text strong style={{ fontSize: 16 }}>
@@ -141,9 +142,9 @@ const ModalEditComponent = ({
                         showTime={{ defaultValue: dayjs('07:30', 'HH:mm') }}
                         style={{ width: '100%' }}
                     />
-                </Form.Item>
+                </Item>
 
-                <Form.Item
+                <Item
                     label={
                         <Text style={{ fontSize: 18 }}>
                             <Text strong style={{ fontSize: 16 }}>
@@ -169,7 +170,7 @@ const ModalEditComponent = ({
                         showTime={{ defaultValue: dayjs('16:30', 'HH:mm') }}
                         style={{ width: '100%' }}
                     />
-                </Form.Item>
+                </Item>
             </Form>
         </Modal>
     );

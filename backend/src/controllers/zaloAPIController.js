@@ -116,12 +116,10 @@ const zaloAPIController = {
             const { shared_info } = data;
 
             if (!shared_info || !shared_info.phone)
-                return res
-                    .status(400)
-                    .json({
-                        error: -1010,
-                        message: 'Người dùng chưa chia sẻ thông tin với Wine Food!',
-                    });
+                return res.status(400).json({
+                    error: -1010,
+                    message: 'Người dùng chưa chia sẻ thông tin với Wine Food!',
+                });
 
             await updatedUser(shared_info.phone);
 
@@ -212,16 +210,16 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
 
-            if (responseSend.error === 0) {
+            if (response.error === 0) {
                 res.status(200).json({
                     error: 0,
                     message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
                     receiver: managerName,
                 });
             } else {
-                res.status(400).json(responseSend);
+                res.status(400).json(response);
             }
         } catch (error) {
             res.status(500).json({
@@ -263,16 +261,16 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
 
-            if (responseSend.error === 0) {
+            if (response.error === 0) {
                 res.status(200).json({
                     error: 0,
                     message: 'Đã gửi thông báo từ chối qua Zalo!',
                     receiver: userName,
                 });
             } else {
-                res.status(400).json(responseSend);
+                res.status(400).json(response);
             }
         } catch (error) {
             res.status(500).json({
@@ -310,16 +308,16 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
 
-            if (responseSend.error === 0) {
+            if (response.error === 0) {
                 res.status(200).json({
                     error: 0,
                     message: 'Đã gửi thông báo phê duyệt qua Zalo!',
                     receiver: userName,
                 });
             } else {
-                res.status(400).json(responseSend);
+                res.status(400).json(response);
             }
         } catch (error) {
             res.status(500).json({
@@ -360,16 +358,16 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
 
-            if (responseSend.error === 0) {
+            if (response.error === 0) {
                 res.status(200).json({
                     error: 0,
                     message: 'Đã gửi thông báo từ chối qua Zalo!',
                     receiver: userName,
                 });
             } else {
-                res.status(400).json(responseSend);
+                res.status(400).json(response);
             }
         } catch (error) {
             res.status(500).json({
@@ -408,16 +406,16 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
 
-            if (responseSend.error === 0) {
+            if (response.error === 0) {
                 res.status(200).json({
                     error: 0,
                     message: 'Đã gửi thông báo phê duyệt qua Zalo!',
                     receiver: userName,
                 });
             } else {
-                res.status(400).json(responseSend);
+                res.status(400).json(response);
             }
         } catch (error) {
             res.status(500).json({
@@ -456,16 +454,16 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
 
-            if (responseSend.error === 0) {
+            if (response.error === 0) {
                 res.status(200).json({
                     error: 0,
                     message: 'Đã gửi thông báo phê duyệt qua Zalo!',
                     receiver: userName,
                 });
             } else {
-                res.status(400).json(responseSend);
+                res.status(400).json(response);
             }
         } catch (error) {
             res.status(500).json({
@@ -504,16 +502,16 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
 
-            if (responseSend.error === 0) {
+            if (response.error === 0) {
                 res.status(200).json({
                     error: 0,
                     message: 'Đã gửi thông báo phê duyệt qua Zalo!',
                     receiver: userName,
                 });
             } else {
-                res.status(400).json(responseSend);
+                res.status(400).json(response);
             }
         } catch (error) {
             res.status(500).json({
@@ -555,16 +553,16 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const responseSend = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
 
-            if (responseSend.error === 0) {
+            if (response.error === 0) {
                 res.status(200).json({
                     error: 0,
                     message: 'Đã gửi yêu cầu lên cấp trên qua Zalo!',
                     receiver: managerName,
                 });
             } else {
-                res.status(400).json(responseSend);
+                res.status(400).json(response);
             }
         } catch (error) {
             res.status(500).json({

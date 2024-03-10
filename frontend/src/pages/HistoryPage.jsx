@@ -21,9 +21,10 @@ import {
     ModalErrorOtherComponent,
     ModalReasonComponent,
     ModalSuccessComponent,
+    ModalWarningComponent,
 } from '../components';
 
-import { createConnection } from '../utils';
+import { checkDate, createConnection } from '../utils';
 
 const imgHistoryMenu = require('../assets/images/manual/history-menu.PNG');
 
@@ -68,6 +69,11 @@ const HistoryPage = () => {
     const [modalSuccess, setModalSuccess] = useState({
         open: false,
         message: '',
+    });
+
+    const [modalWarning, setModalWarning] = useState({
+        message: '',
+        open: false,
     });
 
     const [openTour, setOpenTour] = useState(true);
@@ -205,48 +211,83 @@ const HistoryPage = () => {
         reason,
         requestDate
     ) => {
-        try {
-            setLoading(true);
+        if (checkDate(actualFromDate, actualToDate)) {
+            try {
+                setLoading(true);
 
-            const response = await createConnection(accessToken).put(
-                `/leave/list/history/request-edit/${id}`,
-                {
-                    userName,
-                    department,
-                    actualLeaveTypeId,
-                    actualLeaveType,
-                    actualLeaveDay,
-                    actualFromDate,
-                    actualToDate,
-                    bookLeaveType,
-                    bookLeaveDay,
-                    bookFromDate,
-                    bookToDate,
-                    reason,
-                    requestDate,
-                }
-            );
+                const response = await createConnection(accessToken).put(
+                    `/leave/list/history/request-edit/${id}`,
+                    {
+                        userName,
+                        department,
+                        actualLeaveTypeId,
+                        actualLeaveType,
+                        actualLeaveDay,
+                        actualFromDate: dayjs(actualFromDate).format('YYYY-MM-DD HH:mm'),
+                        actualToDate: dayjs(actualToDate).format('YYYY-MM-DD HH:mm'),
+                        bookLeaveType,
+                        bookLeaveDay,
+                        bookFromDate: dayjs(bookFromDate).format('YYYY-MM-DD HH:mm'),
+                        bookToDate: dayjs(bookToDate).format('YYYY-MM-DD HH:mm'),
+                        reason,
+                        requestDate,
+                    }
+                );
 
-            setModalEdit({ open: false });
+                setModalEdit({ open: false });
 
-            setModalSuccess({
+                setModalSuccess({
+                    message: (
+                        <Text style={{ textAlign: 'center' }}>
+                            Đã gửi yêu cầu lên cấp trên
+                            <br />
+                            <b>{response.data.receiver}</b>
+                            <br />
+                            qua <b>Zalo</b>
+                        </Text>
+                    ),
+                    open: true,
+                });
+
+                getHistory();
+            } catch (error) {
+                setModalError({ error, open: true });
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            setModalWarning({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
-                        Đã gửi yêu cầu lên cấp trên
-                        <br />
-                        <b>{response.data.receiver}</b>
-                        <br />
-                        qua <b>Zalo</b>
+                        <ul>
+                            <li>
+                                Ngày/ giờ kết thúc phải <b>lớn hơn</b>
+                                <br />
+                                ngày/ giờ bắt đầu!
+                            </li>
+                            <li>
+                                Giờ bắt đầu & kết thúc phải
+                                <br />
+                                nằm trong khoảng từ
+                                <br />
+                                <b>07:30</b> đến <b>16:30</b>
+                            </li>
+                            <li>
+                                Giờ bắt đầu của bạn là:{' '}
+                                <Text strong type="danger">
+                                    {dayjs(bookFromDate).format('HH:mm')}
+                                </Text>
+                                <br />
+                                Giờ kết thúc của bạn là:{' '}
+                                <Text strong type="danger">
+                                    {dayjs(bookToDate).format('HH:mm')}
+                                </Text>
+                            </li>
+                        </ul>
                     </Text>
                 ),
                 open: true,
             });
-
-            getHistory();
-        } catch (error) {
-            setModalError({ error, open: true });
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -422,8 +463,8 @@ const HistoryPage = () => {
                     ellipsis: true,
                     render: (_, record) => {
                         if (
-                            record.bookLeaveTypeId !== record.actualLeaveTypeId &&
-                            record.actualLeaveTypeId
+                            record.actualLeaveTypeId &&
+                            record.bookLeaveTypeId !== record.actualLeaveTypeId
                         ) {
                             if (record.managerApprovedLeaveType)
                                 return (
@@ -463,10 +504,10 @@ const HistoryPage = () => {
                     ellipsis: true,
                     render: (_, record) => {
                         if (
-                            record.bookLeaveDay !== record.actualLeaveDay &&
-                            record.bookFromDate !== record.actualFromDate &&
-                            record.bookToDate !== record.actualToDate &&
-                            record.actualLeaveDay
+                            record.actualLeaveDay &&
+                            (record.bookLeaveDay !== record.actualLeaveDay ||
+                                record.bookFromDate !== record.actualFromDate ||
+                                record.bookToDate !== record.actualToDate)
                         ) {
                             if (record.managerApprovedLeaveDay)
                                 return (
@@ -678,6 +719,11 @@ const HistoryPage = () => {
                 onOk={() => setModalSuccess({ open: false })}
                 open={modalSuccess.open}
                 message={modalSuccess.message}
+            />
+            <ModalWarningComponent
+                onOk={() => setModalWarning({ open: false })}
+                open={modalWarning.open}
+                message={modalWarning.message}
             />
             <Tour
                 arrow

@@ -12,7 +12,7 @@ import {
     ModalWarningComponent,
 } from '../components';
 
-import { createConnection } from '../utils';
+import { checkDate, createConnection } from '../utils';
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -134,50 +134,42 @@ const HomePage = () => {
     const onFinish = values => {
         const { bookFromDate, bookToDate } = values;
 
-        if (bookFromDate <= bookToDate) {
-            if (
-                dayjs(bookFromDate).hour() >= 7 &&
-                dayjs(bookFromDate).minute() >= 30 &&
-                dayjs(bookToDate).hour() <= 16 &&
-                dayjs(bookToDate).minute() <= 30
-            ) {
-                insertData({
-                    ...values,
-                    bookLeaveType: leaveType.find(l => l.id === values.bookLeaveTypeId)?.nameVN,
-                    bookFromDate: dayjs(bookFromDate).format('YYYY-MM-DD HH:mm'),
-                    bookToDate: dayjs(bookToDate).format('YYYY-MM-DD HH:mm'),
-                });
-            } else {
-                setModalWarning({
-                    message: (
-                        <Text style={{ textAlign: 'center' }}>
-                            Giờ bắt đầu & kết thúc phải
-                            <br />
-                            nằm trong khoảng từ
-                            <br />
-                            <b>07:30</b> đến <b>16:30</b>
-                            <br />
-                            Giờ bắt đầu của bạn là:{' '}
-                            <Text strong type="danger">
-                                {dayjs(bookFromDate).format('HH:mm')}
-                            </Text>
-                            <br />
-                            Giờ kết thúc của bạn là:{' '}
-                            <Text strong type="danger">
-                                {dayjs(bookToDate).format('HH:mm')}
-                            </Text>
-                        </Text>
-                    ),
-                    open: true,
-                });
-            }
+        if (checkDate(bookFromDate, bookToDate)) {
+            insertData({
+                ...values,
+                bookLeaveType: leaveType.find(l => l.id === values.bookLeaveTypeId)?.nameVN,
+                bookFromDate: dayjs(bookFromDate).format('YYYY-MM-DD HH:mm'),
+                bookToDate: dayjs(bookToDate).format('YYYY-MM-DD HH:mm'),
+            });
         } else {
             setModalWarning({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
-                        Ngày/ giờ kết thúc phải <b>lớn hơn</b>
-                        <br />
-                        ngày/ giờ bắt đầu!
+                        <ul>
+                            <li>
+                                Ngày/ giờ kết thúc phải <b>lớn hơn</b>
+                                <br />
+                                ngày/ giờ bắt đầu!
+                            </li>
+                            <li>
+                                Giờ bắt đầu & kết thúc phải
+                                <br />
+                                nằm trong khoảng từ
+                                <br />
+                                <b>07:30</b> đến <b>16:30</b>
+                            </li>
+                            <li>
+                                Giờ bắt đầu của bạn là:{' '}
+                                <Text strong type="danger">
+                                    {dayjs(bookFromDate).format('HH:mm')}
+                                </Text>
+                                <br />
+                                Giờ kết thúc của bạn là:{' '}
+                                <Text strong type="danger">
+                                    {dayjs(bookToDate).format('HH:mm')}
+                                </Text>
+                            </li>
+                        </ul>
                     </Text>
                 ),
                 open: true,

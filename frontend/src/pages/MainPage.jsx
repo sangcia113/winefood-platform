@@ -1,6 +1,6 @@
-import { PhoneFilled } from '@ant-design/icons';
-import { Button, Card, Flex, Space } from 'antd';
 import { Link } from 'react-router-dom';
+import { PhoneFilled } from '@ant-design/icons';
+import { Button, Card, Flex } from 'antd';
 
 const MainPage = () => (
     <Flex
@@ -11,18 +11,23 @@ const MainPage = () => (
         <Card
             actions={[
                 <Link onClick={() => window.open('https://zalo.me/0972868740', '_blank')}>
-                    <PhoneFilled style={{ color: '#f50' }} /> Mr.Sang - 0972868740
+                    Mr.Sang - 0972868740 <PhoneFilled style={{ color: '#f50' }} />
                 </Link>,
             ]}
+            title={<Flex justify="center">PHẦN MỀM NỘI BỘ</Flex>}
+            style={{ width: 300 }}
         >
-            <Space align="center" direction="vertical">
+            <Flex align="center" gap={16} justify="center" vertical>
                 <Link to={'/nghiphep'}>
-                    <Button type="primary">Phần mềm nghỉ phép</Button>
+                    <Button style={{ color: '#1d39c4' }}>Xin nghỉ phép</Button>
+                </Link>
+                <Link to={'/pheduyet'}>
+                    <Button style={{ color: '#c41d7f' }}>Xin phê duyệt</Button>
                 </Link>
                 <Link to={'/vesinh'}>
-                    <Button type="primary">Phần mềm chấm điểm vệ sinh</Button>
+                    <Button style={{ color: '#13c2c2' }}>Chấm điểm vệ sinh</Button>
                 </Link>
-            </Space>
+            </Flex>
         </Card>
     </Flex>
 );

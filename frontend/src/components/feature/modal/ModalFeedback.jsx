@@ -80,6 +80,7 @@ const ModalFeedback = ({ afterClose, loading, onCancel, onOk, open, form, onFini
                     </Text>
                 }
                 name="fileList"
+                valuePropName="fileList"
             >
                 <Upload accept="image/png, image/jpeg" beforeUpload={true} multiple>
                     <Button icon={<UploadOutlined />} style={{ border: 0 }}>

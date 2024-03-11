@@ -7,25 +7,17 @@ const { TextArea } = Input;
 const { Item } = Form;
 const { Text } = Typography;
 
-const ModalFeedback = ({ onClick, loading, open, onFinish }) => (
+const ModalFeedback = ({ afterClose, loading, onCancel, onOk, open, form, onFinish }) => (
     <Modal
+        afterClose={afterClose}
+        cancelButtonProps={{ style: { borderRadius: 20 } }}
+        cancelText="Hủy Bỏ"
         centered
         closeIcon={false}
-        footer={() => (
-            <div>
-                <Button onClick={onClick} style={{ borderRadius: 20 }}>
-                    Hủy Bỏ
-                </Button>
-                <Button
-                    htmlType="submit"
-                    loading={loading}
-                    type="primary"
-                    style={{ borderRadius: 20 }}
-                >
-                    Đồng Ý
-                </Button>
-            </div>
-        )}
+        okButtonProps={{ loading, style: { borderRadius: 20 } }}
+        okText="Đồng Ý"
+        onCancel={onCancel}
+        onOk={onOk}
         open={open}
         title={
             <Space direction="vertical" size="large">
@@ -43,6 +35,7 @@ const ModalFeedback = ({ onClick, loading, open, onFinish }) => (
     >
         <Form
             colon={false}
+            form={form}
             labelAlign={'left'}
             labelCol={{
                 xs: { span: 24 },

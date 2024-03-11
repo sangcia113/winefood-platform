@@ -151,7 +151,6 @@ const UserPage = () => {
 
             getZaloAPIInfo();
         } catch (error) {
-            console.log(error);
             setModalError({ error, open: true });
         } finally {
             setLoading(false);
@@ -189,6 +188,8 @@ const UserPage = () => {
                 message: response.data.message,
                 open: true,
             });
+
+            getZaloAPIInfo();
         } catch (error) {
             setModalError({ error, open: true });
         } finally {
@@ -387,6 +388,7 @@ const UserPage = () => {
             dataIndex: 'password',
             key: 'password',
             ellipsis: true,
+            render: record => (record.length > 10 ? `${record.slice(0, 10)}.....` : record),
         },
         {
             title: 'Số điện thoại',
@@ -611,10 +613,10 @@ const UserPage = () => {
 
     const itemsBreadcrumb = [
         {
-            title: <Link to="/">Home</Link>,
+            title: <Link to="/nghiphep">Home</Link>,
         },
         {
-            title: <Link to="/user">User</Link>,
+            title: <Link to="/nghiphep/user">User</Link>,
         },
     ];
 

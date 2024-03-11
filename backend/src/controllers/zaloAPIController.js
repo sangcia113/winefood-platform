@@ -7,7 +7,8 @@ const {
     created,
     requestUserInfo,
     getProfile,
-    updatedUser,
+    updatedNumberPhone,
+    updatedSendRequest,
 } = require('../services/zaloAPIService');
 const { readedInfoSuperior, readedInfoManager } = require('../services/userService');
 const {
@@ -35,6 +36,33 @@ const zaloAPIController = {
             res.status(500).json({
                 error: -1001,
                 message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
+        }
+    },
+
+    requestUserInfo: async (req, res) => {
+        const { id } = req.params;
+
+        if (!id)
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
+
+        try {
+            const response = await requestUserInfo(id);
+
+            if (response.data.error === 0) {
+                await updatedSendRequest(id);
+
+                res.status(200).json({
+                    error: 0,
+                    message: 'Đã gửi yêu cầu cung cấp thông tin đến người dùng qua Zalo!',
+                });
+            } else {
+                res.status(400).json(response.data);
+            }
+        } catch (error) {
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },
@@ -75,31 +103,6 @@ const zaloAPIController = {
         }
     },
 
-    requestUserInfo: async (req, res) => {
-        const { id } = req.params;
-
-        if (!id)
-            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
-
-        try {
-            const response = await requestUserInfo(id);
-
-            if (response.data.error === 0) {
-                res.status(200).json({
-                    error: 0,
-                    message: 'Đã gửi yêu cầu cung cấp thông tin đến người dùng qua Zalo!',
-                });
-            } else {
-                res.status(400).json(response.data);
-            }
-        } catch (error) {
-            res.status(500).json({
-                error: -1000,
-                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
-            });
-        }
-    },
-
     getProfile: async (req, res) => {
         const { id } = req.params;
 
@@ -121,7 +124,7 @@ const zaloAPIController = {
                     message: 'Người dùng chưa chia sẻ thông tin với Wine Food!',
                 });
 
-            await updatedUser(shared_info.phone);
+            await updatedNumberPhone(shared_info.phone);
 
             res.status(200).json({
                 error: 0,

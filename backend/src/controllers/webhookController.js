@@ -7,7 +7,7 @@ const webhookController = {
         const { def_top_name, report_remarks1 } = req.body;
 
         if (!(def_top_name && report_remarks1))
-            return res.status(400).json('Không có dữ liệu đầu vào!');
+            return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
 
         try {
             const zaloAPIText = messageWebhookIReporter(language, def_top_name, report_remarks1);
@@ -28,7 +28,11 @@ const webhookController = {
         webhookController.iReporter(req, res, 'jp', '1337604619804588121'),
 
     // TRUYEN
-    iReporterManager: async (req, res) =>
+    iReporterHCTHManager: async (req, res) =>
+        webhookController.iReporter(req, res, 'vn', '5227519945749166402'),
+
+    // TRUYEN
+    iReporterQLSXManager: async (req, res) =>
         webhookController.iReporter(req, res, 'vn', '637017525950997790'),
 
     // RANG

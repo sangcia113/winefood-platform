@@ -1105,10 +1105,10 @@ const ManagerPage = () => {
 
     const itemsBreadcrumb = [
         {
-            title: <Link to="/">Home</Link>,
+            title: <Link to="/nghiphep">Home</Link>,
         },
         {
-            title: <Link to="/manager">Manager</Link>,
+            title: <Link to="/nghiphep/manager">Manager</Link>,
         },
     ];
 

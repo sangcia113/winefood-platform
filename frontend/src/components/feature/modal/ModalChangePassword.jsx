@@ -7,7 +7,7 @@ const { Password } = Input;
 const { Text } = Typography;
 const { Item } = Form;
 
-const ModalChangePassword = ({ afterClose, form, loading, onCancel, onOk, open, onFinish }) => (
+const ModalChangePassword = ({ afterClose, loading, onCancel, onOk, open, form, onFinish }) => (
     <Modal
         afterClose={afterClose}
         cancelButtonProps={{ style: { borderRadius: 20 } }}

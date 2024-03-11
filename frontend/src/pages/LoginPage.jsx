@@ -41,7 +41,7 @@ const LoginPage = () => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        if (checkToken()) return navigate('/');
+        if (checkToken()) return navigate('/nghiphep');
     }, []);
 
     const onFinish = async values => {
@@ -54,7 +54,7 @@ const LoginPage = () => {
                 sessionStorage.setItem('accessToken', response.data.accessToken);
             }
 
-            navigate('/');
+            navigate('/nghiphep');
         } catch (error) {
             const errorCode = error?.response?.data?.error;
 

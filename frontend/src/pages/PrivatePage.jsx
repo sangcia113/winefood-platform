@@ -11,7 +11,7 @@ import { NotAuthorizedPage } from './';
 const PrivatePage = ({ roles, children }) => {
     console.log('Run PrivatePage...');
 
-    if (!checkToken()) return <Navigate to="/login" />;
+    if (!checkToken()) return <Navigate to="/nghiphep/login" />;
 
     const { userName, roleId } = checkToken();
 

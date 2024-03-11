@@ -2,7 +2,8 @@ const router = require('express').Router();
 
 const {
     iReporterBOD,
-    iReporterManager,
+    iReporterQLSXManager,
+    iReporterHCTHManager,
     iReporterChief,
     iReporterQCLeader,
     iReporterBOTLeader,
@@ -15,7 +16,10 @@ const {
 router.post('/ireporter/bod', iReporterBOD);
 
 // End point POST for iReporter
-router.post('/ireporter/manager', iReporterManager);
+router.post('/ireporter/hcth/manager', iReporterHCTHManager);
+
+// End point POST for iReporter
+router.post('/ireporter/qlsx/manager', iReporterQLSXManager);
 
 // End point POST for iReporter
 router.post('/ireporter/chief', iReporterChief);

@@ -19,7 +19,7 @@ const NotAuthorizedPage = () => {
                 </>
             }
             extra={
-                <Button type="primary" onClick={() => navigate('/')}>
+                <Button type="primary" onClick={() => navigate('/nghiphep')}>
                     Trang chủ
                 </Button>
             }

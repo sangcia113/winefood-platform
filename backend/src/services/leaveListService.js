@@ -61,7 +61,7 @@ const leaveListService = {
                     DESC`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
-        const [results] = await db.query(sql, userId);
+        const [results] = await db.query(sql, [userId]);
 
         return results;
     },
@@ -99,7 +99,7 @@ const leaveListService = {
                     DESC`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
-        const [results] = await db.query(sql, userId);
+        const [results] = await db.query(sql, [userId]);
 
         return results;
     },
@@ -272,7 +272,7 @@ const leaveListService = {
                     WHERE
                         l.deleted IS NULL 
                     AND
-                        CURDATE() BETWEEN bookFromDate AND bookToDate
+                        CURDATE() BETWEEN DATE(bookFromDate) AND DATE(bookToDate)
                     AND (
                         superiorId IN (SELECT id FROM user WHERE roleId IN (2, 3))
                         OR leaderApproved = 1 )  

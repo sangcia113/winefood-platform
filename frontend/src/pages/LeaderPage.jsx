@@ -118,7 +118,7 @@ const LeaderPage = () => {
             setModalSuccess({
                 message: (
                     <Text style={{ textAlign: 'center' }}>
-                        Đã gửi yêu cầu lên cấp trên
+                        Đã chuyển tiếp yêu cầu lên cấp trên
                         <br />
                         <b>{response.data.receiver}</b>
                         <br />
@@ -546,10 +546,10 @@ const LeaderPage = () => {
 
     const itemsBreadcrumb = [
         {
-            title: <Link to="/">Home</Link>,
+            title: <Link to="/nghiphep">Home</Link>,
         },
         {
-            title: <Link to="/leader">Leader</Link>,
+            title: <Link to="/nghiphep/leader">Leader</Link>,
         },
     ];
 

@@ -52,7 +52,7 @@ const items = [
 const SiderComponent = ({ defaultOpenKeys, defaultSelectedKeys }) => {
     const navigate = useNavigate();
 
-    const handleMenuClick = useCallback(e => navigate(`./${e.key}`), [navigate]);
+    const handleMenuClick = useCallback(e => navigate(`/nghiphep/${e.key}`), [navigate]);
 
     return (
         <Sider breakpoint="xxl" collapsible collapsedWidth="0" theme="light" width="270">

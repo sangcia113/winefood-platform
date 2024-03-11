@@ -663,10 +663,10 @@ const HistoryPage = () => {
 
     const itemsBreadcrumb = [
         {
-            title: <Link to="/">Home</Link>,
+            title: <Link to="/nghiphep">Home</Link>,
         },
         {
-            title: <Link to="/history">History</Link>,
+            title: <Link to="/nghiphep/history">History</Link>,
         },
     ];
 

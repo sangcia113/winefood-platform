@@ -65,7 +65,7 @@ const zaloAPIService = {
         await db.query(sql, [accessToken, refreshToken, new Date()]);
     },
 
-    updatedUser: async (zaloNumberPhone, zaloUserId) => {
+    updatedNumberPhone: async (zaloNumberPhone, zaloUserId) => {
         // Truy vấn SQL để cập nhật
         const sql = `UPDATE 
                         user
@@ -76,6 +76,19 @@ const zaloAPIService = {
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [zaloNumberPhone, zaloUserId]);
+    },
+
+    updatedSendRequest: async zaloUserId => {
+        // Truy vấn SQL để cập nhật
+        const sql = `UPDATE
+                        user
+                    SET
+                        sendRequest = sendRequest + 1
+                    WHERE
+                        zaloUserId = ?`;
+
+        // Thực hiện truy vấn SQL với các giá trị tham số
+        await db.query(sql, [zaloUserId]);
     },
 
     getFollower: async offset => {
@@ -136,7 +149,7 @@ const zaloAPIService = {
         const config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'https://openapi.zalo.me/v3.0/oa/message/cs',
+            url: process.env.ZALO_API_URL,
             headers: {
                 'Content-Type': 'application/json',
                 access_token: accessToken,

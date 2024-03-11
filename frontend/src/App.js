@@ -6,6 +6,7 @@ import {
     HomePage,
     LeaderPage,
     LoginPage,
+    MainPage,
     ManagerPage,
     NotExistedPage,
     PrivatePage,
@@ -29,9 +30,10 @@ const App = () => {
             >
                 <Routes>
                     <Route path="*" element={<NotExistedPage />} />
-                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/" element={<MainPage />} />
+                    <Route path="/nghiphep/login" element={<LoginPage />} />
                     <Route
-                        path="/"
+                        path="/nghiphep"
                         element={
                             <PrivatePage roles={[1, 2, 3, 4, 5, 6]}>
                                 <HomePage />
@@ -39,7 +41,7 @@ const App = () => {
                         }
                     />
                     <Route
-                        path="/history"
+                        path="/nghiphep/history"
                         element={
                             <PrivatePage roles={[1, 2, 3, 4, 5, 6]}>
                                 <HistoryPage />
@@ -47,7 +49,7 @@ const App = () => {
                         }
                     />
                     <Route
-                        path="/leader"
+                        path="/nghiphep/leader"
                         element={
                             <PrivatePage roles={[1, 2, 3, 4, 5]}>
                                 <LeaderPage />
@@ -55,7 +57,7 @@ const App = () => {
                         }
                     />
                     <Route
-                        path="/manager"
+                        path="/nghiphep/manager"
                         element={
                             <PrivatePage roles={[1, 2, 3, 4]}>
                                 <ManagerPage />
@@ -63,7 +65,7 @@ const App = () => {
                         }
                     />
                     <Route
-                        path="/user"
+                        path="/nghiphep/user"
                         element={
                             <PrivatePage roles={[1, 2, 3, 4]}>
                                 <UserPage />

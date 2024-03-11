@@ -14,6 +14,7 @@ import {
 
 import { checkDate, createConnection } from '../utils';
 
+const { Item } = Form;
 const { TextArea } = Input;
 const { Text } = Typography;
 
@@ -179,7 +180,7 @@ const HomePage = () => {
 
     const itemsBreadcrumb = [
         {
-            title: <Link to="/">Home</Link>,
+            title: <Link to="/nghiphep">Home</Link>,
         },
     ];
 
@@ -244,7 +245,7 @@ const HomePage = () => {
                     </Select>
                 </Form.Item> */}
 
-                <Form.Item
+                <Item
                     label={
                         <Text>
                             <Text strong>LOẠI PHÉP</Text>
@@ -271,9 +272,9 @@ const HomePage = () => {
                             </Select.Option>
                         ))}
                     </Select>
-                </Form.Item>
+                </Item>
 
-                <Form.Item
+                <Item
                     label={
                         <Text>
                             <Text strong>SỐ NGÀY XIN NGHỈ</Text>
@@ -298,9 +299,9 @@ const HomePage = () => {
                         step={0.25}
                         style={{ width: '100%' }}
                     />
-                </Form.Item>
+                </Item>
 
-                <Form.Item
+                <Item
                     label={
                         <Text>
                             <Text strong>TỪ</Text>
@@ -327,9 +328,9 @@ const HomePage = () => {
                         size={'large'}
                         style={{ width: '100%' }}
                     />
-                </Form.Item>
+                </Item>
 
-                <Form.Item
+                <Item
                     label={
                         <Text>
                             <Text strong>ĐẾN</Text>
@@ -356,9 +357,9 @@ const HomePage = () => {
                         size={'large'}
                         style={{ width: '100%' }}
                     />
-                </Form.Item>
+                </Item>
 
-                <Form.Item
+                <Item
                     label={
                         <Text>
                             <Text strong>LÝ DO</Text>
@@ -382,7 +383,7 @@ const HomePage = () => {
                         size={'large'}
                         style={{ width: '100%' }}
                     />
-                </Form.Item>
+                </Item>
             </Form>
             <Flex justify="center" style={{ margin: '30px 0 24px 0' }}>
                 <Button onClick={() => form.submit()} size={'large'} type={'primary'}>

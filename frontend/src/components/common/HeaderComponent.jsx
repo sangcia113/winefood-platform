@@ -111,7 +111,7 @@ const HeaderComponent = ({ name }) => {
     const ref3 = useRef(null);
 
     const [form] = Form.useForm();
-    const [formFeedback] = new FormData();
+    const [formFeedback] = Form.useForm();
 
     const accessToken =
         localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
@@ -159,13 +159,32 @@ const HeaderComponent = ({ name }) => {
     };
 
     const feedback = async ({ feedback, fileList }) => {
-        formFeedback.append('feedBack', feedback);
-        formFeedback.append('fileList', fileList);
-
         try {
-            console.log(formFeedback);
+            setLoading(true);
+
+            const formData = new FormData();
+
+            formData.append('feedback', feedback);
+            fileList.fileList.forEach(file => {
+                formData.append('fileList', file.originFileObj);
+            });
+
+            const response = await createConnection(accessToken).post('/leave/feedback', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            setModalFeedback({ open: false });
+
+            setModalSuccess({
+                message: response?.data?.message,
+                open: true,
+            });
         } catch (error) {
-            console.log(error);
+            setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -183,7 +202,7 @@ const HeaderComponent = ({ name }) => {
                         style={{ cursor: 'pointer', fontSize: 36 }}
                     />
                 </div>
-                <Link ref={ref2} to="/">
+                <Link ref={ref2} to="/nghiphep">
                     <Image alt="Logo WineFood" preview={false} src={imgSrc} width={240} />
                 </Link>
                 {name && (
@@ -202,14 +221,13 @@ const HeaderComponent = ({ name }) => {
                                         });
                                     },
                                 },
-
                                 {
                                     key: 'feedback',
                                     label: 'Góp ý - Báo lỗi',
                                     icon: <ChatFill size={18} />,
                                     onClick: () =>
                                         setModalFeedback({
-                                            onFinish: values => console.log(values),
+                                            onFinish: values => feedback(values),
                                             open: true,
                                         }),
                                 },
@@ -226,7 +244,7 @@ const HeaderComponent = ({ name }) => {
                                     onClick: () => {
                                         sessionStorage.removeItem('accessToken');
                                         localStorage.removeItem('accessToken');
-                                        navigate('/login');
+                                        navigate('/nghiphep/login');
                                     },
                                 },
                             ],
@@ -259,7 +277,7 @@ const HeaderComponent = ({ name }) => {
                     // Nếu navigate ./ thì sẽ đi vào route con
                     onClick={e => {
                         setOpenDraw(prevState => !prevState);
-                        navigate(`/${e.key}`);
+                        navigate(`/nghiphep/${e.key}`);
                     }}
                 />
             </Drawer>
@@ -345,8 +363,11 @@ const HeaderComponent = ({ name }) => {
                 message={modalErrorOther.message}
             />
             <ModalFeedback
+                afterClose={() => formFeedback.resetFields()}
+                form={formFeedback}
                 loading={loading}
-                onClick={() => setModalFeedback({ open: false })}
+                onCancel={() => setModalFeedback({ open: false })}
+                onOk={() => formFeedback.submit()}
                 open={modalFeedback.open}
                 onFinish={modalFeedback.onFinish}
             />

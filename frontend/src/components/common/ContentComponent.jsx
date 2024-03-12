@@ -8,10 +8,10 @@ const ContentComponent = ({ loading, items, children }) => (
     <Spin spinning={loading} tip="Vui lòng đợi...">
         <Content
             style={{
-                padding: 4,
                 backgroundImage: `url(${require('../../assets/images/bg24.jpg')})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
+                padding: 4,
             }}
         >
             <Breadcrumb items={items} style={{ margin: 22 }} />

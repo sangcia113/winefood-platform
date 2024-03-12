@@ -1,16 +1,16 @@
 const db = require('../configs/databaseConfig');
 
 const feedbackService = {
-    createdWithFile: async (userId, feedback, fileLocation) => {
+    createdWithFile: async (userId, feedback, fileName) => {
         const sql = `INSERT INTO 
                         feedback (
                             userId,
                             feedback,
-                            fileLocation,
+                            fileName,
                             createdDate
                         ) VALUES ?`;
 
-        const data = fileLocation.map(item => [userId, feedback, item, new Date()]);
+        const data = fileName.map(item => [userId, feedback, item, new Date()]);
 
         await db.query(sql, [data]);
     },

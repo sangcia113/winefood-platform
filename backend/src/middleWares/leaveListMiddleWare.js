@@ -45,7 +45,7 @@ const leaveListMiddleWare = {
 
             if (results.length > 0)
                 return res.status(400).json({
-                    error: -904,
+                    error: -1050,
                     message: 'Đơn xin nghỉ phép của bạn đã tồn tại trong hệ thống!',
                 });
 
@@ -68,7 +68,7 @@ const leaveListMiddleWare = {
 
             if (results[0].leaderApproved === 1)
                 return res.status(400).json({
-                    error: 908,
+                    error: -1051,
                     message: 'Bạn đã phê duyệt yêu cầu nghỉ phép này!',
                 });
 
@@ -99,7 +99,7 @@ const leaveListMiddleWare = {
             if (results[0].leaderApproved === 0)
                 return res
                     .status(400)
-                    .json({ error: 909, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
+                    .json({ error: -1052, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
 
             next();
         } catch (error) {
@@ -120,7 +120,7 @@ const leaveListMiddleWare = {
 
             if (results[0].managerApproved === 1)
                 return res.status(400).json({
-                    error: 908,
+                    error: -1051,
                     message: 'Bạn đã phê duyệt yêu cầu nghỉ phép này!',
                 });
 
@@ -151,7 +151,7 @@ const leaveListMiddleWare = {
             if (results[0].managerApproved === 0)
                 return res
                     .status(400)
-                    .json({ error: 909, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
+                    .json({ error: -1052, message: 'Bạn đã từ chối yêu cầu nghỉ phép này!' });
 
             next();
         } catch (error) {
@@ -172,7 +172,7 @@ const leaveListMiddleWare = {
 
             if (!results[0].actualLeaveTypeID || results[0].managerApprovedLeaveType)
                 return res.status(400).json({
-                    error: 908,
+                    error: -1053,
                     message:
                         'Không có yêu cầu điều chỉnh loại nghỉ phép thực tế.\nBạn đã xác nhận điều chỉnh loại nghỉ phép thực tế này.',
                 });
@@ -196,7 +196,7 @@ const leaveListMiddleWare = {
 
             if (!results[0].actualLeaveDay || results[0].managerApprovedLeaveDay)
                 return res.status(400).json({
-                    error: 908,
+                    error: -1054,
                     message:
                         'Không có yêu cầu điều chỉnh số ngày nghỉ phép thực tế.\nBạn đã xác nhận điều chỉnh số ngày nghỉ phép thực tế này.',
                 });
@@ -220,7 +220,7 @@ const leaveListMiddleWare = {
 
             if (!results[0].deleteRequest || results[0].managerApprovedDelete)
                 return res.status(400).json({
-                    error: 908,
+                    error: -1055,
                     message: 'Không có yêu cầu hủy phép.\nBạn đã xác nhận hủy phép này.',
                 });
 

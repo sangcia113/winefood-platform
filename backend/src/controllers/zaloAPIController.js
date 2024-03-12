@@ -164,7 +164,7 @@ const zaloAPIController = {
                 reason
             );
 
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3(superiorZaloUserID, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -213,7 +213,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -264,7 +264,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3(superiorZaloUserID, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -311,7 +311,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -361,7 +361,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -409,7 +409,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -457,7 +457,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -505,7 +505,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -556,7 +556,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -613,7 +613,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3('8851502365121811999', zaloAPIText);
+            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({

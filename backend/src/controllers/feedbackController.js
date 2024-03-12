@@ -10,15 +10,14 @@ const feedbackController = {
             return res.status(400).json({ error: -1002, message: 'Dữ liệu đầu vào không hợp lệ!' });
 
         if (req.files && req.files.length > 0) {
-            const newPath = req.files.map(item => item.path);
+            const filename = req.files.map(item => item.filename);
 
-            await createdWithFile(userId, feedback, newPath);
+            await createdWithFile(userId, feedback, filename);
 
             res.status(200).json({ error: 0, message: 'Gửi phản hồi thành công!' });
         } else {
             try {
                 await createdNoFile(userId, feedback);
-
                 res.status(200).json({ error: 0, message: 'Gửi phản hồi thành công!' });
             } catch (error) {
                 res.status(500).json({

@@ -11,7 +11,6 @@ import {
     Dropdown,
     Flex,
     Form,
-    QRCode,
     Space,
     Table,
     Tabs,
@@ -223,6 +222,8 @@ const ManagerPage = () => {
             setModalConfirm({ open: false });
 
             setModalError({ open: true, error });
+
+            getManager();
         }
     };
 
@@ -275,6 +276,8 @@ const ManagerPage = () => {
             setModalReason({ open: false });
 
             setModalError({ open: true, error });
+
+            getManager();
         }
     };
 
@@ -325,6 +328,8 @@ const ManagerPage = () => {
             setModalConfirm({ open: false });
 
             setModalError({ open: true, error });
+
+            getManager();
         }
     };
 
@@ -375,6 +380,8 @@ const ManagerPage = () => {
             setModalConfirm({ open: false });
 
             setModalError({ open: true, error });
+
+            getManager();
         }
     };
 
@@ -425,6 +432,8 @@ const ManagerPage = () => {
             setModalConfirm({ open: false });
 
             setModalError({ open: true, error });
+
+            getManager();
         }
     };
 

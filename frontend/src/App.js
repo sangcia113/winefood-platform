@@ -51,7 +51,7 @@ const App = () => {
                     <Route
                         path="/nghiphep/leader"
                         element={
-                            <PrivatePage roles={[1, 2, 3, 4, 5]}>
+                            <PrivatePage roles={[1, 2, 3, 5]}>
                                 <LeaderPage />
                             </PrivatePage>
                         }

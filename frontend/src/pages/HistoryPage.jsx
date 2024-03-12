@@ -366,12 +366,17 @@ const HistoryPage = () => {
                                 label: 'Hủy phép',
                                 icon: <StopFilled />,
                                 onClick: () => {
-                                    if (record.deleteRequest) {
+                                    if (
+                                        record.deleteRequest ||
+                                        record.leaderApproved === 0 ||
+                                        record.managerApproved === 0
+                                    ) {
                                         setModalErrorOther({
                                             message: (
                                                 <ul>
                                                     <li>
-                                                        <b>Bạn đã tự huỷ</b> yêu cầu nghỉ phép này.
+                                                        <b>Leader/ Manager đã từ chối</b> yêu cầu
+                                                        nghỉ phép này.
                                                     </li>
                                                     <li>
                                                         <b>Bạn đã yêu cầu hủy</b> yêu cầu nghỉ phép
@@ -407,7 +412,6 @@ const HistoryPage = () => {
                                             message: (
                                                 <Space direction="vertical" align="center">
                                                     Bạn có chắc huỷ yêu cầu nghỉ phép này không?
-                                                    <b>{record.userName}</b>
                                                 </Space>
                                             ),
                                             onOk: () => cancelLeave(record.id),

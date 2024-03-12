@@ -4,11 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Card, Checkbox, Flex, Form, Input, Layout, Space, Typography } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
-import {
-    ModalConfirmComponent,
-    ModalErrorComponent,
-    ModalErrorOtherComponent,
-} from '../components';
+import { ModalConfirmComponent, ModalErrorComponent } from '../components';
 
 import { checkToken, createConnection } from '../utils';
 
@@ -32,12 +28,6 @@ const LoginPage = () => {
         error: '',
     });
 
-    const [modalErrorOther, setModalErrorOther] = useState({
-        open: false,
-        title: '',
-        message: '',
-    });
-
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -56,43 +46,7 @@ const LoginPage = () => {
 
             navigate('/nghiphep');
         } catch (error) {
-            const errorCode = error?.response?.data?.error;
-
-            if (errorCode === -1080) {
-                setModalErrorOther({
-                    message: (
-                        <Text>
-                            Tài khoản không tồn tại trong hệ thống!
-                            <br />
-                            Vui lòng liên hệ{' '}
-                            <Link href="https://zalo.me/0972868740" target="_blank">
-                                Mr.Sang
-                            </Link>{' '}
-                            để được hỗ trợ!
-                        </Text>
-                    ),
-                    open: true,
-                    title: 'THẤT BẠI',
-                });
-            } else if (errorCode === -1081) {
-                setModalErrorOther({
-                    message: (
-                        <Text>
-                            Sai mật khẩu
-                            <br />
-                            Vui lòng liên hệ{' '}
-                            <Link href="https://zalo.me/0972868740" target="_blank">
-                                Mr.Sang
-                            </Link>{' '}
-                            để được hỗ trợ!
-                        </Text>
-                    ),
-                    open: true,
-                    title: 'THẤT BẠI',
-                });
-            } else {
-                setModalError({ error, open: true });
-            }
+            setModalError({ error, open: true });
         }
     };
 
@@ -200,12 +154,6 @@ const LoginPage = () => {
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
                 error={modalError.error}
-            />
-            <ModalErrorOtherComponent
-                onOk={() => setModalErrorOther({ open: false })}
-                open={modalErrorOther.open}
-                title={modalErrorOther.title}
-                message={modalErrorOther.message}
             />
         </Layout>
     );

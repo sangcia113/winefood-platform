@@ -7,7 +7,6 @@ import { Button, DatePicker, Flex, Form, Input, InputNumber, Select, Typography 
 import {
     ContentComponent,
     ModalErrorComponent,
-    ModalErrorOtherComponent,
     ModalSuccessComponent,
     ModalWarningComponent,
 } from '../components';
@@ -28,12 +27,6 @@ const HomePage = () => {
     const [modalError, setModalError] = useState({
         error: '',
         open: false,
-    });
-
-    const [modalErrorOther, setModalErrorOther] = useState({
-        message: '',
-        open: false,
-        title: '',
     });
 
     const [modalSuccess, setModalSuccess] = useState({
@@ -86,47 +79,7 @@ const HomePage = () => {
                 open: true,
             });
         } catch (error) {
-            const errorCode = error?.response?.data?.error;
-
-            if (errorCode === -904) {
-                setModalErrorOther({
-                    open: true,
-                    title: 'THẤT BẠI',
-                    message: (
-                        <Text>
-                            Đơn xin nghỉ phép của bạn đã
-                            <br />
-                            <b>tồn tại trong hệ thống!</b>
-                            <br />
-                            Vui lòng liên hệ với <b>cấp trên</b> để được
-                            <br />
-                            phê duyệt!
-                        </Text>
-                    ),
-                });
-            } else if (errorCode === -230) {
-                setModalErrorOther({
-                    open: true,
-                    title: 'THẤT BẠI',
-                    message: (
-                        <Text>
-                            Gửi thông báo qua Zalo <b>thất bại!</b>
-                            <br />
-                            Do người dùng đã không <b>tương tác</b>
-                            <br />
-                            với <b>WineFood</b> trong vòng 7 ngày!
-                            <br />
-                            Tuy nhiên
-                            <br />
-                            Dữ liệu <b>đã được ghi vào hệ thống.</b>
-                            <br />
-                            Bạn có thể yên tâm!
-                        </Text>
-                    ),
-                });
-            } else {
-                setModalError({ open: true, error });
-            }
+            setModalError({ open: true, error });
         } finally {
             setLoading(false);
         }
@@ -394,12 +347,6 @@ const HomePage = () => {
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
                 error={modalError.error}
-            />
-            <ModalErrorOtherComponent
-                onOk={() => setModalErrorOther({ open: false })}
-                open={modalErrorOther.open}
-                title={modalErrorOther.title}
-                message={modalErrorOther.message}
             />
             <ModalSuccessComponent
                 onOk={() => setModalSuccess({ open: false })}

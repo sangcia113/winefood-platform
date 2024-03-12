@@ -8,6 +8,7 @@ const userService = {
         birthday,
         gender,
         numberPhone,
+        username,
         password,
         departmentId,
         superiorId,
@@ -21,12 +22,13 @@ const userService = {
                             birthday, 
                             gender, 
                             numberPhone, 
+                            username, 
                             password, 
                             departmentId, 
                             superiorId, 
                             roleId, 
                             createdDate) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
         await db.query(sql, [
@@ -35,6 +37,7 @@ const userService = {
             birthday,
             gender,
             numberPhone,
+            username,
             password,
             departmentId,
             superiorId,
@@ -249,7 +252,7 @@ const userService = {
                     AND `;
 
         if (code && numberPhone) {
-            sql += `code = ? 
+            sql += `u.code = ? 
                     AND 
                 numberPhone = ?`;
 

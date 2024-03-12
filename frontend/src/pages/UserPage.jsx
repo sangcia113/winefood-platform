@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-// Ant Design components
 import {
     Alert,
     Button,
@@ -38,7 +37,6 @@ import {
 
 import { createConnection, getUniqueName } from '../utils';
 
-// Ant Design Layout
 const { Password } = Input;
 const { Text } = Typography;
 
@@ -584,7 +582,7 @@ const UserPage = () => {
                 <Select allowClear placeholder="Chọn cấp trên">
                     {user.map(
                         item =>
-                            item.roleId !== 5 && (
+                            [2, 3, 5].includes(item.roleId) && (
                                 <Select.Option key={item.id} value={item.id}>
                                     {item.name}
                                 </Select.Option>

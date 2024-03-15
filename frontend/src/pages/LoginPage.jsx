@@ -46,6 +46,7 @@ const LoginPage = () => {
 
             navigate('/nghiphep');
         } catch (error) {
+            console.log(error);
             setModalError({ error, open: true });
         }
     };

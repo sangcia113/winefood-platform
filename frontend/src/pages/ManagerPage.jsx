@@ -740,18 +740,18 @@ const ManagerPage = () => {
                             <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
                             <p>
                                 Từ ngày:{' '}
-                                <b>{dayjs(record.bookFromDate).format('DD/MM/YYYY HH:mm')}</b>
+                                <b>{dayjs(record.bookFromDate).format('HH:mm DD/MM/YYYY')}</b>
                             </p>
                             <p>
                                 Đến ngày:{' '}
-                                <b>{dayjs(record.bookToDate).format('DD/MM/YYYY HH:mm')}</b>
+                                <b>{dayjs(record.bookToDate).format('HH:mm DD/MM/YYYY')}</b>
                             </p>
                             <p>
                                 Lý do: <b>{record.reason}</b>
                             </p>
                             <p>
                                 Ngày yêu cầu:{' '}
-                                <b>{dayjs(record.requestDate).format('DD/MM/YYYY HH:mm')}</b>
+                                <b>{dayjs(record.requestDate).format('HH:mm DD/MM/YYYY')}</b>
                             </p>
                             <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
                             <p>
@@ -761,7 +761,7 @@ const ManagerPage = () => {
                                         <span>
                                             <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
                                             {dayjs(record.leaderApprovedDate).format(
-                                                'DD/MM/YYYY HH:mm'
+                                                'HH:mm DD/MM/YYYY'
                                             )}
                                         </span>
                                     )}
@@ -774,14 +774,14 @@ const ManagerPage = () => {
                                         <>
                                             <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
                                             {dayjs(record.managerApprovedDate).format(
-                                                'DD/MM/YYYY HH:mm'
+                                                'HH:mm DD/MM/YYYY'
                                             )}
                                         </>
                                     ) : record.managerApproved === 0 ? (
                                         <>
                                             <CloseCircleFilled style={{ color: '#ff4d4f' }} />{' '}
                                             {dayjs(record.managerApprovedDate).format(
-                                                'DD/MM/YYYY HH:mm'
+                                                'HH:mm DD/MM/YYYY'
                                             )}
                                         </>
                                     ) : (
@@ -939,14 +939,14 @@ const ManagerPage = () => {
             dataIndex: 'bookFromDate',
             key: 'bookFromDate',
             ellipsis: true,
-            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+            render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
         },
         {
             title: 'Đến ngày',
             dataIndex: 'bookToDate',
             key: 'bookToDate',
             ellipsis: true,
-            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+            render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
         },
         {
             title: 'Lý do',
@@ -959,7 +959,7 @@ const ManagerPage = () => {
             dataIndex: 'requestDate',
             key: 'requestDate',
             ellipsis: true,
-            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+            render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
         },
         {
             title: 'Xác nhận',
@@ -1090,14 +1090,14 @@ const ManagerPage = () => {
             dataIndex: 'bookFromDate',
             key: 'bookFromDate',
             ellipsis: true,
-            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+            render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
         },
         {
             title: 'Đến ngày',
             dataIndex: 'bookToDate',
             key: 'bookToDate',
             ellipsis: true,
-            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+            render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
         },
         {
             title: 'Lý do',
@@ -1110,7 +1110,7 @@ const ManagerPage = () => {
             dataIndex: 'requestDate',
             key: 'requestDate',
             ellipsis: true,
-            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+            render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
         },
     ];
 

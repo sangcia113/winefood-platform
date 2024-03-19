@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import {
+    DepartmentPage,
     HistoryPage,
     HomePage,
     LeaderPage,
@@ -10,6 +11,7 @@ import {
     ManagerPage,
     NotExistedPage,
     PrivatePage,
+    TypePage,
     UserPage,
 } from './pages/index';
 
@@ -69,6 +71,22 @@ const App = () => {
                         element={
                             <PrivatePage roles={[1, 2, 3, 4]}>
                                 <UserPage />
+                            </PrivatePage>
+                        }
+                    />
+                    <Route
+                        path="/nghiphep/type"
+                        element={
+                            <PrivatePage roles={[1, 2, 3, 4]}>
+                                <TypePage />
+                            </PrivatePage>
+                        }
+                    />
+                    <Route
+                        path="/nghiphep/department"
+                        element={
+                            <PrivatePage roles={[1, 2, 3, 4]}>
+                                <DepartmentPage />
                             </PrivatePage>
                         }
                     />

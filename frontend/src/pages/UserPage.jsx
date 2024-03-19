@@ -407,7 +407,7 @@ const UserPage = () => {
             dataIndex: 'createdDate',
             key: 'createdDate',
             ellipsis: true,
-            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+            render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
         },
     ];
 
@@ -501,7 +501,7 @@ const UserPage = () => {
             dataIndex: 'createdDate',
             key: 'createdDate',
             ellipsis: true,
-            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+            render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
         },
     ];
 

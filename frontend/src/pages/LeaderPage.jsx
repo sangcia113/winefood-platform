@@ -474,7 +474,7 @@ const LeaderPage = () => {
             dataIndex: 'requestDate',
             key: 'requestDate',
             ellipsis: true,
-            render: record => dayjs(record).format('DD/MM/YYYY HH:mm'),
+            render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
         },
         {
             title: 'Xác nhận',

@@ -24,7 +24,7 @@ import {
     PersonHeart,
     Search,
 } from 'react-bootstrap-icons';
-import { LogoutOutlined } from '@ant-design/icons';
+import { CrownFilled, LogoutOutlined, TagsFilled } from '@ant-design/icons';
 
 import {
     ModalChangePassword,
@@ -64,9 +64,19 @@ const items = [
                 Dành cho Manager
             </Text>
         ),
+        children: [{ key: 'manager', label: 'Quản lý nghỉ phép', icon: <PersonHeart size={20} /> }],
+    },
+    {
+        type: 'group',
+        label: (
+            <Text strong style={{ color: '#00822d' }}>
+                Dành cho Sub Manager
+            </Text>
+        ),
         children: [
-            { key: 'manager', label: 'Quản lý nghỉ phép', icon: <PersonHeart size={20} /> },
             { key: 'user', label: 'Quản lý nhân viên', icon: <PeopleFill size={20} /> },
+            { key: 'department', label: 'Quản lý bộ phận', icon: <CrownFilled size={20} /> },
+            { key: 'type', label: 'Quản lý loại phép', icon: <TagsFilled size={20} /> },
         ],
     },
 ];

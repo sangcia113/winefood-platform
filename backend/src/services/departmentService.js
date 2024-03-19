@@ -22,6 +22,8 @@ const departmentService = {
                     * 
                 FROM 
                     department 
+                WHERE
+                    deleted IS NULL
                 ORDER BY 
                     id 
                 ASC`;
@@ -51,13 +53,16 @@ const departmentService = {
     // Xóa khỏi cơ sở dữ liệu.
     deleted: async id => {
         // Truy vấn SQL để xoá
-        const sql = `DELETE FROM 
-                    department 
-                WHERE 
-                    id = ?`;
+        const sql = `UPDATE 
+                        department 
+                    SET 
+                        deleted = ?,
+                        deletedDate = ? 
+                    WHERE 
+                        id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
-        await db.query(sql, [id]);
+        await db.query(sql, [1, new Date(), id]);
     },
 
     // Kiểm tra tồn tại

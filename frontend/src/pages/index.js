@@ -1,3 +1,4 @@
+import DepartmentPage from './DepartmentPage';
 import HistoryPage from './HistoryPage';
 import HomePage from './HomePage';
 import LeaderPage from './LeaderPage';
@@ -7,9 +8,11 @@ import ManagerPage from './ManagerPage';
 import NotAuthorizedPage from './NotAuthorizedPage';
 import NotExistedPage from './NotExistedPage';
 import PrivatePage from './PrivatePage';
+import TypePage from './TypePage';
 import UserPage from './UserPage';
 
 export {
+    DepartmentPage,
     HistoryPage,
     HomePage,
     LeaderPage,
@@ -19,5 +22,6 @@ export {
     NotAuthorizedPage,
     NotExistedPage,
     PrivatePage,
+    TypePage,
     UserPage,
 };

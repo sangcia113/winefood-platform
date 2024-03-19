@@ -23,6 +23,8 @@ const leaveTypeService = {
                         * 
                     FROM 
                         type 
+                    WHERE
+                        deleted IS NULL
                     ORDER BY 
                         id 
                     ASC`;
@@ -39,7 +41,7 @@ const leaveTypeService = {
         const sql = `UPDATE 
                         type 
                     SET 
-                        code= ?, 
+                        code = ?, 
                         nameVN = ?, 
                         nameEN = ?,
                         updatedDate = ? 
@@ -53,13 +55,16 @@ const leaveTypeService = {
     // Xóa khỏi cơ sở dữ liệu.
     deleted: async id => {
         // Truy vấn SQL để xoá
-        const sql = `DELETE FROM 
+        const sql = `UPDATE 
                         type 
+                    SET 
+                        deleted,
+                        deletedDate = ? 
                     WHERE 
                         id = ?`;
 
         // Thực hiện truy vấn SQL với các giá trị tham số
-        await db.query(sql, [id]);
+        await db.query(sql, [1, new Date(), id]);
     },
 
     // Đọc trong cơ sở dữ liệu.

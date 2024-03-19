@@ -248,7 +248,7 @@ const userService = {
                     ON
                         d.id = u.departmentId
                     WHERE 
-                        deleted IS NULL
+                        u.deleted IS NULL
                     AND `;
 
         if (code && numberPhone) {

@@ -104,7 +104,7 @@ const leaveListService = {
         return results;
     },
 
-    readedManager: async (startDate, endDate) => {
+    readedManager: async (startDate, endDate, offset, pageSize) => {
         const params = [];
 
         // Truy vấn SQL để đọc
@@ -139,13 +139,16 @@ const leaveListService = {
                 startDate === endDate
                     ? ` AND ? BETWEEN DATE(bookFromDate) AND DATE(bookToDate)`
                     : ` AND DATE(bookFromDate) <= ? AND DATE(bookToDate) >= ?`;
+
+            params.push(endDate, startDate);
         }
 
         sql += ` ORDER BY 
                     l.id 
-                DESC`;
+                DESC 
+                LIMIT ?, ?`;
 
-        params.push(endDate, startDate);
+        params.push(offset, pageSize);
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, params);

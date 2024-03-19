@@ -5,7 +5,7 @@ const { checkIsExist } = require('../services/userService');
 const { decodePassword } = require('../utils');
 
 const loginController = {
-    readed: async (req, res) => {
+    readed: async (req, res, next) => {
         // Lấy thông tin từ body của yêu cầu
         const { username, password } = req.body;
 
@@ -35,6 +35,8 @@ const loginController = {
             const accessToken = jwt.sign(payload, process.env.PRIVATE_KEY);
 
             res.status(200).json({ error: 0, message: 'Đăng nhập thành công!', accessToken });
+
+            next();
         } catch (error) {
             res.status(500).json({
                 error: -1001,

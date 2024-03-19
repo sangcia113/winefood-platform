@@ -2,7 +2,7 @@ const db = require('../configs/databaseConfig');
 
 const collectBrowserInfoService = {
     created: async (
-        userId,
+        username,
         browserName,
         browserVersion,
         browserMajor,
@@ -18,7 +18,7 @@ const collectBrowserInfoService = {
     ) => {
         const sql = `INSERT INTO 
                         collect_browser_info (
-                            userId
+                            username,
                             browserName,
                             browserVersion,
                             browserMajor,
@@ -35,7 +35,7 @@ const collectBrowserInfoService = {
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         await db.query(sql, [
-            userId,
+            username,
             browserName,
             browserVersion,
             browserMajor,

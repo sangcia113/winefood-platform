@@ -3,13 +3,13 @@ const { created } = require('../services/collectBrowserInfoService');
 
 const collectBrowserInfoMiddleware = {
     getUserAgent: async (req, res) => {
-        const { userId } = req.decoded;
+        const { username } = req.body;
 
         const { ua, browser, engine, os, device, cpu } = UAParser(req.headers['user-agent']);
 
         try {
             await created(
-                userId,
+                username,
                 browser.name,
                 browser.version,
                 browser.major,

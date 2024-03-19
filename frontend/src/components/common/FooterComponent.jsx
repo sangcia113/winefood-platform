@@ -27,7 +27,7 @@ const FooterComponent = () => (
                 <Row>
                     <Col xs={24}>
                         <Text strong style={{ fontSize: 16 }}>
-                            Copyright © WineFood 2023
+                            Copyright © WineFood 2024
                         </Text>
                     </Col>
                 </Row>

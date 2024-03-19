@@ -76,7 +76,9 @@ const HeaderComponent = ({ name }) => {
 
     const [openDrawer, setOpenDraw] = useState(false);
 
-    const [openTour, setOpenTour] = useState(true);
+    const [openTour, setOpenTour] = useState(
+        localStorage.getItem('localOpenTour') === 'false' ? false : true
+    );
 
     const [modalChangePass, setModalChangePass] = useState({
         onFinish: () => {},
@@ -196,12 +198,12 @@ const HeaderComponent = ({ name }) => {
             }}
         >
             <Flex align="center" justify="space-between">
-                <div ref={ref3}>
+                <Flex justify="center" ref={ref3}>
                     <List
                         onClick={() => setOpenDraw(prevOpen => !prevOpen)}
                         style={{ cursor: 'pointer', fontSize: 36 }}
                     />
-                </div>
+                </Flex>
                 <Link ref={ref2} to="/nghiphep">
                     <Image alt="Logo WineFood" preview={false} src={imgSrc} width={240} />
                 </Link>
@@ -286,7 +288,10 @@ const HeaderComponent = ({ name }) => {
                 mask={{
                     color: 'rgba(72,72,72,.4)',
                 }}
-                onClose={() => setOpenTour(prevState => !prevState)}
+                onClose={() => {
+                    setOpenTour(prevState => !prevState);
+                    localStorage.setItem('localOpenTour', false);
+                }}
                 open={openTour}
                 placement="bottom"
                 steps={[

@@ -76,7 +76,9 @@ const HistoryPage = () => {
         open: false,
     });
 
-    const [openTour, setOpenTour] = useState(true);
+    const [openTour, setOpenTour] = useState(
+        localStorage.getItem('localOpenTour') === 'false' ? false : true
+    );
 
     const ref1 = useRef(null);
 
@@ -734,7 +736,10 @@ const HistoryPage = () => {
                 mask={{
                     color: 'rgba(72,72,72,.4)',
                 }}
-                onClose={() => setOpenTour(prevState => !prevState)}
+                onClose={() => {
+                    setOpenTour(prevState => !prevState);
+                    localStorage.setItem('localOpenTour', false);
+                }}
                 open={openTour}
                 placement="right"
                 steps={[

@@ -20,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 // Sử dụng router chính với tiền tố '/api'
-app.use('/api', router);
+app.use('/', router);
 
 // Định nghĩa cổng mà server sẽ lắng nghe, sử dụng cổng từ biến môi trường PORT hoặc mặc định là 3001
 const PORT = process.env.PORT || 3001;

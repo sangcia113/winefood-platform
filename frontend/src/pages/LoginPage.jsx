@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Button, Card, Checkbox, Flex, Form, Input, Layout, Space, Typography } from 'antd';
+import { Button, Card, Checkbox, Flex, Form, Input, Layout, Space, Spin, Typography } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
 import { ModalConfirmComponent, ModalErrorComponent } from '../components';
@@ -18,6 +18,8 @@ const LoginPage = () => {
     console.log('Run LoginPage');
 
     const navigate = useNavigate();
+
+    const [loading, setLoading] = useState(false);
 
     const [modalConfirm, setModalConfirm] = useState({
         open: false,
@@ -36,6 +38,8 @@ const LoginPage = () => {
 
     const onFinish = async values => {
         try {
+            setLoading(true);
+
             const response = await createConnection().post(`/leave/login`, values);
 
             if (values.remember) {
@@ -46,8 +50,9 @@ const LoginPage = () => {
 
             navigate('/nghiphep');
         } catch (error) {
-            console.log(error);
             setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -71,7 +76,7 @@ const LoginPage = () => {
                 bordered={false}
                 style={{
                     backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                    backdropFilter: 'blur(2px)',
+                    backdropFilter: 'blur(4px)',
                     minWidth: 360,
                     position: 'absolute',
                     top: '50%',
@@ -79,43 +84,43 @@ const LoginPage = () => {
                     transform: 'translate(-50%, -50%)',
                 }}
             >
-                <Flex justify="center">
-                    <Text strong style={{ fontSize: 48, padding: '16px 0 32px 0' }}>
-                        L O G I N
-                    </Text>
-                </Flex>
+                <Spin spinning={loading} tip="Vui lòng đợi...">
+                    <Flex justify="center">
+                        <Text strong style={{ fontSize: 48, padding: '16px 0 32px 0' }}>
+                            L O G I N
+                        </Text>
+                    </Flex>
 
-                <Form form={form} onFinish={onFinish}>
-                    <Item
-                        name="username"
-                        rules={[{ required: true, message: 'Bạn chưa nhập tài khoản!' }]}
-                    >
-                        <Input
-                            allowClear
-                            prefix={<UserOutlined />}
-                            placeholder="Username"
-                            style={{ borderRadius: 24, height: 48 }}
-                        />
-                    </Item>
+                    <Form form={form} onFinish={onFinish}>
+                        <Item
+                            name="username"
+                            rules={[{ required: true, message: 'Bạn chưa nhập tài khoản!' }]}
+                        >
+                            <Input
+                                allowClear
+                                prefix={<UserOutlined />}
+                                placeholder="Username"
+                                style={{ borderRadius: 24, height: 48 }}
+                            />
+                        </Item>
 
-                    <Item
-                        name="password"
-                        rules={[{ required: true, message: 'Bạn chưa nhập mật khẩu!' }]}
-                    >
-                        <Password
-                            allowClear
-                            prefix={<LockOutlined />}
-                            placeholder="Password"
-                            style={{ borderRadius: 24, height: 48 }}
-                        />
-                    </Item>
+                        <Item
+                            name="password"
+                            rules={[{ required: true, message: 'Bạn chưa nhập mật khẩu!' }]}
+                        >
+                            <Password
+                                allowClear
+                                prefix={<LockOutlined />}
+                                placeholder="Password"
+                                style={{ borderRadius: 24, height: 48 }}
+                            />
+                        </Item>
 
-                    <Item name="remember" valuePropName="checked">
-                        <Checkbox style={{ fontSize: 18 }}>Nhớ mật khẩu</Checkbox>
-                    </Item>
+                        <Item name="remember" valuePropName="checked">
+                            <Checkbox style={{ fontSize: 18 }}>Nhớ mật khẩu</Checkbox>
+                        </Item>
 
-                    <Item>
-                        <Flex justify="center">
+                        <Item>
                             <Button
                                 htmlType="submit"
                                 type="primary"
@@ -123,15 +128,18 @@ const LoginPage = () => {
                             >
                                 Đăng Nhập
                             </Button>
-                        </Flex>
-                    </Item>
-                </Form>
+                        </Item>
+                    </Form>
 
-                <Flex justify="flex-end">
-                    <Link style={{ fontSize: 18 }} onClick={() => setModalConfirm({ open: true })}>
-                        Quên mật khẩu ?
-                    </Link>
-                </Flex>
+                    <Flex justify="flex-end">
+                        <Link
+                            style={{ fontSize: 18 }}
+                            onClick={() => setModalConfirm({ open: true })}
+                        >
+                            Quên mật khẩu ?
+                        </Link>
+                    </Flex>
+                </Spin>
             </Card>
             <ModalConfirmComponent
                 onCancel={() => setModalConfirm({ open: false })}

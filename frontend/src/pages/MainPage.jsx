@@ -21,9 +21,6 @@ const MainPage = () => (
                 <Link to={'/nghiphep'}>
                     <Button style={{ color: '#1d39c4' }}>Xin nghỉ phép</Button>
                 </Link>
-                <Link to={'/pheduyet'}>
-                    <Button style={{ color: '#c41d7f' }}>Xin phê duyệt</Button>
-                </Link>
                 <Link to={'/vesinh'}>
                     <Button style={{ color: '#13c2c2' }}>Chấm điểm vệ sinh</Button>
                 </Link>

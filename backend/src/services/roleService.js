@@ -18,6 +18,8 @@ const roleService = {
                         * 
                     FROM 
                         role 
+                    WHERE
+                        deleted IS NULL
                     ORDER BY 
                         id 
                     ASC`;
@@ -42,12 +44,15 @@ const roleService = {
     },
 
     deleted: async id => {
-        const sql = `DELETE FROM
+        const sql = `UPDATE 
                         role
+                    SET
+                        deleted = ?,
+                        deletedDate = ?
                     WHERE
                         id = ?`;
 
-        await db.query(sql, [id]);
+        await db.query(sql, [1, new Date(), id]);
     },
 
     checkIsExist: async code => {

@@ -2,10 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import ReactApexChart from 'react-apexcharts';
+import * as XLSX from 'xlsx';
 
 import {
     Alert,
     Avatar,
+    Button,
     DatePicker,
     Divider,
     Dropdown,
@@ -22,6 +24,7 @@ import {
 import {
     CheckCircleFilled,
     CloseCircleFilled,
+    DownloadOutlined,
     ReadFilled,
     StopFilled,
     SyncOutlined,
@@ -45,6 +48,24 @@ const imgManagerMenu = require('../assets/images/manual/manager-menu.PNG');
 
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
+
+const ExportExcelButton = ({ dataSource }) => {
+    const exportToExcel = () => {
+        const worksheet = XLSX.utils.json_to_sheet(dataSource);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách nghỉ phép');
+        XLSX.writeFile(
+            workbook,
+            `Danh sách nghỉ phép_${dayjs(new Date()).format('YYYY.MM.DD')}.xlsx`
+        );
+    };
+
+    return (
+        <Button icon={<DownloadOutlined />} onClick={exportToExcel} shape="round" type="primary">
+            Excel
+        </Button>
+    );
+};
 
 const ManagerPage = () => {
     console.log('Run ManagerPage...');
@@ -1148,6 +1169,7 @@ const ManagerPage = () => {
                         children: (
                             <Flex vertical gap={'large'}>
                                 <Flex justify={'end'} align={'center'} gap={'middle'}>
+                                    <ExportExcelButton dataSource={leaveList} />
                                     <Text>Select Date</Text>
                                     <RangePicker
                                         format={'DD/MM/YYYY'}

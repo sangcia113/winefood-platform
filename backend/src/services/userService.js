@@ -80,7 +80,7 @@ const userService = {
                     ON
                         za.zaloNumberPhone = l.numberPhone
                     WHERE
-                        deleted IS NULL
+                        l.deleted IS NULL
                     AND
                         l.id = (
                         SELECT

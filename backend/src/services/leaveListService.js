@@ -104,7 +104,7 @@ const leaveListService = {
         return results;
     },
 
-    readedManager: async (startDate, endDate, offset, pageSize) => {
+    readedManager: async (startDate, endDate) => {
         const params = [];
 
         // Truy vấn SQL để đọc
@@ -143,12 +143,7 @@ const leaveListService = {
             params.push(endDate, startDate);
         }
 
-        sql += ` ORDER BY 
-                    l.id 
-                DESC 
-                LIMIT ?, ?`;
-
-        params.push(offset, pageSize);
+        sql += ` ORDER BY l.id DESC`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, params);

@@ -40,7 +40,7 @@ const departmentService = {
         const sql = `UPDATE 
                     department 
                 SET 
-                    code= ?, 
+                    code = ?, 
                     name = ?,
                     updatedDate = ? 
                 WHERE 

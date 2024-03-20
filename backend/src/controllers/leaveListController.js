@@ -77,13 +77,9 @@ const leaveListController = {
 
     // Xử lý yêu cầu đọc dữ liệu.
     readedManager: async (req, res) => {
-        const page = parseInt(req.query.page) || 1;
-        const pageSize = parseInt(req.query.pageSize) || 10;
-        const offset = (page - 1) * pageSize;
-
         try {
             // Gọi hàm service để đọc dữ liệu
-            const results = await readedManager(null, null, offset, pageSize);
+            const results = await readedManager();
 
             res.status(200).json(results);
         } catch (error) {

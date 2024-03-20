@@ -566,11 +566,14 @@ const UserPage = () => {
             rules: [{ required: true, message: 'Vui lòng chọn chức vụ' }],
             typeInput: (
                 <Select allowClear placeholder="Chọn chức vụ">
-                    {role.map(item => (
-                        <Select.Option key={item.id} value={item.id}>
-                            {item.name}
-                        </Select.Option>
-                    ))}
+                    {role.map(
+                        item =>
+                            item.id !== 1 && (
+                                <Select.Option key={item.id} value={item.id}>
+                                    {item.name}
+                                </Select.Option>
+                            )
+                    )}
                 </Select>
             ),
         },

@@ -58,7 +58,7 @@ const leaveTypeService = {
         const sql = `UPDATE 
                         type 
                     SET 
-                        deleted,
+                        deleted = ?,
                         deletedDate = ? 
                     WHERE 
                         id = ?`;

@@ -23,7 +23,7 @@ const leaveTypeMiddleWare = {
         next();
     },
 
-    checkIsExist: async (req, res) => {
+    checkIsExist: async (req, res, next) => {
         // Lấy thông tin từ body của yêu cầu
         const { code, nameVN, nameEN } = req.body;
 

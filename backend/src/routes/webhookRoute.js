@@ -1,4 +1,6 @@
-const router = require('express').Router();
+const express = require('express');
+
+const router = express.Router();
 
 const {
     iReporterBOD,
@@ -11,6 +13,9 @@ const {
     iReporterQCMember,
     iReporterITMember,
 } = require('../controllers/webhookController');
+
+// Middleware để xử lý dữ liệu URL-encoded
+router.use(express.urlencoded({ extended: true }));
 
 // End point POST for iReporter
 router.post('/ireporter/bod', iReporterBOD);

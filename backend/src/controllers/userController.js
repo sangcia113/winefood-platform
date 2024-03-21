@@ -85,6 +85,7 @@ const userController = {
             roleId,
         } = req.body;
 
+        const username = numberPhone.replace(/^84/, '0');
         const hashedPassword = encodePassword(password);
 
         try {
@@ -95,6 +96,7 @@ const userController = {
                 birthday,
                 gender,
                 numberPhone,
+                username,
                 hashedPassword,
                 departmentId,
                 superiorId,

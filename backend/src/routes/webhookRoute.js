@@ -44,4 +44,10 @@ router.post('/ireporter/shi/leader', iReporterSHILeader);
 // End point POST for iReporter
 router.post('/ireporter/it/member', iReporterITMember);
 
+// End point POST test Zalo
+router.post('/zalo', (req, res) => {
+    res.status(200).send('Server đã nhận được webhook!');
+    console.log('Nhận webhook!');
+});
+
 module.exports = router;

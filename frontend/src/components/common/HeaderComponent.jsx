@@ -86,9 +86,7 @@ const HeaderComponent = ({ name }) => {
 
     const [openDrawer, setOpenDraw] = useState(false);
 
-    const [openTour, setOpenTour] = useState(
-        localStorage.getItem('localOpenTour') === 'false' ? false : true
-    );
+    const [openTour, setOpenTour] = useState(false);
 
     const [modalChangePass, setModalChangePass] = useState({
         onFinish: () => {},
@@ -298,10 +296,7 @@ const HeaderComponent = ({ name }) => {
                 mask={{
                     color: 'rgba(72,72,72,.4)',
                 }}
-                onClose={() => {
-                    setOpenTour(prevState => !prevState);
-                    localStorage.setItem('localOpenTour', false);
-                }}
+                onClose={() => setOpenTour(prevState => !prevState)}
                 open={openTour}
                 placement="bottom"
                 steps={[

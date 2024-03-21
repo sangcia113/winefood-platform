@@ -12,6 +12,7 @@ const {
     iReporterSHILeader,
     iReporterQCMember,
     iReporterITMember,
+    leaveZalo,
 } = require('../controllers/webhookController');
 
 // Middleware để xử lý dữ liệu URL-encoded
@@ -45,9 +46,15 @@ router.post('/ireporter/shi/leader', iReporterSHILeader);
 router.post('/ireporter/it/member', iReporterITMember);
 
 // End point POST test Zalo
-router.post('/zalo', (req, res) => {
-    res.status(200).send('Server đã nhận được webhook!');
-    console.log('Nhận webhook!');
-});
+router.post(
+    '/zalo',
+    (req, res, next) => {
+        res.status(200).send('Server đã nhận được webhook!');
+        console.log('Nhận webhook!');
+        console.log(req.body);
+        next();
+    },
+    leaveZalo
+);
 
 module.exports = router;

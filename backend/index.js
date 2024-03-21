@@ -19,6 +19,9 @@ app.use(cors());
 // Sử dụng middleware để parse dữ liệu từ request body dưới định dạng JSON
 app.use(express.json());
 
+// Phục vụ các file tĩnh từ thư mục hiện tại
+app.use(express.static('.'));
+
 // Sử dụng router chính với tiền tố '/api'
 app.use('/', router);
 

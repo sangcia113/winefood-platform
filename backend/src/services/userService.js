@@ -197,6 +197,7 @@ const userService = {
             birthday,
             gender,
             numberPhone,
+            username,
             password,
             departmentId,
             superiorId,

@@ -10,7 +10,11 @@ const {
     updatedNumberPhone,
     updatedSendRequest,
 } = require('../services/zaloAPIService');
-const { readedInfoSuperior, readedInfoManager } = require('../services/userService');
+const {
+    readedInfoSuperior,
+    readedInfoManager,
+    readedInfoMember,
+} = require('../services/userService');
 const {
     messageApproveCancelLeave,
     messageApproveLeaveDay,
@@ -234,6 +238,8 @@ const zaloAPIController = {
 
     // Leader từ chối gửi tin nhắn đến Member
     leaderSendMessageRejectToMember: async (req, res) => {
+        const { username: leaderName } = req.decoded;
+
         // Lấy thông tin từ body của yêu cầu
         const {
             rejectReason,
@@ -249,10 +255,10 @@ const zaloAPIController = {
         } = req.body;
 
         try {
-            const [{ superiorName, superiorZaloUserID }] = await readedInfoSuperior(userId);
+            const [{ memberZaloUserId }] = await readedInfoMember(userId);
 
             const zaloAPIText = messageLeaderReject(
-                superiorName,
+                leaderName,
                 rejectReason,
                 userName,
                 department,
@@ -264,7 +270,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3(superiorZaloUserID, zaloAPIText);
+            const response = await sendZaloAPIV3(memberZaloUserId, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -285,7 +291,10 @@ const zaloAPIController = {
 
     // Manager gửi tin nhắn phê duyệt đến Member
     managerSendMessageApproveToMember: async (req, res) => {
+        const { username: managerName } = req.decoded;
+
         const {
+            userId,
             userName,
             department,
             bookLeaveType,
@@ -297,7 +306,7 @@ const zaloAPIController = {
         } = req.body;
 
         try {
-            const [{ managerName, managerZaloUserID }] = await readedInfoManager();
+            const [{ memberZaloUserId }] = await readedInfoMember(userId);
 
             const zaloAPIText = messageManagerApproval(
                 managerName,
@@ -311,7 +320,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
+            const response = await sendZaloAPIV3(memberZaloUserId, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -332,9 +341,12 @@ const zaloAPIController = {
 
     // Manager gửi tin nhắn từ chối đến Member
     managerSendMessageRejectToMember: async (req, res) => {
+        const { username: managerName } = req.decoded;
+
         // Lấy thông tin từ body của yêu cầu
         const {
             rejectReason,
+            userId,
             userName,
             department,
             bookLeaveType,
@@ -346,7 +358,7 @@ const zaloAPIController = {
         } = req.body;
 
         try {
-            const [{ managerName, managerZaloUserID }] = await readedInfoManager();
+            const [{ memberZaloUserId }] = await readedInfoMember(userId);
 
             const zaloAPIText = messageManagerReject(
                 managerName,
@@ -361,7 +373,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
+            const response = await sendZaloAPIV3(memberZaloUserId, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -382,8 +394,11 @@ const zaloAPIController = {
 
     // Manager gửi tin nhắn phê duyệt thay đổi loại nghỉ phép đến Member
     managerSendMessageApproveLeaveTypeToMember: async (req, res) => {
+        const { username: managerName } = req.decoded;
+
         // Lấy thông tin từ body của yêu cầu
         const {
+            userId,
             userName,
             department,
             actualLeaveType,
@@ -395,7 +410,7 @@ const zaloAPIController = {
         } = req.body;
 
         try {
-            const [{ managerName, managerZaloUserID }] = await readedInfoManager();
+            const [{ memberZaloUserId }] = await readedInfoMember(userId);
 
             const zaloAPIText = messageApproveLeaveType(
                 managerName,
@@ -409,7 +424,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
+            const response = await sendZaloAPIV3(memberZaloUserId, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -430,8 +445,11 @@ const zaloAPIController = {
 
     // Manager gửi tin nhắn phê duyệt thay đổi số ngày nghỉ phép đến Member
     managerSendMessageApproveLeaveDayToMember: async (req, res) => {
+        const { username: managerName } = req.decoded;
+
         // Lấy thông tin từ body của yêu cầu
         const {
+            userId,
             userName,
             department,
             bookLeaveType,
@@ -443,7 +461,7 @@ const zaloAPIController = {
         } = req.body;
 
         try {
-            const [{ managerName, managerZaloUserID }] = await readedInfoManager();
+            const [{ memberZaloUserId }] = await readedInfoMember(userId);
 
             const zaloAPIText = messageApproveLeaveDay(
                 managerName,
@@ -457,7 +475,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
+            const response = await sendZaloAPIV3(memberZaloUserId, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({
@@ -478,8 +496,11 @@ const zaloAPIController = {
 
     // Manager gửi tin nhắn phê duyệt yêu cầu hủy phép đến Member
     managerSendMessageApproveRequestDeleteToMember: async (req, res) => {
+        const { username: managerName } = req.decoded;
+
         // Lấy thông tin từ body của yêu cầu
         const {
+            userId,
             userName,
             department,
             bookLeaveType,
@@ -491,7 +512,7 @@ const zaloAPIController = {
         } = req.body;
 
         try {
-            const [{ managerName, managerZaloUserID }] = await readedInfoManager();
+            const [{ memberZaloUserId }] = await readedInfoMember(userId);
 
             const zaloAPIText = messageApproveCancelLeave(
                 managerName,
@@ -505,7 +526,7 @@ const zaloAPIController = {
                 requestDate
             );
 
-            const response = await sendZaloAPIV3(managerZaloUserID, zaloAPIText);
+            const response = await sendZaloAPIV3(memberZaloUserId, zaloAPIText);
 
             if (response.error === 0) {
                 res.status(200).json({

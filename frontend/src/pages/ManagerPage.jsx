@@ -498,6 +498,7 @@ const ManagerPage = () => {
                                             onOk: () =>
                                                 approveLeave(
                                                     record.id,
+                                                    record.userId,
                                                     record.userName,
                                                     record.department,
                                                     record.bookLeaveType,
@@ -537,6 +538,7 @@ const ManagerPage = () => {
                                                 rejectLeave(
                                                     record.id,
                                                     values.reason,
+                                                    record.userId,
                                                     record.userName,
                                                     record.department,
                                                     record.bookLeaveType,
@@ -593,6 +595,7 @@ const ManagerPage = () => {
                                                     onOk: () =>
                                                         approveLeaveType(
                                                             record.id,
+                                                            record.userId,
                                                             record.userName,
                                                             record.department,
                                                             record.actualLeaveType,
@@ -645,6 +648,7 @@ const ManagerPage = () => {
                                                     onOk: () =>
                                                         approveLeaveDay(
                                                             record.id,
+                                                            record.userId,
                                                             record.userName,
                                                             record.department,
                                                             record.bookLeaveType,
@@ -695,6 +699,7 @@ const ManagerPage = () => {
                                                     onOk: () =>
                                                         approveCancelLeave(
                                                             record.id,
+                                                            record.userId,
                                                             record.userName,
                                                             record.department,
                                                             record.bookLeaveType,

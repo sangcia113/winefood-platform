@@ -1,7 +1,5 @@
 import React from 'react';
-
 import { Breadcrumb, Card, Layout, Spin } from 'antd';
-
 const { Content } = Layout;
 
 const ContentComponent = ({ loading, items, children }) => (

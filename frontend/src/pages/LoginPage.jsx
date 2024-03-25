@@ -15,8 +15,6 @@ const { Password } = Input;
 const { Link, Text } = Typography;
 
 const LoginPage = () => {
-    console.log('Run LoginPage');
-
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);

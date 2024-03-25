@@ -41,8 +41,6 @@ const { Password } = Input;
 const { Text } = Typography;
 
 const UserPage = () => {
-    console.log('Run UserPage');
-
     const [loading, setLoading] = useState(false);
 
     const [department, setDepartment] = useState([]);

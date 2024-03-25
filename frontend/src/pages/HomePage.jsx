@@ -18,8 +18,6 @@ const { TextArea } = Input;
 const { Text } = Typography;
 
 const HomePage = () => {
-    console.log('Run Home...');
-
     const [loading, setLoading] = useState(false);
 
     const [leaveType, setLeaveType] = useState([]);

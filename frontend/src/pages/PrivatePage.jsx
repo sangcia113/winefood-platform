@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Navigate } from 'react-router-dom';
 
 import { Layout } from 'antd';
@@ -9,8 +11,6 @@ import { FooterComponent, HeaderComponent } from '../components';
 import { NotAuthorizedPage } from './';
 
 const PrivatePage = ({ roles, children }) => {
-    console.log('Run PrivatePage...');
-
     if (!checkToken()) return <Navigate to="/nghiphep/login" />;
 
     const { userName, roleId } = checkToken();

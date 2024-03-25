@@ -27,8 +27,6 @@ import { createConnection, getUniqueName } from '../utils';
 const { Text } = Typography;
 
 const LeaderPage = () => {
-    console.log('Run LeaderPage...');
-
     const [loading, setLoading] = useState(false);
 
     const [leader, setLeader] = useState([]);

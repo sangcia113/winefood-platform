@@ -17,8 +17,6 @@ import {
 import { createConnection } from '../utils';
 
 const TypePage = () => {
-    console.log('Run TypePage');
-
     const [loading, setLoading] = useState(false);
 
     const [type, setType] = useState([]);

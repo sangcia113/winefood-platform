@@ -17,8 +17,6 @@ import {
 import { createConnection } from '../utils';
 
 const DepartmentPage = () => {
-    console.log('Run DepartmentPage');
-
     const [loading, setLoading] = useState(false);
 
     const [department, setDepartment] = useState([]);

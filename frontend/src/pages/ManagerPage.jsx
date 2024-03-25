@@ -68,8 +68,6 @@ const ExportExcelButton = ({ dataSource }) => {
 };
 
 const ManagerPage = () => {
-    console.log('Run ManagerPage...');
-
     const [loading, setLoading] = useState(false);
     const [leaveList, setLeaveList] = useState([]);
     const [leaveListOther, setLeaveListOther] = useState([]);

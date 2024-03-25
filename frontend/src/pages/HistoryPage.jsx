@@ -31,8 +31,6 @@ const imgHistoryMenu = require('../assets/images/manual/history-menu.PNG');
 const { Text } = Typography;
 
 const HistoryPage = () => {
-    console.log('Run HistoryPage...');
-
     const [loading, setLoading] = useState(false);
 
     const [history, setHistory] = useState([]);

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { PhoneFilled } from '@ant-design/icons';
 import { Button, Card, Flex } from 'antd';
@@ -21,7 +22,7 @@ const MainPage = () => (
                 <Link to={'/nghiphep'}>
                     <Button style={{ color: '#1d39c4' }}>Xin nghỉ phép</Button>
                 </Link>
-                <Link to={'/vesinh'}>
+                <Link to={'https://winefood-sw.com:8080/winefood/login.php'}>
                     <Button style={{ color: '#13c2c2' }}>Chấm điểm vệ sinh</Button>
                 </Link>
             </Flex>

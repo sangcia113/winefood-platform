@@ -1,8 +1,9 @@
 const moment = require('moment');
 
-const { readedUserByZaloUserId } = require('../services/userService');
-const { checkIsExist } = require('../services/leaveListService');
+const { readedUserByZaloUserId, readedInfoSuperior } = require('../services/userService');
+const { checkIsExist, created } = require('../services/leaveListService');
 const { sendZaloAPIV3 } = require('../services/zaloAPIService');
+const { messageRequestLeave } = require('../utils/handleZaloMessage');
 
 const parseMessage = message => {
     const regex =
@@ -74,7 +75,7 @@ const zaloAPIMiddleWare = {
         next();
     },
 
-    parseZaloMessage: async (req, res, next) => {
+    parseZaloMessage: async (req, res) => {
         const { message, sender } = req.body;
 
         const messageData = parseMessage(message.text);
@@ -91,6 +92,7 @@ const zaloAPIMiddleWare = {
             try {
                 const [{ userId, userName, department }] = await readedUserByZaloUserId(sender.id);
 
+                // Kiểm tra userId có tồn tại trong hệ thống không?
                 if (!userId)
                     return await sendZaloAPIV3(
                         sender.id,
@@ -132,6 +134,7 @@ const zaloAPIMiddleWare = {
                     'YYYY-MM-DD HH:mm'
                 );
 
+                // Kiểm tra đơn phép có tồn tại trong hệ thống không?
                 const results = await checkIsExist(userId, bookFromDate, bookToDate);
 
                 if (results.length > 0)
@@ -140,25 +143,49 @@ const zaloAPIMiddleWare = {
                         'Đơn xin nghỉ phép của bạn đã tồn tại trong hệ thống!'
                     );
 
-                req.decoded = { userId, userName, department };
-
-                req.body = {
+                // Thêm đơn phép vào trong hệ thống
+                await created(
+                    userId,
                     bookLeaveTypeId,
+                    bookLeaveDay,
+                    bookFromDate,
+                    bookToDate,
+                    reason
+                );
+
+                // Lấy thông tin cấp trên
+                const [{ superiorName, superiorGender, superiorRoleId, superiorZaloUserID }] =
+                    await readedInfoSuperior(userId);
+
+                // Tạo tin nhắn gửi zalo cho cấp trên
+                const zaloAPIText = messageRequestLeave(
+                    superiorGender,
+                    superiorName,
+                    superiorRoleId,
+                    userName,
+                    department,
                     bookLeaveType,
                     bookLeaveDay,
                     bookFromDate,
                     bookToDate,
-                    reason,
-                };
+                    reason
+                );
 
-                next();
+                // Gửi zalo cho cấp trên
+                await sendZaloAPIV3(superiorZaloUserID, zaloAPIText);
+
+                // Gửi zalo về cho người dùng
+                await sendZaloAPIV3(
+                    sender.id,
+                    `Đã gửi yêu cầu lên cấp trên ${superiorName} qua Zalo!`
+                );
             } catch (error) {
                 console.log(error);
             }
         } else {
             await sendZaloAPIV3(
                 sender.id,
-                'Sai cú pháp xin nghỉ phép!\n\nTin nhắn xin nghỉ phép sẽ có cú pháp như sau:\n\n#np pn 1 07:30 01/04/2024 16:30 01/04/2024 Bận việc riêng\n\n***TRONG ĐÓ***\n- Cú pháp bắt buộc: #np\n- Loại nghỉ phép: pn\n    + Phép năm: pn\n    + Nghỉ ốm: no\n    + Đi trễ - về sớm: dtvs\n    + Lý do khác: ldk\n    + Nghỉ bù: nb\n    + Nghỉ theo chế độ: ntcd\n    + Nghỉ thai sản: nts\n    + Nghỉ tai nạn lao động: ntnld\n- Số ngày nghỉ phép (0.25 | 0.5 | 0.75 | 1 ...): 1\n- Giờ bắt đầu: 07:30\n- Ngày bắt đầu: 01/04/2024\n- Giờ kết thúc: 16:30\n- Ngày kết thúc: 01/04/2024\n- Lý do nghỉ phép: Bận việc riêng'
+                'SAI CÚ PHÁP XIN NGHỈ PHÉP!\n\nTin nhắn xin nghỉ phép sẽ có cú pháp như sau:\n\n#np pn 1 07:30 01/04/2024 16:30 01/04/2024 Bận việc riêng\n\n***TRONG ĐÓ***\n\n- Cú pháp bắt buộc: #np\n- Loại nghỉ phép: pn\n    + Phép năm: pn\n    + Nghỉ ốm: no\n    + Đi trễ - về sớm: dtvs\n    + Lý do khác: ldk\n    + Nghỉ bù: nb\n    + Nghỉ theo chế độ: ntcd\n    + Nghỉ thai sản: nts\n    + Nghỉ tai nạn lao động: ntnld\n- Số ngày nghỉ phép: 1\n- Giờ bắt đầu: 07:30\n- Ngày bắt đầu: 01/04/2024\n- Giờ kết thúc: 16:30\n- Ngày kết thúc: 01/04/2024\n- Lý do nghỉ phép: Bận việc riêng\n\nTrang chủ: https://winefood-sw.com/nghiphep'
             );
         }
     },

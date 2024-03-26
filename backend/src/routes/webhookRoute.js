@@ -4,10 +4,6 @@ const router = express.Router();
 
 const { parseZaloMessage } = require('../middleWares/zaloAPIMiddleWare');
 
-const { created } = require('../controllers/leaveListController');
-
-const { memberSendMessageRequestToSuperior } = require('../controllers/zaloAPIController');
-
 const {
     iReporterBOD,
     iReporterQLSXManager,
@@ -51,6 +47,6 @@ router.post('/ireporter/shi/leader', iReporterSHILeader);
 router.post('/ireporter/it/member', iReporterITMember);
 
 // End point POST test Zalo
-router.post('/zalo', parseZaloMessage, created, memberSendMessageRequestToSuperior);
+router.post('/leave', parseZaloMessage);
 
 module.exports = router;

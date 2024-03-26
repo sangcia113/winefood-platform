@@ -14,31 +14,39 @@ cron.schedule('0 8 * * 1-6', async () => {
     try {
         const results = await readLeaveListToday();
 
-        results.forEach(item => {
-            const { userName, department, bookLeaveDay, bookFromDate, bookToDate } = item;
-            messageJP += `- フルネーム: ${userName}\n- 部署: ${department}\n- 休暇の日数: ${bookLeaveDay}\n- から: ${dayjs(
-                bookFromDate
-            ).format('HH:mm DD-MM-YYYY')}\n- まで: ${dayjs(bookToDate).format(
-                'HH:mm DD-MM-YYYY'
-            )}\n\n`;
+        if (!results.length) {
+            await sendZaloAPIV3('1337604619804588121', '今日は休暇を取った従業員はいませんでした');
+            await sendZaloAPIV3(
+                '637017525950997790',
+                'Không có nhân viên nào nghỉ phép ngày hôm nay'
+            );
+        } else {
+            results.forEach(item => {
+                const { userName, department, bookLeaveDay, bookFromDate, bookToDate } = item;
+                messageJP += `- フルネーム: ${userName}\n- 部署: ${department}\n- 休暇の日数: ${bookLeaveDay}\n- から: ${dayjs(
+                    bookFromDate
+                ).format('HH:mm DD-MM-YYYY')}\n- まで: ${dayjs(bookToDate).format(
+                    'HH:mm DD-MM-YYYY'
+                )}\n\n`;
 
-            messageVN += `- Họ và Tên: ${userName}\n- Bộ phận: ${department}\n- Số ngày nghỉ: ${bookLeaveDay}\n- Từ ngày: ${dayjs(
-                bookFromDate
-            ).format('HH:mm DD-MM-YYYY')}\n- Đến ngày: ${dayjs(bookToDate).format(
-                'HH:mm DD-MM-YYYY'
-            )}\n\n`;
-        });
+                messageVN += `- Họ và Tên: ${userName}\n- Bộ phận: ${department}\n- Số ngày nghỉ: ${bookLeaveDay}\n- Từ ngày: ${dayjs(
+                    bookFromDate
+                ).format('HH:mm DD-MM-YYYY')}\n- Đến ngày: ${dayjs(bookToDate).format(
+                    'HH:mm DD-MM-YYYY'
+                )}\n\n`;
+            });
 
-        messageJP +=
-            'Please click here view more information: https://winefood-sw.com/nghiphep/manager\n\nNote: This is an automatic notification from the system. Please do not reply!';
-        messageVN +=
-            'Note: This is an automatic notification from the system. Please do not reply!';
+            messageJP +=
+                'Please click here view more information: https://winefood-sw.com/nghiphep/manager\n\nNote: This is an automatic notification from the system. Please do not reply!';
+            messageVN +=
+                'Note: This is an automatic notification from the system. Please do not reply!';
 
-        await sendZaloAPIV3('1337604619804588121', messageJP);
-        await sendZaloAPIV3('637017525950997790', messageVN);
+            await sendZaloAPIV3('1337604619804588121', messageJP);
+            await sendZaloAPIV3('637017525950997790', messageVN);
 
-        messageJP = '';
-        messageVN = '';
+            messageJP = '';
+            messageVN = '';
+        }
     } catch (error) {
         console.log(error);
     }

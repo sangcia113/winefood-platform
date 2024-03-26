@@ -114,7 +114,7 @@ const userService = {
                         l.id = ?`;
 
         // Thực hiện truy vấn SQL và trả về kết quả
-        const [results] = await db.query(sql, id);
+        const [results] = await db.query(sql, [id]);
 
         return results;
     },
@@ -154,6 +154,34 @@ const userService = {
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, [id]);
+
+        return results;
+    },
+
+    readedUserByZaloUserId: async zaloUserId => {
+        // Truy vấn SQL để đọc
+        const sql = `SELECT 
+                        u.id AS userId,
+                        u.name AS userName,
+                        d.name AS department
+                    FROM
+                        user AS u
+                    INNER JOIN
+                        department AS d
+                    ON
+                        d.id = u.departmentId
+                    WHERE
+                        numberPhone = (
+                            SELECT
+                                zaloNumberPhone
+                            FROM
+                                zalo_api.user
+                            WHERE
+                                zaloUserId = ?
+                        )`;
+
+        // Thực hiện truy vấn SQL và trả về kết quả
+        const [results] = await db.query(sql, [zaloUserId]);
 
         return results;
     },

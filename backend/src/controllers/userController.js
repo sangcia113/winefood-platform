@@ -106,7 +106,6 @@ const userController = {
 
             res.status(200).json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
         } catch (error) {
-            console.log(error);
             res.status(500).json({
                 error: -1001,
                 message: 'Lỗi truy vấn cơ sở dữ liệu!',

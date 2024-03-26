@@ -198,6 +198,7 @@ const ManagerPage = () => {
 
     const approveLeave = async (
         id,
+        userId,
         userName,
         department,
         bookLeaveType,
@@ -211,6 +212,7 @@ const ManagerPage = () => {
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved/${id}`,
                 {
+                    userId,
                     userName,
                     department,
                     bookLeaveType,
@@ -251,6 +253,7 @@ const ManagerPage = () => {
     const rejectLeave = async (
         id,
         rejectReason,
+        userId,
         userName,
         department,
         bookLeaveType,
@@ -265,6 +268,7 @@ const ManagerPage = () => {
                 `/leave/list/manager/rejected/${id}`,
                 {
                     rejectReason,
+                    userId,
                     userName,
                     department,
                     bookLeaveType,
@@ -304,6 +308,7 @@ const ManagerPage = () => {
 
     const approveLeaveType = async (
         id,
+        userId,
         userName,
         department,
         actualLeaveType,
@@ -317,6 +322,7 @@ const ManagerPage = () => {
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved-leave-type/${id}`,
                 {
+                    userId,
                     userName,
                     department,
                     actualLeaveType,
@@ -356,6 +362,7 @@ const ManagerPage = () => {
 
     const approveLeaveDay = async (
         id,
+        userId,
         userName,
         department,
         bookLeaveType,
@@ -369,6 +376,7 @@ const ManagerPage = () => {
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved-leave-day/${id}`,
                 {
+                    userId,
                     userName,
                     department,
                     bookLeaveType,
@@ -408,6 +416,7 @@ const ManagerPage = () => {
 
     const approveCancelLeave = async (
         id,
+        userId,
         userName,
         department,
         bookLeaveType,
@@ -421,6 +430,7 @@ const ManagerPage = () => {
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved-request-delete/${id}`,
                 {
+                    userId,
                     userName,
                     department,
                     bookLeaveType,

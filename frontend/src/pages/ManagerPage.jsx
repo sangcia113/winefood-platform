@@ -7,11 +7,14 @@ import * as XLSX from 'xlsx';
 import {
     Avatar,
     Button,
+    Checkbox,
+    Col,
     DatePicker,
     Divider,
     Dropdown,
     Flex,
     Form,
+    Row,
     Space,
     Table,
     Tabs,
@@ -24,6 +27,7 @@ import {
     CheckCircleFilled,
     CloseCircleFilled,
     DownloadOutlined,
+    FilterFilled,
     ReadFilled,
     StopFilled,
     SyncOutlined,
@@ -69,7 +73,13 @@ const ManagerPage = () => {
     const [leaveList, setLeaveList] = useState([]);
     const [leaveListOther, setLeaveListOther] = useState([]);
     const [leaveListStatistics, setLeaveListStatistics] = useState([]);
-    const [waitingList, setWaitingList] = useState([]);
+    const [filteredWaitingForApprove, setFilteredWaitingForApprove] = useState([]);
+    const [filteredWaitingForApproveLeaveType, setFilteredWaitingForApproveLeaveType] = useState(
+        []
+    );
+    const [filteredWaitingForApproveLeaveDay, setFilteredWaitingForApproveLeaveDay] = useState([]);
+    const [filteredWaitingForApproveDeleteRequest, setFilteredWaitingForApproveDeleteRequest] =
+        useState([]);
     const [totalWaiting, setTotalWaiting] = useState(0);
 
     const [api, contextHolder] = notification.useNotification({ stack: { threshold: 2 } });
@@ -123,21 +133,6 @@ const ManagerPage = () => {
 
         setTotalWaiting(totalWaiting);
     }, [leaveList]);
-
-    useEffect(() => {
-        for (let index = 0; index < 5; index++) {
-            api.info({
-                description: index,
-                duration: 0,
-                message: `Test ${index}`,
-            });
-        }
-    }, []);
-
-    useEffect(() => {
-        const test = leaveList.filter(item => item.managerApproved === null);
-        console.log(test);
-    }, []);
 
     const getDataSource = async (url, params = {}, setDataSource) => {
         try {
@@ -205,8 +200,40 @@ const ManagerPage = () => {
         );
     };
 
-    const getWaitingList = () => {
-        leaveList.map(item => !item.managerApproved && { id: item.id, userName: item.userName });
+    const getWaitingForApprove = () => {
+        const filtered = leaveList.filter(
+            item => item.managerApproved === null && !item.deleteRequest
+        );
+        setFilteredWaitingForApprove(filtered);
+    };
+
+    const getWaitingForApproveLeaveType = () => {
+        const filtered = leaveList.filter(
+            item =>
+                item.actualLeaveDay &&
+                !item.managerApprovedLeaveDay &&
+                item.actualLeaveDay !== item.bookLeaveDay &&
+                item.actualFromDate !== item.bookFromDat &&
+                item.actualToDate !== item.bookToDate
+        );
+        setFilteredWaitingForApproveLeaveType(filtered);
+    };
+
+    const getWaitingForApproveLeaveDay = () => {
+        const filtered = leaveList.filter(
+            item =>
+                item.actualLeaveTypeId &&
+                !item.managerApprovedLeaveType &&
+                item.actualLeaveTypeId !== item.bookLeaveTypeId
+        );
+        setFilteredWaitingForApproveLeaveDay(filtered);
+    };
+
+    const getWaitingForApproveDeleteRequest = () => {
+        const filtered = leaveList.filter(
+            item => item.deleteRequest && item.managerApprovedDelete === null
+        );
+        setFilteredWaitingForApproveDeleteRequest(filtered);
     };
 
     const approveLeave = async (
@@ -1193,26 +1220,145 @@ const ManagerPage = () => {
                         ),
                         children: (
                             <Flex vertical gap={'large'}>
-                                <Flex justify={'end'} align={'center'} gap={'middle'}>
-                                    <ExportExcelButton dataSource={leaveList} />
-                                    <Text>Select Date</Text>
-                                    <RangePicker
-                                        format={'DD/MM/YYYY'}
-                                        onCalendarChange={dates => {
-                                            const [startDate, endDate] = dates || [];
+                                <Row>
+                                    <Col sm={12}>
+                                        <Flex gap="middle">
+                                            <Dropdown
+                                                arrow
+                                                menu={{
+                                                    items: [
+                                                        {
+                                                            key: 1,
+                                                            label: (
+                                                                <Checkbox
+                                                                    onClick={e => {
+                                                                        if (e.target.checked) {
+                                                                            getWaitingForApprove();
+                                                                        } else {
+                                                                            setFilteredWaitingForApprove(
+                                                                                []
+                                                                            );
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    Chưa phê duyệt
+                                                                </Checkbox>
+                                                            ),
+                                                        },
+                                                        {
+                                                            key: 2,
+                                                            label: 'Chưa xác nhận',
+                                                            type: 'group',
+                                                            children: [
+                                                                {
+                                                                    key: 3,
+                                                                    label: (
+                                                                        <Checkbox
+                                                                            onClick={e => {
+                                                                                if (
+                                                                                    e.target.checked
+                                                                                ) {
+                                                                                    getWaitingForApproveLeaveType();
+                                                                                } else {
+                                                                                    setFilteredWaitingForApproveLeaveType(
+                                                                                        []
+                                                                                    );
+                                                                                }
+                                                                            }}
+                                                                        >
+                                                                            Loại phép
+                                                                        </Checkbox>
+                                                                    ),
+                                                                },
+                                                                {
+                                                                    key: 4,
+                                                                    label: (
+                                                                        <Checkbox
+                                                                            onClick={e => {
+                                                                                if (
+                                                                                    e.target.checked
+                                                                                ) {
+                                                                                    getWaitingForApproveLeaveDay();
+                                                                                } else {
+                                                                                    setFilteredWaitingForApproveLeaveDay(
+                                                                                        []
+                                                                                    );
+                                                                                }
+                                                                            }}
+                                                                        >
+                                                                            Số ngày nghỉ
+                                                                        </Checkbox>
+                                                                    ),
+                                                                },
+                                                                {
+                                                                    key: 5,
+                                                                    label: (
+                                                                        <Checkbox
+                                                                            onClick={e => {
+                                                                                if (
+                                                                                    e.target.checked
+                                                                                ) {
+                                                                                    getWaitingForApproveDeleteRequest();
+                                                                                } else {
+                                                                                    setFilteredWaitingForApproveDeleteRequest(
+                                                                                        []
+                                                                                    );
+                                                                                }
+                                                                            }}
+                                                                        >
+                                                                            Huỷ phép
+                                                                        </Checkbox>
+                                                                    ),
+                                                                },
+                                                            ],
+                                                        },
+                                                    ],
+                                                }}
+                                                placement="bottomLeft"
+                                            >
+                                                <Button
+                                                    icon={<FilterFilled />}
+                                                    shape="round"
+                                                    type="primary"
+                                                >
+                                                    Filter
+                                                </Button>
+                                            </Dropdown>
+                                            <ExportExcelButton dataSource={leaveList} />
+                                        </Flex>
+                                    </Col>
+                                    <Col sm={12}>
+                                        <Flex align="center" justify="end" gap="middle">
+                                            <Text>Select Date</Text>
+                                            <RangePicker
+                                                format={'DD/MM/YYYY'}
+                                                onCalendarChange={dates => {
+                                                    const [startDate, endDate] = dates || [];
 
-                                            if (startDate && endDate) {
-                                                getManagerByDate(startDate, endDate);
-                                            } else if (!startDate && !endDate) {
-                                                getManager();
-                                            }
-                                        }}
-                                    />
-                                </Flex>
+                                                    if (startDate && endDate) {
+                                                        getManagerByDate(startDate, endDate);
+                                                    } else if (!startDate && !endDate) {
+                                                        getManager();
+                                                    }
+                                                }}
+                                            />
+                                        </Flex>
+                                    </Col>
+                                </Row>
                                 <Table
                                     bordered
                                     columns={columnsLeaveList}
-                                    dataSource={leaveList}
+                                    dataSource={
+                                        filteredWaitingForApprove.length > 0
+                                            ? filteredWaitingForApprove
+                                            : filteredWaitingForApproveLeaveType.length > 0
+                                            ? filteredWaitingForApproveLeaveType
+                                            : filteredWaitingForApproveLeaveDay.length > 0
+                                            ? filteredWaitingForApproveLeaveDay
+                                            : filteredWaitingForApproveDeleteRequest.length > 0
+                                            ? filteredWaitingForApproveDeleteRequest
+                                            : leaveList
+                                    }
                                     scroll={{ x: true }}
                                     showSorterTooltip={false}
                                 />

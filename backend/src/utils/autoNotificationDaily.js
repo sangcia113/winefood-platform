@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const dayjs = require('dayjs');
-const { readLeaveListToday } = require('../services/leaveListService');
+const { readedLeaveListToday } = require('../services/leaveListService');
 const { sendZaloAPIV3 } = require('../services/zaloAPIService');
 
 // Lên lịch công việc để chạy vào lúc 8 giờ sáng từ thứ 2 đến thứ 6
@@ -12,7 +12,7 @@ cron.schedule('0 8 * * 1-6', async () => {
     let messageVN = 'Danh sách nghỉ phép hôm nay\n\n';
 
     try {
-        const results = await readLeaveListToday();
+        const results = await readedLeaveListToday();
 
         if (!results.length) {
             await sendZaloAPIV3('1337604619804588121', '今日は休暇を取った従業員はいませんでした');

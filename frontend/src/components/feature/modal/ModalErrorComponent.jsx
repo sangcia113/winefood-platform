@@ -12,80 +12,126 @@ const renderMessage = error => {
         switch (errorCode) {
             case -230:
                 return (
-                    <Text>
-                        Gửi thông báo qua Zalo <b>thất bại</b>!
+                    <>
+                        <Alert
+                            message={
+                                <>
+                                    Gửi thông báo qua Zalo <b>thất bại</b>!
+                                    <br />
+                                    Do người dùng đã không <b>tương tác</b>
+                                    <br />
+                                    với <b>Wine Food</b> trong vòng 7 ngày!
+                                </>
+                            }
+                            type="error"
+                            style={{ textAlign: 'center' }}
+                        />
                         <br />
-                        Do người dùng đã không <b>tương tác</b>
-                        <br />
-                        với <b>Wine Food</b> trong vòng 7 ngày!
-                        <br />
-                        Tuy nhiên
-                        <br />
-                        Dữ liệu <b>đã được ghi vào hệ thống.</b>
-                        <br />
-                        Bạn có thể yên tâm!
-                    </Text>
+                        <Alert
+                            message={
+                                <>
+                                    Tuy nhiên
+                                    <br />
+                                    Dữ liệu <b>đã được ghi vào hệ thống.</b>
+                                    <br />
+                                    Bạn có thể yên tâm!
+                                </>
+                            }
+                            type="success"
+                            style={{ textAlign: 'center' }}
+                        />
+                    </>
                 );
             case -1050:
                 return (
-                    <Text>
-                        Đơn xin nghỉ phép của bạn đã
-                        <br />
-                        <b>tồn tại trong hệ thống!</b>
-                        <br />
-                        Vui lòng liên hệ với <b>cấp trên</b> để được
-                        <br />
-                        phê duyệt!
-                    </Text>
+                    <Alert
+                        message={
+                            <>
+                                Đơn xin nghỉ phép của bạn đã
+                                <br />
+                                <b>tồn tại trong hệ thống!</b>
+                                <br />
+                                Vui lòng liên hệ với <b>cấp trên</b> để được
+                                <br />
+                                phê duyệt!
+                            </>
+                        }
+                        type="error"
+                        style={{ textAlign: 'center' }}
+                    />
                 );
             case -1080:
                 return (
-                    <Text>
-                        Tài khoản không tồn tại trong hệ thống!
-                        <br />
-                        Vui lòng liên hệ{' '}
-                        <Link href="https://zalo.me/0972868740" target="_blank">
-                            Mr.Sang
-                        </Link>{' '}
-                        để được hỗ trợ!
-                    </Text>
+                    <Alert
+                        message={
+                            <>
+                                Tài khoản không tồn tại trong hệ thống!
+                                <br />
+                                Vui lòng liên hệ{' '}
+                                <Link href="https://zalo.me/0972868740" target="_blank">
+                                    Mr.Sang
+                                </Link>{' '}
+                                để được hỗ trợ!
+                            </>
+                        }
+                        type="error"
+                        style={{ textAlign: 'center' }}
+                    />
                 );
             case -1081:
                 return (
-                    <Text>
-                        Sai mật khẩu
-                        <br />
-                        Vui lòng liên hệ{' '}
-                        <Link href="https://zalo.me/0972868740" target="_blank">
-                            Mr.Sang
-                        </Link>{' '}
-                        để được hỗ trợ!
-                    </Text>
+                    <Alert
+                        message={
+                            <>
+                                Sai mật khẩu
+                                <br />
+                                Vui lòng liên hệ{' '}
+                                <Link href="https://zalo.me/0972868740" target="_blank">
+                                    Mr.Sang
+                                </Link>{' '}
+                                để được hỗ trợ!
+                            </>
+                        }
+                        type="error"
+                        style={{ textAlign: 'center' }}
+                    />
                 );
             default:
                 return (
-                    <Text>
-                        Mã lỗi: {errorCode}
-                        <br />
-                        Vui lòng liên hệ{' '}
-                        <Link href="https://zalo.me/0972868740" target="_blank">
-                            Mr.Sang
-                        </Link>{' '}
-                        để được hỗ trợ!
-                    </Text>
+                    <Alert
+                        message={
+                            <>
+                                Mã lỗi: {errorCode}
+                                <br />
+                                Vui lòng liên hệ{' '}
+                                <Link href="https://zalo.me/0972868740" target="_blank">
+                                    Mr.Sang
+                                </Link>{' '}
+                                để được hỗ trợ!
+                            </>
+                        }
+                        type="error"
+                        style={{ textAlign: 'center' }}
+                    />
                 );
         }
     } else {
         return (
-            <Text>
-                Mã lỗi: Không xác định
-                <br />
-                Vui lòng liên hệ{' '}
-                <Link href="https://zalo.me/0972868740" target="_blank">
-                    Mr.Sang
-                </Link>{' '}
-                để được hỗ trợ!
-            </Text>
+            <Alert
+                message={
+                    <>
+                        Mã lỗi: Không xác định
+                        <br />
+                        Vui lòng liên hệ{' '}
+                        <Link href="https://zalo.me/0972868740" target="_blank">
+                            Mr.Sang
+                        </Link>{' '}
+                        để được hỗ trợ!
+                    </>
+                }
+                type="error"
+                style={{ textAlign: 'center' }}
+            />
         );
     }
 };
@@ -115,7 +161,7 @@ const ModalErrorComponent = ({ onOk, open, error }) => {
                 footer: { paddingTop: 20, textAlign: 'center' },
             }}
         >
-            <Alert message={renderMessage(error)} type="error" style={{ textAlign: 'center' }} />
+            {renderMessage(error)}
         </Modal>
     );
 };

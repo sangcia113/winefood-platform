@@ -249,7 +249,7 @@ const leaveListService = {
         return results;
     },
 
-    readLeaveListToday: async () => {
+    readedLeaveListToday: async () => {
         // Truy vấn SQL để đọc
         const sql = `SELECT
                         u.name AS userName,

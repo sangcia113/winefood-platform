@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import ReactApexChart from 'react-apexcharts';
 import * as XLSX from 'xlsx';
 
 import {
-    Alert,
     Avatar,
     Button,
     DatePicker,
@@ -18,8 +17,8 @@ import {
     Tabs,
     Tag,
     Tooltip,
-    Tour,
     Typography,
+    notification,
 } from 'antd';
 import {
     CheckCircleFilled,
@@ -43,8 +42,6 @@ import {
 } from '../components';
 
 import { createConnection, getUniqueName } from '../utils';
-
-const imgManagerMenu = require('../assets/images/manual/manager-menu.PNG');
 
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
@@ -72,23 +69,26 @@ const ManagerPage = () => {
     const [leaveList, setLeaveList] = useState([]);
     const [leaveListOther, setLeaveListOther] = useState([]);
     const [leaveListStatistics, setLeaveListStatistics] = useState([]);
+    const [waitingList, setWaitingList] = useState([]);
     const [totalWaiting, setTotalWaiting] = useState(0);
 
+    const [api, contextHolder] = notification.useNotification({ stack: { threshold: 2 } });
+
     const [modalConfirm, setModalConfirm] = useState({
+        message: '',
         onOk: () => {},
         open: false,
-        message: '',
     });
 
     const [modalError, setModalError] = useState({
-        open: false,
         error: '',
+        open: false,
     });
 
     const [modalErrorOther, setModalErrorOther] = useState({
+        message: '',
         open: false,
         title: '',
-        message: '',
     });
 
     const [modalReason, setModalReason] = useState({
@@ -97,15 +97,9 @@ const ManagerPage = () => {
     });
 
     const [modalSuccess, setModalSuccess] = useState({
-        open: false,
         message: '',
+        open: false,
     });
-
-    const [openTour, setOpenTour] = useState(
-        localStorage.getItem('localOpenTour') === 'false' ? false : true
-    );
-
-    const ref1 = useRef(null);
 
     const [form] = Form.useForm();
 
@@ -129,6 +123,21 @@ const ManagerPage = () => {
 
         setTotalWaiting(totalWaiting);
     }, [leaveList]);
+
+    useEffect(() => {
+        for (let index = 0; index < 5; index++) {
+            api.info({
+                description: index,
+                duration: 0,
+                message: `Test ${index}`,
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        const test = leaveList.filter(item => item.managerApproved === null);
+        console.log(test);
+    }, []);
 
     const getDataSource = async (url, params = {}, setDataSource) => {
         try {
@@ -194,6 +203,10 @@ const ManagerPage = () => {
             },
             setLeaveListStatistics
         );
+    };
+
+    const getWaitingList = () => {
+        leaveList.map(item => !item.managerApproved && { id: item.id, userName: item.userName });
     };
 
     const approveLeave = async (
@@ -733,7 +746,6 @@ const ManagerPage = () => {
                     <ThreeDotsVertical />
                 </Dropdown>
             ),
-            onCell: (record, rowIndex) => ({ ref: (rowIndex === 0 && ref1) || null }),
         },
         {
             title: '#',
@@ -1323,68 +1335,36 @@ const ManagerPage = () => {
                 tabBarGutter={40}
             />
             <ModalConfirmComponent
+                message={modalConfirm.message}
                 onCancel={() => setModalConfirm({ open: false })}
                 onOk={modalConfirm.onOk}
                 open={modalConfirm.open}
-                message={modalConfirm.message}
             />
             <ModalErrorComponent
+                error={modalError.error}
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
-                error={modalError.error}
             />
             <ModalErrorOtherComponent
+                message={modalErrorOther.message}
                 onOk={() => setModalErrorOther({ open: false })}
                 open={modalErrorOther.open}
                 title={modalErrorOther.title}
-                message={modalErrorOther.message}
             />
             <ModalReasonComponent
                 afterClose={() => form.resetFields()}
+                form={form}
                 onCancel={() => setModalReason({ open: false })}
+                onFinish={modalReason.onFinish}
                 onOk={() => form.submit()}
                 open={modalReason.open}
-                form={form}
-                onFinish={modalReason.onFinish}
             />
             <ModalSuccessComponent
+                message={modalSuccess.message}
                 onOk={() => setModalSuccess({ open: false })}
                 open={modalSuccess.open}
-                message={modalSuccess.message}
             />
-            <Tour
-                arrow
-                mask={{
-                    color: 'rgba(72,72,72,.4)',
-                }}
-                onClose={() => {
-                    setOpenTour(prevState => !prevState);
-                    localStorage.setItem('localOpenTour', false);
-                }}
-                open={openTour}
-                placement="right"
-                steps={[
-                    {
-                        title: 'MENU CHỨC NĂNG',
-                        description: (
-                            <Alert
-                                message={
-                                    <>
-                                        <i>- Phê duyệt</i>
-                                        <br />
-                                        <i>- Từ chối</i>
-                                        <br />
-                                        <i>- Xác nhận</i>
-                                    </>
-                                }
-                                type="info"
-                            />
-                        ),
-                        cover: <img alt="manager-menu.png" src={imgManagerMenu} />,
-                        target: () => ref1.current,
-                    },
-                ]}
-            />
+            {contextHolder}
         </ContentComponent>
     );
 };

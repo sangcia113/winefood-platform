@@ -340,7 +340,7 @@ const UserPage = () => {
             ellipsis: true,
             filterSearch: true,
             filters: getUniqueName(user, 'id', 'name'),
-            onFilter: (value, record) => record.name.includes(value),
+            onFilter: (value, record) => record.name === value,
             render: record => <Text strong>{record}</Text>,
         },
         {

@@ -21,7 +21,6 @@ import {
     Tag,
     Tooltip,
     Typography,
-    notification,
 } from 'antd';
 import {
     CheckCircleFilled,
@@ -73,16 +72,8 @@ const ManagerPage = () => {
     const [leaveList, setLeaveList] = useState([]);
     const [leaveListOther, setLeaveListOther] = useState([]);
     const [leaveListStatistics, setLeaveListStatistics] = useState([]);
-    const [filteredWaitingForApprove, setFilteredWaitingForApprove] = useState([]);
-    const [filteredWaitingForApproveLeaveType, setFilteredWaitingForApproveLeaveType] = useState(
-        []
-    );
-    const [filteredWaitingForApproveLeaveDay, setFilteredWaitingForApproveLeaveDay] = useState([]);
-    const [filteredWaitingForApproveDeleteRequest, setFilteredWaitingForApproveDeleteRequest] =
-        useState([]);
     const [totalWaiting, setTotalWaiting] = useState(0);
-
-    const [api, contextHolder] = notification.useNotification({ stack: { threshold: 2 } });
+    const [filteredLeaveList, setFilteredLeaveList] = useState([]);
 
     const [modalConfirm, setModalConfirm] = useState({
         message: '',
@@ -204,7 +195,7 @@ const ManagerPage = () => {
         const filtered = leaveList.filter(
             item => item.managerApproved === null && !item.deleteRequest
         );
-        setFilteredWaitingForApprove(filtered);
+        setFilteredLeaveList(filtered);
     };
 
     const getWaitingForApproveLeaveType = () => {
@@ -216,7 +207,7 @@ const ManagerPage = () => {
                 item.actualFromDate !== item.bookFromDat &&
                 item.actualToDate !== item.bookToDate
         );
-        setFilteredWaitingForApproveLeaveType(filtered);
+        setFilteredLeaveList(filtered);
     };
 
     const getWaitingForApproveLeaveDay = () => {
@@ -226,14 +217,14 @@ const ManagerPage = () => {
                 !item.managerApprovedLeaveType &&
                 item.actualLeaveTypeId !== item.bookLeaveTypeId
         );
-        setFilteredWaitingForApproveLeaveDay(filtered);
+        setFilteredLeaveList(filtered);
     };
 
     const getWaitingForApproveDeleteRequest = () => {
         const filtered = leaveList.filter(
             item => item.deleteRequest && item.managerApprovedDelete === null
         );
-        setFilteredWaitingForApproveDeleteRequest(filtered);
+        setFilteredLeaveList(filtered);
     };
 
     const approveLeave = async (
@@ -896,7 +887,7 @@ const ManagerPage = () => {
             ellipsis: true,
             filters: getUniqueName(leaveList, 'userId', 'userName'),
             filterSearch: true,
-            onFilter: (value, record) => record.userName.includes(value),
+            onFilter: (value, record) => record.userName === value,
             render: (_, record) => {
                 if (!record.managerApprovedDelete) {
                     if (record.managerApproved === null) {
@@ -1130,7 +1121,7 @@ const ManagerPage = () => {
             ellipsis: true,
             filters: getUniqueName(leaveListOther, 'userId', 'userName'),
             filterSearch: true,
-            onFilter: (value, record) => record.userName.includes(value),
+            onFilter: (value, record) => record.userName === value,
             render: (_, record) =>
                 record.deleted === 1 ? (
                     <Text delete strong type={'danger'}>
@@ -1235,7 +1226,7 @@ const ManagerPage = () => {
                                                                         if (e.target.checked) {
                                                                             getWaitingForApprove();
                                                                         } else {
-                                                                            setFilteredWaitingForApprove(
+                                                                            setFilteredLeaveList(
                                                                                 []
                                                                             );
                                                                         }
@@ -1260,7 +1251,7 @@ const ManagerPage = () => {
                                                                                 ) {
                                                                                     getWaitingForApproveLeaveType();
                                                                                 } else {
-                                                                                    setFilteredWaitingForApproveLeaveType(
+                                                                                    setFilteredLeaveList(
                                                                                         []
                                                                                     );
                                                                                 }
@@ -1280,7 +1271,7 @@ const ManagerPage = () => {
                                                                                 ) {
                                                                                     getWaitingForApproveLeaveDay();
                                                                                 } else {
-                                                                                    setFilteredWaitingForApproveLeaveDay(
+                                                                                    setFilteredLeaveList(
                                                                                         []
                                                                                     );
                                                                                 }
@@ -1300,7 +1291,7 @@ const ManagerPage = () => {
                                                                                 ) {
                                                                                     getWaitingForApproveDeleteRequest();
                                                                                 } else {
-                                                                                    setFilteredWaitingForApproveDeleteRequest(
+                                                                                    setFilteredLeaveList(
                                                                                         []
                                                                                     );
                                                                                 }
@@ -1315,6 +1306,7 @@ const ManagerPage = () => {
                                                     ],
                                                 }}
                                                 placement="bottomLeft"
+                                                trigger="click"
                                             >
                                                 <Button
                                                     icon={<FilterFilled />}
@@ -1349,15 +1341,7 @@ const ManagerPage = () => {
                                     bordered
                                     columns={columnsLeaveList}
                                     dataSource={
-                                        filteredWaitingForApprove.length > 0
-                                            ? filteredWaitingForApprove
-                                            : filteredWaitingForApproveLeaveType.length > 0
-                                            ? filteredWaitingForApproveLeaveType
-                                            : filteredWaitingForApproveLeaveDay.length > 0
-                                            ? filteredWaitingForApproveLeaveDay
-                                            : filteredWaitingForApproveDeleteRequest.length > 0
-                                            ? filteredWaitingForApproveDeleteRequest
-                                            : leaveList
+                                        filteredLeaveList.length > 0 ? filteredLeaveList : leaveList
                                     }
                                     scroll={{ x: true }}
                                     showSorterTooltip={false}
@@ -1510,7 +1494,6 @@ const ManagerPage = () => {
                 onOk={() => setModalSuccess({ open: false })}
                 open={modalSuccess.open}
             />
-            {contextHolder}
         </ContentComponent>
     );
 };

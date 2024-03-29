@@ -37,9 +37,8 @@ cron.schedule('0 8 * * 1-6', async () => {
             });
 
             messageJP +=
-                'Please click here view more information: https://winefood-sw.com/nghiphep/manager\n\nNote: This is an automatic notification from the system. Please do not reply!';
-            messageVN +=
-                'Note: This is an automatic notification from the system. Please do not reply!';
+                'ここをクリックして詳細をご覧ください: https://winefood-sw.com/nghiphep/manager\n\n注: これはシステムからの自動通知です。返信しないでください。';
+            messageVN += 'Lưu ý: Đây là tin nhắn tự động từ hệ thống. Vui lòng không trả lời lại!';
 
             await sendZaloAPIV3('1337604619804588121', messageJP);
             await sendZaloAPIV3('637017525950997790', messageVN);

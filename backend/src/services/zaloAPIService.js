@@ -210,7 +210,7 @@ const zaloAPIService = {
 
         const { error, message } = response.data;
 
-        created(zaloAPIUserId, error, message);
+        created(zaloAPIUserId?.zaloAPIUserId ?? '', error, message);
 
         if (error === -216) {
             const responseRefresh = await zaloAPIService.refreshToken();

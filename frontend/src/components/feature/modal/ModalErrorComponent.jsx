@@ -10,6 +10,38 @@ const renderMessage = error => {
 
     if (errorCode) {
         switch (errorCode) {
+            case -201:
+                return (
+                    <>
+                        <Alert
+                            message={
+                                <>
+                                    Gửi thông báo qua Zalo <b>thất bại</b>!
+                                    <br />
+                                    Do nhân viên đã không <b>cung cấp thông tin</b>
+                                    <br />
+                                    cho <b>Wine Food</b>!
+                                </>
+                            }
+                            type="error"
+                            style={{ textAlign: 'center' }}
+                        />
+                        <br />
+                        <Alert
+                            message={
+                                <>
+                                    Tuy nhiên
+                                    <br />
+                                    Dữ liệu <b>đã được ghi vào hệ thống.</b>
+                                    <br />
+                                    Bạn có thể yên tâm!
+                                </>
+                            }
+                            type="success"
+                            style={{ textAlign: 'center' }}
+                        />
+                    </>
+                );
             case -230:
                 return (
                     <>
@@ -18,7 +50,7 @@ const renderMessage = error => {
                                 <>
                                     Gửi thông báo qua Zalo <b>thất bại</b>!
                                     <br />
-                                    Do người dùng đã không <b>tương tác</b>
+                                    Do nhân viên đã không <b>tương tác</b>
                                     <br />
                                     với <b>Wine Food</b> trong vòng 7 ngày!
                                 </>

@@ -12,43 +12,79 @@ const handleZaloMessage = {
         bookFromDate,
         bookToDate,
         reason
-    ) =>
-        'ĐƠN XIN NGHỈ PHÉP\n\n' +
-        'Dear ' +
-        (superiorGender === 1 ? 'Mr. ' : 'Ms. ') +
-        superiorName +
-        ', xin gửi đến ' +
-        (superiorGender === 1 ? 'anh' : 'chị') +
-        ' với các thông tin như sau:\n\n' +
-        '- Họ và tên: ' +
-        name +
-        '\n' +
-        '- Bộ phận: ' +
-        department +
-        '\n' +
-        '- Loại phép: ' +
-        bookLeaveType +
-        '\n' +
-        '- Số ngày nghỉ: ' +
-        bookLeaveDay +
-        '\n' +
-        '- Từ ngày: ' +
-        dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
-        '\n' +
-        '- Đến ngày: ' +
-        dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
-        '\n' +
-        '- Lý do: ' +
-        reason +
-        '\n' +
-        '- Ngày yêu cầu: ' +
-        dayjs().format('HH:mm DD/MM/YYYY') +
-        '\n' +
-        '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/' +
-        (superiorRoleId === 2 || superiorRoleId === 3 ? 'manager' : 'leader') +
-        '\n\n' +
-        'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
-        'Vui lòng trả lời 1 tin nhắn bất kỳ!',
+    ) => {
+        if (superiorRoleId === 2) {
+            return (
+                '休暇申請書\n\n' +
+                '久保様、下記の情報を送りします:\n\n' +
+                '- フルネーム: ' +
+                name +
+                '\n' +
+                '- 部署: ' +
+                department +
+                '\n' +
+                '- 休暇類: ' +
+                bookLeaveType +
+                '\n' +
+                '- 休暇の日数: ' +
+                bookLeaveDay +
+                '\n' +
+                '- から: ' +
+                dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
+                '\n' +
+                '- まで: ' +
+                dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
+                '\n' +
+                '- 理由: ' +
+                reason +
+                '\n' +
+                '- 申請日: ' +
+                dayjs().format('HH:mm DD/MM/YYYY') +
+                '\n' +
+                '- ここをクリックして詳細をご覧ください: https://winefood-sw.com/nghiphep/manager\n\n' +
+                '注: これはシステムからの自動通知です。返信しないでください。'
+            );
+        } else {
+            return (
+                'ĐƠN XIN NGHỈ PHÉP\n\n' +
+                'Dear ' +
+                (superiorGender === 1 ? 'Mr. ' : 'Ms. ') +
+                superiorName +
+                ', xin gửi đến ' +
+                (superiorGender === 1 ? 'anh' : 'chị') +
+                ' với các thông tin như sau:\n\n' +
+                '- Họ và tên: ' +
+                name +
+                '\n' +
+                '- Bộ phận: ' +
+                department +
+                '\n' +
+                '- Loại phép: ' +
+                bookLeaveType +
+                '\n' +
+                '- Số ngày nghỉ: ' +
+                bookLeaveDay +
+                '\n' +
+                '- Từ ngày: ' +
+                dayjs(bookFromDate).format('HH:mm DD/MM/YYYY') +
+                '\n' +
+                '- Đến ngày: ' +
+                dayjs(bookToDate).format('HH:mm DD/MM/YYYY') +
+                '\n' +
+                '- Lý do: ' +
+                reason +
+                '\n' +
+                '- Ngày yêu cầu: ' +
+                dayjs().format('HH:mm DD/MM/YYYY') +
+                '\n' +
+                '- Vui lòng truy cập vào đây để xem chi tiết: https://winefood-sw.com/nghiphep/' +
+                (superiorRoleId === 2 || superiorRoleId === 3 ? 'manager' : 'leader') +
+                '\n\n' +
+                'Chú ý: Để nhận được thông báo tiếp theo từ Wine Food.\n' +
+                'Vui lòng trả lời 1 tin nhắn bất kỳ!'
+            );
+        }
+    },
 
     messageRequestCancel: (
         managerGender,

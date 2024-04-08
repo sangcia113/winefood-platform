@@ -238,7 +238,7 @@ const zaloAPIController = {
 
     // Leader từ chối gửi tin nhắn đến Member
     leaderSendMessageRejectToMember: async (req, res) => {
-        const { username: leaderName } = req.decoded;
+        const leaderName  = req.decoded.userName;
 
         // Lấy thông tin từ body của yêu cầu
         const {
@@ -291,7 +291,7 @@ const zaloAPIController = {
 
     // Manager gửi tin nhắn phê duyệt đến Member
     managerSendMessageApproveToMember: async (req, res) => {
-        const managerName = req.decoded.username;
+        const managerName = req.decoded.userName;
 
         const {
             userId,
@@ -341,7 +341,7 @@ const zaloAPIController = {
 
     // Manager gửi tin nhắn từ chối đến Member
     managerSendMessageRejectToMember: async (req, res) => {
-        const managerName = req.decoded.username;
+        const managerName = req.decoded.userName;
 
         // Lấy thông tin từ body của yêu cầu
         const {
@@ -394,7 +394,7 @@ const zaloAPIController = {
 
     // Manager gửi tin nhắn phê duyệt thay đổi loại nghỉ phép đến Member
     managerSendMessageApproveLeaveTypeToMember: async (req, res) => {
-        const managerName = req.decoded.username;
+        const managerName = req.decoded.userName;
 
         // Lấy thông tin từ body của yêu cầu
         const {
@@ -445,7 +445,7 @@ const zaloAPIController = {
 
     // Manager gửi tin nhắn phê duyệt thay đổi số ngày nghỉ phép đến Member
     managerSendMessageApproveLeaveDayToMember: async (req, res) => {
-        const managerName = req.decoded.username;
+        const managerName = req.decoded.userName;
 
         // Lấy thông tin từ body của yêu cầu
         const {
@@ -496,7 +496,7 @@ const zaloAPIController = {
 
     // Manager gửi tin nhắn phê duyệt yêu cầu hủy phép đến Member
     managerSendMessageApproveRequestDeleteToMember: async (req, res) => {
-        const managerName = req.decoded.username;
+        const managerName = req.decoded.userName;
 
         // Lấy thông tin từ body của yêu cầu
         const {

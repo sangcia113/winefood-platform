@@ -275,6 +275,7 @@ const HomePage = () => {
                         format={'HH:mm DD/MM/YYYY'}
                         inputReadOnly
                         placeholder="Chọn ngày bắt đầu..."
+                        showNow={false}
                         showTime={{ defaultValue: dayjs('07:30', 'HH:mm') }}
                         size={'large'}
                         style={{ width: '100%' }}
@@ -304,6 +305,7 @@ const HomePage = () => {
                         format={'HH:mm DD/MM/YYYY'}
                         inputReadOnly
                         placeholder="Chọn ngày kết thúc..."
+                        showNow={false}
                         showTime={{ defaultValue: dayjs('16:30', 'HH:mm') }}
                         size={'large'}
                         style={{ width: '100%' }}

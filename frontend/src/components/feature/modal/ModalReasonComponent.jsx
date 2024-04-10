@@ -6,9 +6,9 @@ import { SmileFilled } from '@ant-design/icons';
 const { Text } = Typography;
 const { TextArea } = Input;
 
-const ModalReasonComponent = ({ afterClose, form, loading, onCancel, onFinish, onOk, open }) => (
+const ModalReasonComponent = ({ form, loading, onCancel, onFinish, open }) => (
     <Modal
-        afterClose={afterClose}
+        afterClose={() => form.resetFields()}
         cancelButtonProps={{ style: { borderRadius: 20 } }}
         cancelText="Hủy Bỏ"
         centered
@@ -16,7 +16,7 @@ const ModalReasonComponent = ({ afterClose, form, loading, onCancel, onFinish, o
         okButtonProps={{ loading, style: { borderRadius: 20 } }}
         okText="Đồng Ý"
         onCancel={onCancel}
-        onOk={onOk}
+        onOk={() => form.submit()}
         open={open}
         title={
             <Space direction="vertical" size="large">

@@ -352,11 +352,9 @@ const HeaderComponent = ({ name }) => {
                 ]}
             />
             <ModalChangePassword
-                afterClose={() => form.resetFields()}
                 form={form}
                 loading={loading}
                 onCancel={() => setModalChangePass({ open: false })}
-                onOk={() => form.submit()}
                 open={modalChangePass.open}
                 onFinish={modalChangePass.onFinish}
             />
@@ -373,11 +371,9 @@ const HeaderComponent = ({ name }) => {
                 message={modalErrorOther.message}
             />
             <ModalFeedback
-                afterClose={() => formFeedback.resetFields()}
                 form={formFeedback}
                 loading={loading}
                 onCancel={() => setModalFeedback({ open: false })}
-                onOk={() => formFeedback.submit()}
                 open={modalFeedback.open}
                 onFinish={modalFeedback.onFinish}
             />

@@ -573,12 +573,10 @@ const LeaderPage = () => {
                 message={modalErrorOther.message}
             />
             <ModalReasonComponent
-                afterClose={() => formReason.resetFields()}
                 form={formReason}
                 loading={loading}
                 onCancel={() => setModalReason({ open: false })}
                 onFinish={modalReason.onFinish}
-                onOk={() => formReason.submit()}
                 open={modalReason.open}
             />
             <ModalSuccessComponent

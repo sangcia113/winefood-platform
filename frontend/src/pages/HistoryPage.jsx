@@ -681,13 +681,11 @@ const HistoryPage = () => {
                 message={modalConfirm.message}
             />
             <ModalEditComponent
-                afterClose={() => formEdit.resetFields()}
                 form={formEdit}
                 leaveType={leaveType}
                 loading={loading}
                 onCancel={() => setModalEdit({ open: false })}
                 onFinish={modalEdit.onFinish}
-                onOk={() => formEdit.submit()}
                 open={modalEdit.open}
             />
             <ModalErrorComponent
@@ -702,12 +700,10 @@ const HistoryPage = () => {
                 message={modalErrorOther.message}
             />
             <ModalReasonComponent
-                afterClose={() => formReason.resetFields()}
                 form={formReason}
                 loading={loading}
                 onCancel={() => setModalReason({ open: false })}
                 onFinish={modalReason.onFinish}
-                onOk={() => formReason.submit()}
                 open={modalReason.open}
             />
             <ModalSuccessComponent

@@ -8,19 +8,10 @@ import dayjs from 'dayjs';
 const { Item } = Form;
 const { Text } = Typography;
 
-const ModalEditComponent = ({
-    afterClose,
-    form,
-    leaveType = [],
-    loading,
-    onCancel,
-    onOk,
-    open,
-    onFinish,
-}) => {
+const ModalEditComponent = ({ form, leaveType = [], loading, onCancel, open, onFinish }) => {
     return (
         <Modal
-            afterClose={afterClose}
+            afterClose={() => form.resetFields()}
             cancelButtonProps={{ style: { borderRadius: 20 } }}
             cancelText="Hủy Bỏ"
             centered
@@ -28,7 +19,7 @@ const ModalEditComponent = ({
             okButtonProps={{ loading, style: { borderRadius: 20 } }}
             okText="Đồng Ý"
             onCancel={onCancel}
-            onOk={onOk}
+            onOk={() => form.submit()}
             open={open}
             title={
                 <Space direction="vertical" size="large">

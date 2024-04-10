@@ -1482,11 +1482,9 @@ const ManagerPage = () => {
                 title={modalErrorOther.title}
             />
             <ModalReasonComponent
-                afterClose={() => form.resetFields()}
                 form={form}
                 onCancel={() => setModalReason({ open: false })}
                 onFinish={modalReason.onFinish}
-                onOk={() => form.submit()}
                 open={modalReason.open}
             />
             <ModalSuccessComponent

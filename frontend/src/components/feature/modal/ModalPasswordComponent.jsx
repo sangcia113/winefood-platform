@@ -6,9 +6,9 @@ import { SafetyCertificateFilled } from '@ant-design/icons';
 const { Text } = Typography;
 const { Password } = Input;
 
-const ModalPasswordComponent = ({ afterClose, onCancel, onOk, open, form, onFinish }) => (
+const ModalPasswordComponent = ({ onCancel, open, form, onFinish }) => (
     <Modal
-        afterClose={afterClose}
+        afterClose={() => form.resetFields()}
         cancelButtonProps={{ style: { borderRadius: 20 } }}
         cancelText="Hủy Bỏ"
         centered
@@ -16,7 +16,7 @@ const ModalPasswordComponent = ({ afterClose, onCancel, onOk, open, form, onFini
         okButtonProps={{ style: { borderRadius: 20 } }}
         okText="Đồng Ý"
         onCancel={onCancel}
-        onOk={onOk}
+        onOk={() => form.submit()}
         open={open}
         title={
             <Space direction="vertical" size="large">

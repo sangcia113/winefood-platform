@@ -7,9 +7,9 @@ const { Password } = Input;
 const { Text } = Typography;
 const { Item } = Form;
 
-const ModalChangePassword = ({ afterClose, loading, onCancel, onOk, open, form, onFinish }) => (
+const ModalChangePassword = ({ loading, onCancel, open, form, onFinish }) => (
     <Modal
-        afterClose={afterClose}
+        afterClose={() => form.resetFields()}
         cancelButtonProps={{ style: { borderRadius: 20 } }}
         cancelText="Hủy Bỏ"
         centered
@@ -17,7 +17,7 @@ const ModalChangePassword = ({ afterClose, loading, onCancel, onOk, open, form, 
         okButtonProps={{ loading, style: { borderRadius: 20 } }}
         okText="Đồng Ý"
         onCancel={onCancel}
-        onOk={onOk}
+        onOk={() => form.submit()}
         open={open}
         title={
             <Space direction="vertical" size="large">

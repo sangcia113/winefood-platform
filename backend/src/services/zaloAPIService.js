@@ -234,6 +234,70 @@ const zaloAPIService = {
             return { error, message };
         }
     },
+
+    sendZaloAPIV3WithImage: async (zaloAPIUserId, zaloAPIText, retryCount = 1) => {
+        const [{ accessToken }] = await zaloAPIService.readed();
+
+        const data = JSON.stringify({
+            recipient: {
+                user_id: zaloAPIUserId,
+            },
+            message: {
+                text: zaloAPIText,
+                attachment: {
+                    type: 'template',
+                    payload: {
+                        template_type: 'media',
+                        elements: [
+                            {
+                                media_type: 'image',
+                                url: 'https://api.winefood-sw.com/src/assets/manual-correct.png',
+                            },
+                        ],
+                    },
+                },
+            },
+        });
+
+        const config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: process.env.ZALO_API_URL,
+            headers: {
+                'Content-Type': 'application/json',
+                access_token: accessToken,
+            },
+            data,
+        };
+
+        const response = await axios.request(config);
+
+        const { error, message } = response.data;
+
+        created(zaloAPIUserId?.zaloAPIUserId ?? '', error, message);
+
+        if (error === -216) {
+            const responseRefresh = await zaloAPIService.refreshToken();
+
+            const { access_token, refresh_token } = responseRefresh.data;
+
+            if (!(access_token && refresh_token))
+                return { error: -1007, message: 'Invalid Refresh Token!' };
+
+            await zaloAPIService.updated(access_token, refresh_token);
+
+            if (retryCount > 0)
+                return await zaloAPIService.sendZaloAPIV3(
+                    zaloAPIUserId,
+                    zaloAPIText,
+                    retryCount - 1
+                );
+
+            throw new Error('Maximum retry count reached.');
+        } else {
+            return { error, message };
+        }
+    },
 };
 
 // Xuất các hàm để sử dụng trong module khác

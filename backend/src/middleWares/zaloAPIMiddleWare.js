@@ -2,7 +2,7 @@ const moment = require('moment');
 
 const { readedUserByZaloUserId, readedInfoSuperior } = require('../services/userService');
 const { checkIsExist, created } = require('../services/leaveListService');
-const { sendZaloAPIV3 } = require('../services/zaloAPIService');
+const { sendZaloAPIV3, sendZaloAPIV3WithImage } = require('../services/zaloAPIService');
 const { messageRequestLeave } = require('../utils/handleZaloMessage');
 
 const parseMessage = message => {
@@ -183,9 +183,10 @@ const zaloAPIMiddleWare = {
                 console.log(error);
             }
         } else {
-            await sendZaloAPIV3(
+            await sendZaloAPIV3WithImage(
                 sender.id,
-                'SAI CÚ PHÁP XIN NGHỈ PHÉP!\n\nTin nhắn xin nghỉ phép sẽ có cú pháp như sau:\n\n#np pn 1 07:30 01/04/2024 16:30 01/04/2024 Bận việc riêng\n\n***TRONG ĐÓ***\n\n- Cú pháp bắt buộc: #np\n- Loại nghỉ phép: pn\n    + Phép năm: pn\n    + Nghỉ ốm: no\n    + Đi trễ - về sớm: dtvs\n    + Lý do khác: ldk\n    + Nghỉ bù: nb\n    + Nghỉ theo chế độ: ntcd\n    + Nghỉ thai sản: nts\n    + Nghỉ tai nạn lao động: ntnld\n- Số ngày nghỉ phép: 1\n- Giờ bắt đầu: 07:30\n- Ngày bắt đầu: 01/04/2024\n- Giờ kết thúc: 16:30\n- Ngày kết thúc: 01/04/2024\n- Lý do nghỉ phép: Bận việc riêng\n\nTrang chủ: https://winefood-sw.com/nghiphep'
+                // 'SAI CÚ PHÁP XIN NGHỈ PHÉP!\n\nTin nhắn xin nghỉ phép sẽ có cú pháp như sau:\n\n#np pn 1 07:30 01/04/2024 16:30 01/04/2024 Bận việc riêng\n\n***TRONG ĐÓ***\n\n- Cú pháp bắt buộc: #np\n- Loại nghỉ phép: pn\n    + Phép năm: pn\n    + Nghỉ ốm: no\n    + Đi trễ - về sớm: dtvs\n    + Lý do khác: ldk\n    + Nghỉ bù: nb\n    + Nghỉ theo chế độ: ntcd\n    + Nghỉ thai sản: nts\n    + Nghỉ tai nạn lao động: ntnld\n- Số ngày nghỉ phép: 1\n- Giờ bắt đầu: 07:30\n- Ngày bắt đầu: 01/04/2024\n- Giờ kết thúc: 16:30\n- Ngày kết thúc: 01/04/2024\n- Lý do nghỉ phép: Bận việc riêng\n\nTrang chủ: https://winefood-sw.com/nghiphep'
+                'SAI CÚ PHÁP XIN NGHỈ PHÉP!\n\nTrang chủ: https://winefood-sw.com/nghiphep'
             );
         }
     },

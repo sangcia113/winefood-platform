@@ -999,19 +999,32 @@ const ManagerPage = () => {
             ],
         },
         {
-            title: 'Từ ngày',
-            dataIndex: 'bookFromDate',
-            key: 'bookFromDate',
+            title: 'Kế hoạch',
+            dataIndex: 'plan',
+            key: 'plan',
             ellipsis: true,
-            render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
+            render: (_, record) => (
+                <>
+                    {dayjs(record.bookFromDate).format('HH:mm DD/MM/YYYY')}
+                    <br />
+                    {dayjs(record.bookToDate).format('HH:mm DD/MM/YYYY')}
+                </>
+            ),
         },
-        {
-            title: 'Đến ngày',
-            dataIndex: 'bookToDate',
-            key: 'bookToDate',
-            ellipsis: true,
-            render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
-        },
+        // {
+        //     title: 'Từ ngày',
+        //     dataIndex: 'bookFromDate',
+        //     key: 'bookFromDate',
+        //     ellipsis: true,
+        //     render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
+        // },
+        // {
+        //     title: 'Đến ngày',
+        //     dataIndex: 'bookToDate',
+        //     key: 'bookToDate',
+        //     ellipsis: true,
+        //     render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
+        // },
         {
             title: 'Lý do',
             dataIndex: 'reason',

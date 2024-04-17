@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import {
+    AdminPage,
     DepartmentPage,
     HistoryPage,
     HomePage,
@@ -87,6 +88,7 @@ const App = () => (
                         </PrivatePage>
                     }
                 />
+                <Route path="/vesinh/admin" element={<AdminPage />} />
             </Routes>
         </ConfigProvider>
     </BrowserRouter>

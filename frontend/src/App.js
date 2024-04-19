@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import {
-    AdminPage,
     DepartmentPage,
     HistoryPage,
     HomePage,
@@ -14,7 +13,15 @@ import {
     PrivatePage,
     TypePage,
     UserPage,
-} from './pages/index';
+} from './pages';
+import {
+    ClassifyPage,
+    ContentPage,
+    HomePage as EnvironmentHomePage,
+    LoginPage as EnvironmentLoginPage,
+    PrivatePage as EnvironmentPrivatePage,
+    UserPage as EnvironmentUserPage,
+} from './pages/environment';
 
 const App = () => (
     <BrowserRouter>
@@ -88,7 +95,39 @@ const App = () => (
                         </PrivatePage>
                     }
                 />
-                <Route path="/vesinh/admin" element={<AdminPage />} />
+                <Route path="/vesinh/login" element={<EnvironmentLoginPage />} />
+                <Route
+                    path="/vesinh"
+                    element={
+                        <EnvironmentPrivatePage roles={[1, 2]}>
+                            <EnvironmentHomePage />
+                        </EnvironmentPrivatePage>
+                    }
+                />
+                <Route
+                    path="/vesinh/classify"
+                    element={
+                        <EnvironmentPrivatePage roles={[1]}>
+                            <ClassifyPage />
+                        </EnvironmentPrivatePage>
+                    }
+                />
+                <Route
+                    path="/vesinh/content"
+                    element={
+                        <EnvironmentPrivatePage roles={[1]}>
+                            <ContentPage />
+                        </EnvironmentPrivatePage>
+                    }
+                />
+                <Route
+                    path="/vesinh/user"
+                    element={
+                        <EnvironmentPrivatePage roles={[1]}>
+                            <EnvironmentUserPage />
+                        </EnvironmentPrivatePage>
+                    }
+                />
             </Routes>
         </ConfigProvider>
     </BrowserRouter>

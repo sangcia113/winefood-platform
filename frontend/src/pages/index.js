@@ -1,4 +1,3 @@
-import AdminPage from './enviroment/AdminPage';
 import DepartmentPage from './DepartmentPage';
 import HistoryPage from './HistoryPage';
 import HomePage from './HomePage';
@@ -13,7 +12,6 @@ import TypePage from './TypePage';
 import UserPage from './UserPage';
 
 export {
-    AdminPage,
     DepartmentPage,
     HistoryPage,
     HomePage,

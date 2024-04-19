@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Card, Checkbox, Flex, Form, Input, Layout, Space, Spin, Typography } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
-import { ModalConfirmComponent, ModalErrorComponent } from '../components';
+import { ModalConfirmComponent, ModalErrorComponent } from '../../components';
 
-import { checkToken, createConnection } from '../utils';
+import { checkToken, createConnection } from '../../utils';
 
-const videoSource = require(`../assets/videos/dna.mp4`);
+const videoSource = require(`../../assets/videos/dna.mp4`);
 
 const { Item } = Form;
 const { Password } = Input;
@@ -31,14 +31,14 @@ const LoginPage = () => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        if (checkToken()) return navigate('/nghiphep');
+        if (checkToken()) return navigate('/vesinh');
     }, []);
 
     const onFinish = async values => {
         try {
             setLoading(true);
 
-            const response = await createConnection().post(`/leave/login`, values);
+            const response = await createConnection().post(`/environment/login`, values);
 
             if (values.remember) {
                 localStorage.setItem('accessToken', response.data.accessToken);
@@ -46,8 +46,9 @@ const LoginPage = () => {
                 sessionStorage.setItem('accessToken', response.data.accessToken);
             }
 
-            navigate('/nghiphep');
+            navigate('/vesinh');
         } catch (error) {
+            console.log(error);
             setModalError({ error, open: true });
         } finally {
             setLoading(false);
@@ -89,7 +90,7 @@ const LoginPage = () => {
                         </Text>
                     </Flex>
 
-                    <Form form={form} onFinish={onFinish}>
+                    <Form form={form} layout="vertical" onFinish={onFinish}>
                         <Item
                             name="username"
                             rules={[{ required: true, message: 'Bạn chưa nhập tài khoản!' }]}

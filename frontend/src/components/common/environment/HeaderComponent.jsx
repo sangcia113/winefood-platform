@@ -6,6 +6,7 @@ import {
     LogoutOutlined,
     ReadFilled,
     ScheduleFilled,
+    SlidersFilled,
     SnippetsFilled,
 } from '@ant-design/icons';
 import { HouseFill, List, PeopleFill } from 'react-bootstrap-icons';
@@ -47,6 +48,11 @@ const items = [
         ),
         children: [
             {
+                key: 'classify',
+                label: 'Quản lý phân loại',
+                icon: <SlidersFilled size={20} />,
+            },
+            {
                 key: 'content',
                 label: 'Quản lý nội dung',
                 icon: <SnippetsFilled size={20} />,
@@ -60,7 +66,7 @@ const items = [
     },
 ];
 
-const HeaderComponent = ({ name }) => {
+const HeaderComponent = ({ language, name }) => {
     const [openDrawer, setOpenDraw] = useState(false);
 
     const navigate = useNavigate();
@@ -80,42 +86,46 @@ const HeaderComponent = ({ name }) => {
                 <Link to="/vesinh">
                     <Image alt="Logo WineFood" preview={false} src={imgSrc} width={240} />
                 </Link>
-                <Select
-                    defaultValue="VI"
-                    options={[
-                        {
-                            value: 'VI',
-                            label: 'VI',
-                        },
-                        {
-                            value: 'JP',
-                            label: 'JP',
-                        },
-                    ]}
-                    suffixIcon={<GlobalOutlined size={20} style={{ color: '#2db7f5' }} />}
-                />
-                {name && (
-                    <Dropdown
-                        arrow
-                        menu={{
-                            items: [
-                                {
-                                    key: 'logout',
-                                    label: 'Đăng xuất',
-                                    icon: <LogoutOutlined size={20} />,
-                                    onClick: () => {
-                                        sessionStorage.removeItem('accessToken');
-                                        localStorage.removeItem('accessToken');
-                                        navigate('/vesinh/login');
+                <Flex gap={8}>
+                    <Select
+                        defaultValue={language}
+                        options={[
+                            {
+                                value: 'VI',
+                                label: 'VI',
+                            },
+                            {
+                                value: 'JP',
+                                label: 'JP',
+                            },
+                        ]}
+                        suffixIcon={<GlobalOutlined size={20} style={{ color: '#2db7f5' }} />}
+                    />
+                    {name && (
+                        <Dropdown
+                            arrow
+                            menu={{
+                                items: [
+                                    {
+                                        key: 'logout',
+                                        label: 'Đăng xuất',
+                                        icon: <LogoutOutlined size={20} />,
+                                        onClick: () => {
+                                            sessionStorage.removeItem('accessToken');
+                                            localStorage.removeItem('accessToken');
+                                            navigate('/vesinh/login');
+                                        },
                                     },
-                                },
-                            ],
-                        }}
-                        placement="bottomLeft"
-                    >
-                        <Avatar style={{ backgroundColor: '#00822d' }}>{name}</Avatar>
-                    </Dropdown>
-                )}
+                                ],
+                            }}
+                            placement="bottomLeft"
+                        >
+                            <Avatar style={{ backgroundColor: '#00822d' }}>
+                                {name.split(' ').pop()}
+                            </Avatar>
+                        </Dropdown>
+                    )}
+                </Flex>
             </Flex>
             <Drawer
                 footer={

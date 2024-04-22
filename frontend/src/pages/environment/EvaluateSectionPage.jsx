@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Table, Tabs, Typography } from 'antd';
+import { Button, Radio, Table, Tabs, Typography } from 'antd';
 
 import ContentComponent from '../../components/common/environment/ContentComponent';
 import { ModalErrorComponent } from '../../components';
 import { createConnection } from '../../utils';
+import { PlusCircleFilled } from '@ant-design/icons';
 
 const { Text } = Typography;
 
@@ -20,6 +21,7 @@ const EvaluatePage = () => {
     const [contentShirozake, setContentShirozake] = useState([]);
     const [contentBottling, setContentBottling] = useState([]);
     const [contentToyo, setContentToyo] = useState([]);
+    const [evaluationChecked, setEvaluationChecked] = useState(false);
 
     const [modalError, setModalError] = useState({
         open: false,
@@ -34,7 +36,7 @@ const EvaluatePage = () => {
             const response = await createConnection(accessToken).get(
                 `/environment/content-department/department/${departmentId}`
             );
-            console.log(response.data);
+
             setContent(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
             setModalError({ error, open: true });
@@ -54,52 +56,99 @@ const EvaluatePage = () => {
         {
             key: 'departmentVN',
             dataIndex: 'departmentVN',
-            title: 'Bộ phận',
+            title: <div style={{ textAlign: 'center' }}>Bộ phận</div>,
             ellipsis: true,
+            align: 'center',
+            render: record => <Text strong>{record}</Text>,
+            onCell: (record, rowIndex) => ({
+                rowSpan: rowIndex === 0 ? contentOffice.length : 0,
+            }),
         },
         {
             key: 'index',
             dataIndex: 'index',
-            title: 'Mục',
+            title: <div style={{ textAlign: 'center' }}>Mục</div>,
             ellipsis: true,
+            align: 'center',
+            render: (text, record, index) => index + 1,
         },
         {
             key: 'classifyVN',
             dataIndex: 'classifyVN',
-            title: 'Phân loại',
+            title: <div style={{ textAlign: 'center' }}>Phân loại</div>,
             ellipsis: true,
         },
         {
             key: 'contentVN',
             dataIndex: 'contentVN',
-            title: 'Nội dung',
+            title: <div style={{ textAlign: 'center' }}>Nội dung</div>,
             ellipsis: true,
         },
         {
-            key: 'point',
-            dataIndex: 'point',
-            title: 'Điểm',
+            key: '',
+            dataIndex: '',
+            title: <div style={{ textAlign: 'center' }}>Điểm</div>,
             ellipsis: true,
+            children: [
+                {
+                    key: 'point',
+                    dataIndex: 'point',
+                    title: (
+                        <Button onClick={() => setEvaluationChecked(true)} type="primary">
+                            Select All
+                        </Button>
+                    ),
+                    align: 'center',
+                },
+            ],
         },
         {
             key: 'evaluate',
             dataIndex: 'evaluate',
-            title: 'Đánh giá',
+            title: <div style={{ textAlign: 'center' }}>Đánh giá</div>,
             ellipsis: true,
+            render: (_, record) => (
+                <Radio.Group>
+                    <Radio value={0}>0</Radio>
+                    <Radio value={record.point}>{record.point}</Radio>
+                </Radio.Group>
+            ),
         },
         {
-            key: 'selectPoint',
-            dataIndex: 'selectPoint',
-            title: 'Số điểm',
+            key: '',
+            dataIndex: '',
+            title: <div style={{ textAlign: 'center' }}>Số điểm</div>,
             ellipsis: true,
+            children: [
+                {
+                    key: 'deselectAll',
+                    dataIndex: 'deselectAll',
+                    title: (
+                        <Button onClick={() => setEvaluationChecked(false)} type="primary">
+                            Deselect All
+                        </Button>
+                    ),
+                    align: 'center',
+                },
+            ],
         },
         {
             key: 'note',
             dataIndex: 'note',
-            title: 'Ghi chú',
+            title: <div style={{ textAlign: 'center' }}>Ghi chú</div>,
             ellipsis: true,
+            align: 'center',
+            render: record => (
+                <Button
+                    icon={<PlusCircleFilled style={{ fontSize: 22, paddingTop: 3 }} />}
+                    shape="circle"
+                    type="primary"
+                />
+            ),
+            onCell: (record, rowIndex) => ({ rowSpan: rowIndex === 0 ? contentOffice.length : 0 }),
         },
     ];
+
     return (
         <ContentComponent items={itemsBreadcrumb} loading={loading}>
             <Tabs
@@ -115,6 +164,21 @@ const EvaluatePage = () => {
                                 dataSource={contentOffice}
                                 scroll={{ x: true }}
                                 showSorterTooltip={false}
+                                summary={() => (
+                                    <Table.Summary.Row>
+                                        <Table.Summary.Cell align="center" colSpan={1}>
+                                            <Text strong>TỔNG</Text>
+                                        </Table.Summary.Cell>
+                                        <Table.Summary.Cell colSpan={3} />
+                                        <Table.Summary.Cell align="center">
+                                            <Text strong>120</Text>
+                                        </Table.Summary.Cell>
+                                        <Table.Summary.Cell colSpan={1} />
+                                        <Table.Summary.Cell align="center">
+                                            <Text strong>120</Text>
+                                        </Table.Summary.Cell>
+                                    </Table.Summary.Row>
+                                )}
                             />
                         ),
                     },

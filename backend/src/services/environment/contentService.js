@@ -28,7 +28,7 @@ const contentService = {
                     WHERE
                         ct.deleted IS NULL
                     ORDER BY 
-                        id 
+                        ct.id 
                     DESC`;
 
         const [results] = await db.query(sql);

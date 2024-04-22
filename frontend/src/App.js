@@ -17,6 +17,8 @@ import {
 import {
     ClassifyPage,
     ContentPage,
+    EvaluatePage,
+    EvaluateSectionPage,
     HomePage as EnvironmentHomePage,
     LoginPage as EnvironmentLoginPage,
     PrivatePage as EnvironmentPrivatePage,
@@ -101,6 +103,22 @@ const App = () => (
                     element={
                         <EnvironmentPrivatePage roles={[1, 2]}>
                             <EnvironmentHomePage />
+                        </EnvironmentPrivatePage>
+                    }
+                />
+                <Route
+                    path="/vesinh/evaluate"
+                    element={
+                        <EnvironmentPrivatePage roles={[1, 2]}>
+                            <EvaluatePage />
+                        </EnvironmentPrivatePage>
+                    }
+                />
+                <Route
+                    path="/vesinh/evaluate-section"
+                    element={
+                        <EnvironmentPrivatePage roles={[1]}>
+                            <EvaluateSectionPage />
                         </EnvironmentPrivatePage>
                     }
                 />

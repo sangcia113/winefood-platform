@@ -6,7 +6,7 @@ import { Flex, Typography } from 'antd';
 
 import { ContentComponent } from '../../components';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 const itemsBreadcrumb = [
     { title: <Link to={'/vesinh'}>Home</Link> },
@@ -49,10 +49,10 @@ const HomePage = () => {
                     markers: {
                         size: 0,
                     },
-                    title: {
-                        text: 'Thống Kê Tổng Số Ngày Nghỉ Của Nhân Viên',
-                        align: 'center',
-                    },
+                    // title: {
+                    //     text: 'Thống Kê Tổng Số Ngày Nghỉ Của Nhân Viên',
+                    //     align: 'center',
+                    // },
                     fill: {
                         type: 'gradient',
                         gradient: {
@@ -65,7 +65,7 @@ const HomePage = () => {
                     },
                     yaxis: {
                         title: {
-                            text: 'Số ngày nghỉ',
+                            text: 'Accumulated',
                         },
                     },
                     tooltip: {

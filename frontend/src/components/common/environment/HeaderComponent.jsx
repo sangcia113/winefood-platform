@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, Drawer, Dropdown, Flex, Image, Layout, Menu, Select, Typography } from 'antd';
 import {
     GlobalOutlined,
+    HddFilled,
     LogoutOutlined,
     ReadFilled,
     ScheduleFilled,
@@ -27,13 +28,13 @@ const items = [
         ),
         children: [
             {
-                key: 'evaluate',
+                key: 'evaluate-section',
                 label: 'Phần đánh giá',
                 icon: <ReadFilled size={20} />,
             },
 
             {
-                key: 'result',
+                key: 'result-section',
                 label: 'Phần kết quả',
                 icon: <ScheduleFilled size={20} />,
             },
@@ -48,14 +49,19 @@ const items = [
         ),
         children: [
             {
-                key: 'classify',
-                label: 'Quản lý phân loại',
-                icon: <SlidersFilled size={20} />,
+                key: 'evaluate',
+                label: 'Nội dung đánh giá',
+                icon: <HddFilled size={20} />,
             },
             {
                 key: 'content',
                 label: 'Quản lý nội dung',
                 icon: <SnippetsFilled size={20} />,
+            },
+            {
+                key: 'classify',
+                label: 'Quản lý phân loại',
+                icon: <SlidersFilled size={20} />,
             },
             {
                 key: 'user',

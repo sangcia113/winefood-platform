@@ -62,5 +62,22 @@ const contentService = {
 
         await db.query(sql, [1, new Date(), id]);
     },
+
+    checkIsExist: async ({ contentJP, contentVN }) => {
+        const sql = `SELECT 
+                        * 
+                    FROM 
+                        content 
+                    WHERE 
+                        deleted IS NULL
+                    AND
+                        contentJP = ? 
+                    OR 
+                        contentVN = ?`;
+
+        const [results] = await db.query(sql, [contentJP, contentVN]);
+
+        return results;
+    },
 };
 module.exports = contentService;

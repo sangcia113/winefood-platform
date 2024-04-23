@@ -1,8 +1,8 @@
 const db = require('../../configs/environment/databaseConfig');
 
 const contentService = {
-    created: async ({ contentId, departments }) => {
-        const data = departments.map(departmentId => [contentId, departmentId, new Date()]);
+    created: async ({ contents, departmentId }) => {
+        const data = contents.map(contentId => [contentId, departmentId, new Date()]);
 
         const sql = `INSERT INTO
                         content_department (

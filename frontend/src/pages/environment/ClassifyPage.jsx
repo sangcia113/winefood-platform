@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import { Alert, Button, Dropdown, Flex, Form, Input, Modal, Space, Table } from 'antd';
-import { DeleteFilled } from '@ant-design/icons';
-import { PencilFill, PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons';
+import { DeleteFilled, PlusCircleFilled } from '@ant-design/icons';
+import { PencilFill, ThreeDotsVertical } from 'react-bootstrap-icons';
 
 import {
     ContentComponent,
@@ -255,7 +255,7 @@ const ClassifyPage = () => {
             <Flex vertical gap={'large'}>
                 <Flex justify={'end'}>
                     <Button
-                        icon={<PlusCircleFill style={{ fontSize: 22, paddingTop: 3 }} />}
+                        icon={<PlusCircleFilled style={{ fontSize: 22, paddingTop: 3 }} />}
                         onClick={() =>
                             setModalClassify({ open: true, title: 'THÊM MỚI PHÂN LOẠI' })
                         }

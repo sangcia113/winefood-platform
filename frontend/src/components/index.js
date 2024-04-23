@@ -1,8 +1,9 @@
+import EnvironmentContentComponent from './common/environment/ContentComponent.jsx';
+import EnvironmentHeaderComponent from './common/environment/HeaderComponent.jsx';
 import ContentComponent from './common/ContentComponent.jsx';
 import FormComponent from './feature/FormComponent';
 import FooterComponent from './common/FooterComponent';
 import HeaderComponent from './common/HeaderComponent';
-import HeaderEnvironmentComponent from './common/environment/HeaderComponent.jsx';
 import SiderComponent from './common/SiderComponent';
 import ModalChangePassword from './feature/modal/ModalChangePassword.jsx';
 import ModalConfirmComponent from './feature/modal/ModalConfirmComponent';
@@ -12,15 +13,17 @@ import ModalErrorOtherComponent from './feature/modal/ModalErrorOtherComponent.j
 import ModalFeedback from './feature/modal/ModalFeedback.jsx';
 import ModalPasswordComponent from './feature/modal/ModalPasswordComponent';
 import ModalReasonComponent from './feature/modal/ModalReasonComponent';
+import ModalShowImage from './feature/modal/ModalShowImage.jsx';
 import ModalSuccessComponent from './feature/modal/ModalSuccessComponent';
 import ModalWarningComponent from './feature/modal/ModalWarningComponent';
 
 export {
     ContentComponent,
+    EnvironmentContentComponent,
+    EnvironmentHeaderComponent,
     FormComponent,
     FooterComponent,
     HeaderComponent,
-    HeaderEnvironmentComponent,
     ModalChangePassword,
     ModalConfirmComponent,
     ModalEditComponent,
@@ -29,6 +32,7 @@ export {
     ModalFeedback,
     ModalPasswordComponent,
     ModalReasonComponent,
+    ModalShowImage,
     ModalSuccessComponent,
     ModalWarningComponent,
     SiderComponent,

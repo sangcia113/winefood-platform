@@ -15,8 +15,8 @@ import {
     Space,
     Table,
 } from 'antd';
-import { DeleteFilled } from '@ant-design/icons';
-import { PencilFill, PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons';
+import { DeleteFilled, PlusCircleFilled } from '@ant-design/icons';
+import { PencilFill, ThreeDotsVertical } from 'react-bootstrap-icons';
 
 import {
     ContentComponent,
@@ -338,7 +338,7 @@ const ContentPage = () => {
             <Flex vertical gap={'large'}>
                 <Flex justify={'end'}>
                     <Button
-                        icon={<PlusCircleFill style={{ fontSize: 22, paddingTop: 3 }} />}
+                        icon={<PlusCircleFilled style={{ fontSize: 22, paddingTop: 3 }} />}
                         onClick={() => setModalContent({ open: true, title: 'THÊM MỚI NỘI DUNG' })}
                         shape={'circle'}
                         type={'primary'}

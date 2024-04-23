@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import { Alert, Button, Dropdown, Flex, Form, Modal, Select, Space, Table } from 'antd';
-import { DeleteFilled } from '@ant-design/icons';
-import { PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons';
+import { DeleteFilled, PlusCircleFilled } from '@ant-design/icons';
+import { ThreeDotsVertical } from 'react-bootstrap-icons';
 
 import {
     ContentComponent,
@@ -137,10 +137,10 @@ const EvaluateContentPage = () => {
     const formFields = [
         {
             label: 'Bộ phận (VN)',
-            name: 'departments',
+            name: 'departmentId',
             rules: [{ required: true, message: 'Bạn chưa chọn bộ phận' }],
             typeInput: (
-                <Select allowClear mode="multiple" placeholder="Chọn bộ phận">
+                <Select allowClear placeholder="Chọn bộ phận">
                     <Option value="1">OFFICE</Option>
                     <Option value="2">BOTTLING</Option>
                     <Option value="3">SHIROZAKE</Option>
@@ -150,10 +150,18 @@ const EvaluateContentPage = () => {
         },
         {
             label: 'Nội dung (VN)',
-            name: 'contentId',
+            name: 'contents',
             rules: [{ required: true, message: 'Bạn chưa nhập nội dung (VN)' }],
             typeInput: (
-                <Select allowClear placeholder="Chọn nội dung">
+                <Select
+                    allowClear
+                    filterOption={(input, option) =>
+                        (option?.children ?? '').toLowerCase().includes(input.toLowerCase())
+                    }
+                    mode="multiple"
+                    optionFilterProp="children"
+                    placeholder="Chọn nội dung"
+                >
                     {contentList.map(item => (
                         <Option key={item.id} value={item.id}>
                             {item.contentVN}
@@ -249,7 +257,7 @@ const EvaluateContentPage = () => {
             <Flex vertical gap={'large'}>
                 <Flex justify={'end'}>
                     <Button
-                        icon={<PlusCircleFill style={{ fontSize: 22, paddingTop: 3 }} />}
+                        icon={<PlusCircleFilled style={{ fontSize: 22, paddingTop: 3 }} />}
                         onClick={() =>
                             setModalContent({ open: true, title: 'THÊM MỚI NỘI DUNG ĐÁNH GIÁ' })
                         }

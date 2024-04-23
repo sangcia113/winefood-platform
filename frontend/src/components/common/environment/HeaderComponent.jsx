@@ -31,8 +31,25 @@ const items = [
                 key: 'evaluate-section',
                 label: 'Phần đánh giá',
                 icon: <ReadFilled size={20} />,
+                children: [
+                    {
+                        key: 'evaluate-office',
+                        label: 'OFFICE',
+                    },
+                    {
+                        key: 'evaluate-shirozake',
+                        label: 'SHIROZAKE',
+                    },
+                    {
+                        key: 'evaluate-bottling',
+                        label: 'BOTTLING',
+                    },
+                    {
+                        key: 'evaluate-toyo',
+                        label: 'TOYO',
+                    },
+                ],
             },
-
             {
                 key: 'result-section',
                 label: 'Phần kết quả',

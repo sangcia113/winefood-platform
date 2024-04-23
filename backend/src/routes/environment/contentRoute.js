@@ -7,7 +7,9 @@ const {
     deleted,
 } = require('../../controllers/environment/contentController');
 
-router.post('/', created);
+const { checkIsExist } = require('../../middleWares/environment/contentMiddleware');
+
+router.post('/', checkIsExist, created);
 
 router.get('/', readed);
 

@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 import { Button, Radio, Table, Tabs, Typography } from 'antd';
 
-import ContentComponent from '../../components/common/environment/ContentComponent';
-import { ModalErrorComponent } from '../../components';
+// import ContentComponent from '../../components/common/environment/ContentComponent';
+import { EnvironmentContentComponent, ModalErrorComponent, ModalShowImage } from '../../components';
 import { createConnection } from '../../utils';
 import { PlusCircleFilled } from '@ant-design/icons';
 
@@ -21,12 +21,15 @@ const EvaluatePage = () => {
     const [contentShirozake, setContentShirozake] = useState([]);
     const [contentBottling, setContentBottling] = useState([]);
     const [contentToyo, setContentToyo] = useState([]);
-    const [evaluationChecked, setEvaluationChecked] = useState(false);
+    const [evaluationValue, setEvaluationValue] = useState({});
+    const [tabSelect, setTabSelect] = useState(1);
 
     const [modalError, setModalError] = useState({
         open: false,
         error: '',
     });
+
+    const [modalShowImage, setModalShowImage] = useState(false);
 
     const accessToken =
         localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
@@ -37,7 +40,9 @@ const EvaluatePage = () => {
                 `/environment/content-department/department/${departmentId}`
             );
 
-            setContent(response.data.map(item => ({ ...item, key: item.id })));
+            const rowSpan = response.data.length;
+
+            setContent(response.data.map(item => ({ ...item, key: item.id, rowSpan })));
         } catch (error) {
             setModalError({ error, open: true });
         } finally {
@@ -45,24 +50,51 @@ const EvaluatePage = () => {
         }
     };
 
+    const handleSelectAll = tabSelect => {
+        console.log(tabSelect);
+        const newEvaluationValue = {};
+        switch (tabSelect) {
+            case 1:
+                console.log('case 1');
+                contentOffice.forEach(item => (newEvaluationValue[item.key] = item.point));
+                break;
+            case 2:
+                console.log('case 2');
+                contentShirozake.forEach(item => (newEvaluationValue[item.key] = item.point));
+                break;
+            case 3:
+                console.log('case 3');
+                contentBottling.forEach(item => (newEvaluationValue[item.key] = item.point));
+                break;
+            case 4:
+                console.log('case 4');
+                contentToyo.forEach(item => (newEvaluationValue[item.key] = item.point));
+                break;
+            default:
+                break;
+        }
+        setEvaluationValue(newEvaluationValue);
+    };
+
+    const handleEvaluationChange = (record, value) =>
+        setEvaluationValue(prevState => ({ ...prevState, [record.key]: value }));
+
     useEffect(() => {
         getContentDepartment(1, setContentOffice);
-        getContentDepartment(2, setContentShirozake);
-        getContentDepartment(3, setContentBottling);
+        getContentDepartment(2, setContentBottling);
+        getContentDepartment(3, setContentShirozake);
         getContentDepartment(4, setContentToyo);
     }, []);
 
-    const columnsOffice = [
+    const columns = [
         {
             key: 'departmentVN',
             dataIndex: 'departmentVN',
-            title: <div style={{ textAlign: 'center' }}>Bộ phận</div>,
-            ellipsis: true,
+            title: <div style={{ fontWeight: 'bold', textAlign: 'center' }}>Bộ phận</div>,
+            // ellipsis: true,
             align: 'center',
-            render: record => <Text strong>{record}</Text>,
-            onCell: (record, rowIndex) => ({
-                rowSpan: rowIndex === 0 ? contentOffice.length : 0,
-            }),
+            render: record => <div style={{ fontWeight: 'bold', width: 110 }}>{record}</div>,
+            onCell: (record, rowIndex) => ({ rowSpan: rowIndex === 0 ? record.rowSpan : 0 }),
         },
         {
             key: 'index',
@@ -94,7 +126,7 @@ const EvaluatePage = () => {
                     key: 'point',
                     dataIndex: 'point',
                     title: (
-                        <Button onClick={() => setEvaluationChecked(true)} type="primary">
+                        <Button onClick={() => handleSelectAll(tabSelect)} type="primary">
                             Select All
                         </Button>
                     ),
@@ -108,7 +140,10 @@ const EvaluatePage = () => {
             title: <div style={{ textAlign: 'center' }}>Đánh giá</div>,
             ellipsis: true,
             render: (_, record) => (
-                <Radio.Group>
+                <Radio.Group
+                    onChange={e => handleEvaluationChange(record, e.target.value)}
+                    value={evaluationValue[record.key]}
+                >
                     <Radio value={0}>0</Radio>
                     <Radio value={record.point}>{record.point}</Radio>
                 </Radio.Group>
@@ -124,11 +159,12 @@ const EvaluatePage = () => {
                     key: 'deselectAll',
                     dataIndex: 'deselectAll',
                     title: (
-                        <Button onClick={() => setEvaluationChecked(false)} type="primary">
+                        <Button onClick={() => setEvaluationValue({})} type="primary">
                             Deselect All
                         </Button>
                     ),
                     align: 'center',
+                    render: (_, record) => evaluationValue[record.key],
                 },
             ],
         },
@@ -141,41 +177,55 @@ const EvaluatePage = () => {
             render: record => (
                 <Button
                     icon={<PlusCircleFilled style={{ fontSize: 22, paddingTop: 3 }} />}
+                    onClick={() => setModalShowImage(true)}
                     shape="circle"
                     type="primary"
                 />
             ),
-            onCell: (record, rowIndex) => ({ rowSpan: rowIndex === 0 ? contentOffice.length : 0 }),
+            onCell: (record, rowIndex) => ({ rowSpan: rowIndex === 0 ? record.rowSpan : 0 }),
         },
     ];
 
     return (
-        <ContentComponent items={itemsBreadcrumb} loading={loading}>
+        <EnvironmentContentComponent items={itemsBreadcrumb} loading={loading}>
             <Tabs
-                centered
+                // centered
                 items={[
                     {
-                        key: '1',
+                        key: 1,
                         label: <Text strong>OFFICE</Text>,
                         children: (
                             <Table
                                 bordered
-                                columns={columnsOffice}
+                                columns={columns}
                                 dataSource={contentOffice}
+                                pagination={false}
                                 scroll={{ x: true }}
                                 showSorterTooltip={false}
-                                summary={() => (
+                                summary={currentData => (
                                     <Table.Summary.Row>
                                         <Table.Summary.Cell align="center" colSpan={1}>
                                             <Text strong>TỔNG</Text>
                                         </Table.Summary.Cell>
                                         <Table.Summary.Cell colSpan={3} />
                                         <Table.Summary.Cell align="center">
-                                            <Text strong>120</Text>
+                                            <Text strong>
+                                                {currentData.reduce(
+                                                    (previousValue, currentValue) =>
+                                                        previousValue + currentValue.point,
+                                                    0
+                                                )}
+                                            </Text>
                                         </Table.Summary.Cell>
                                         <Table.Summary.Cell colSpan={1} />
                                         <Table.Summary.Cell align="center">
-                                            <Text strong>120</Text>
+                                            <Text strong>
+                                                {Object.values(evaluationValue).reduce(
+                                                    (previousValue, currentValue) =>
+                                                        previousValue + currentValue,
+                                                    0
+                                                )}
+                                            </Text>
                                         </Table.Summary.Cell>
                                     </Table.Summary.Row>
                                 )}
@@ -183,21 +233,130 @@ const EvaluatePage = () => {
                         ),
                     },
                     {
-                        key: '2',
+                        key: 2,
                         label: <Text strong>SHIROZAKE</Text>,
-                        children: 'Content Shirozake',
+                        children: (
+                            <Table
+                                bordered
+                                columns={columns}
+                                dataSource={contentShirozake}
+                                pagination={false}
+                                scroll={{ x: true }}
+                                showSorterTooltip={false}
+                                summary={currentData => (
+                                    <Table.Summary.Row>
+                                        <Table.Summary.Cell align="center" colSpan={1}>
+                                            <Text strong>TỔNG</Text>
+                                        </Table.Summary.Cell>
+                                        <Table.Summary.Cell colSpan={3} />
+                                        <Table.Summary.Cell align="center">
+                                            <Text strong>
+                                                {currentData.reduce(
+                                                    (previousValue, currentValue) =>
+                                                        previousValue + currentValue.point,
+                                                    0
+                                                )}
+                                            </Text>
+                                        </Table.Summary.Cell>
+                                        <Table.Summary.Cell colSpan={1} />
+                                        <Table.Summary.Cell align="center">
+                                            <Text strong>
+                                                {Object.values(evaluationValue).reduce(
+                                                    (previousValue, currentValue) =>
+                                                        previousValue + currentValue,
+                                                    0
+                                                )}
+                                            </Text>
+                                        </Table.Summary.Cell>
+                                    </Table.Summary.Row>
+                                )}
+                            />
+                        ),
                     },
                     {
-                        key: '3',
+                        key: 3,
                         label: <Text strong>BOTTLING</Text>,
-                        children: 'Content Bottling',
+                        children: (
+                            <Table
+                                bordered
+                                columns={columns}
+                                dataSource={contentBottling}
+                                pagination={false}
+                                scroll={{ x: true }}
+                                showSorterTooltip={false}
+                                summary={currentData => (
+                                    <Table.Summary.Row>
+                                        <Table.Summary.Cell align="center" colSpan={1}>
+                                            <Text strong>TỔNG</Text>
+                                        </Table.Summary.Cell>
+                                        <Table.Summary.Cell colSpan={3} />
+                                        <Table.Summary.Cell align="center">
+                                            <Text strong>
+                                                {currentData.reduce(
+                                                    (previousValue, currentValue) =>
+                                                        previousValue + currentValue.point,
+                                                    0
+                                                )}
+                                            </Text>
+                                        </Table.Summary.Cell>
+                                        <Table.Summary.Cell colSpan={1} />
+                                        <Table.Summary.Cell align="center">
+                                            <Text strong>
+                                                {Object.values(evaluationValue).reduce(
+                                                    (previousValue, currentValue) =>
+                                                        previousValue + currentValue,
+                                                    0
+                                                )}
+                                            </Text>
+                                        </Table.Summary.Cell>
+                                    </Table.Summary.Row>
+                                )}
+                            />
+                        ),
                     },
                     {
-                        key: '4',
+                        key: 4,
                         label: <Text strong>TOYO</Text>,
-                        children: 'Content Toyo',
+                        children: (
+                            <Table
+                                bordered
+                                columns={columns}
+                                dataSource={contentToyo}
+                                pagination={false}
+                                scroll={{ x: true }}
+                                showSorterTooltip={false}
+                                summary={currentData => (
+                                    <Table.Summary.Row>
+                                        <Table.Summary.Cell align="center" colSpan={1}>
+                                            <Text strong>TỔNG</Text>
+                                        </Table.Summary.Cell>
+                                        <Table.Summary.Cell colSpan={3} />
+                                        <Table.Summary.Cell align="center">
+                                            <Text strong>
+                                                {currentData.reduce(
+                                                    (previousValue, currentValue) =>
+                                                        previousValue + currentValue.point,
+                                                    0
+                                                )}
+                                            </Text>
+                                        </Table.Summary.Cell>
+                                        <Table.Summary.Cell colSpan={1} />
+                                        <Table.Summary.Cell align="center">
+                                            <Text strong>
+                                                {Object.values(evaluationValue).reduce(
+                                                    (previousValue, currentValue) =>
+                                                        previousValue + currentValue,
+                                                    0
+                                                )}
+                                            </Text>
+                                        </Table.Summary.Cell>
+                                    </Table.Summary.Row>
+                                )}
+                            />
+                        ),
                     },
                 ]}
+                onChange={e => setTabSelect(e)}
                 tabBarGutter={50}
             />
             <ModalErrorComponent
@@ -205,7 +364,8 @@ const EvaluatePage = () => {
                 open={modalError.open}
                 error={modalError.error}
             />
-        </ContentComponent>
+            <ModalShowImage onCancel={() => setModalShowImage(false)} open={modalShowImage} />
+        </EnvironmentContentComponent>
     );
 };
 

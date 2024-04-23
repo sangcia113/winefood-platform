@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import { Alert, Button, Dropdown, Flex, Form, Input, Modal, Select, Space, Table } from 'antd';
-import { DeleteFilled } from '@ant-design/icons';
-import { PencilFill, PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons';
+import { DeleteFilled, EditFilled, PlusCircleFilled } from '@ant-design/icons';
+import { ThreeDotsVertical } from 'react-bootstrap-icons';
 
 import {
     ContentComponent,
@@ -196,7 +196,7 @@ const UserPage = () => {
                             {
                                 key: '1',
                                 label: 'Sửa',
-                                icon: <PencilFill />,
+                                icon: <EditFilled />,
                                 onClick: () => {
                                     formUser.setFieldsValue(record);
 
@@ -297,7 +297,7 @@ const UserPage = () => {
             <Flex vertical gap={'large'}>
                 <Flex justify={'end'}>
                     <Button
-                        icon={<PlusCircleFill style={{ fontSize: 22, paddingTop: 3 }} />}
+                        icon={<PlusCircleFilled style={{ fontSize: 22, paddingTop: 3 }} />}
                         onClick={() => setModalUser({ open: true, title: 'THÊM MỚI NHÂN VIÊN' })}
                         shape={'circle'}
                         type={'primary'}

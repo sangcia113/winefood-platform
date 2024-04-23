@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 import { Layout } from 'antd';
 
-import { FooterComponent, HeaderEnvironmentComponent } from '../../components';
+import { FooterComponent, EnvironmentHeaderComponent } from '../../components';
 
 import { checkToken } from '../../utils';
 
@@ -21,7 +21,7 @@ const PrivatePage = ({ roles, children }) => {
                 minHeight: '100vh',
             }}
         >
-            <HeaderEnvironmentComponent language={language} name={userName} />
+            <EnvironmentHeaderComponent language={language} name={userName} />
             {children}
             <FooterComponent />
         </Layout>

@@ -33,6 +33,10 @@ const webhookRoute = require('./webhookRoute');
 // Import các route và xử lý liên quan từ file loginRoute.js
 const environmentLoginRoute = require('./environment/loginRoute');
 
+const environmentEvaluate = require('./environment/evaluateRoute');
+
+const environmentNote = require('./environment/noteRoute');
+
 const environmentContentDepartmentRoute = require('./environment/contentDepartmentRoute');
 
 const environmentContentRoute = require('./environment/contentRoute');
@@ -65,6 +69,10 @@ router.use('/leave/type', leaveTypeRoute);
 router.use('/leave/list', leaveListRoute);
 
 router.use('/leave/feedback', feedbackRoute);
+
+router.use('/environment/evaluate', environmentEvaluate);
+
+router.use('/environment/note', environmentNote);
 
 router.use('/environment/content-department', environmentContentDepartmentRoute);
 

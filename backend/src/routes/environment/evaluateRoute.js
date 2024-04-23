@@ -4,6 +4,6 @@ const { created, readed } = require('../../controllers/environment/evaluateContr
 
 router.post('/', created);
 
-router.get('/', readed);
+router.get('/:departmentId', readed);
 
 module.exports = router;

@@ -126,7 +126,7 @@ const App = () => (
                 <Route
                     path="/vesinh/evaluate-office"
                     element={
-                        <EnvironmentPrivatePage roles={[1]}>
+                        <EnvironmentPrivatePage roles={[1, 2, 3, 5]}>
                             <EvaluateOfficePage />
                         </EnvironmentPrivatePage>
                     }

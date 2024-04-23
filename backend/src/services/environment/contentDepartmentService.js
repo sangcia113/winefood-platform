@@ -61,7 +61,7 @@ const contentService = {
 
     readedByDepartment: async ({ departmentId }) => {
         const sql = `SELECT 
-                        c.id,
+                        cd.id,
                         departmentJP, 
                         departmentVN, 
                         classifyJP, 
@@ -88,7 +88,7 @@ const contentService = {
                     AND
                         departmentId = ?
                     ORDER BY
-                        c.id
+                        cd.id
                     DESC`;
 
         const [results] = await db.query(sql, [departmentId]);

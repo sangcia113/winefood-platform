@@ -1,9 +1,11 @@
 import React from 'react';
 
-import { Avatar, Button, List, Modal, Space } from 'antd';
-import { DeleteFilled, EditFilled } from '@ant-design/icons';
+import { Avatar, Button, Flex, Image, List, Modal, Space, Typography } from 'antd';
+import { ApiFilled, DeleteFilled, EditFilled, PlusCircleFilled } from '@ant-design/icons';
 
-const ModalShowImage = ({ onCancel, open }) => (
+const { Text } = Typography;
+
+const ModalShowImage = ({ onCancel, open, onClick, dataSource }) => (
     <Modal
         cancelButtonProps={{ style: { borderRadius: 20 } }}
         cancelText="Đóng"
@@ -11,26 +13,31 @@ const ModalShowImage = ({ onCancel, open }) => (
         okButtonProps={{ style: { display: 'none' } }}
         onCancel={onCancel}
         open={open}
-        title="HÌNH ẢNH"
+        title={
+            <Space direction="vertical" size="large">
+                <ApiFilled style={{ color: '#1677ff', fontSize: 60 }} />
+                <Text strong style={{ fontSize: 32 }}>
+                    Ý KIẾN CỦA BẠN
+                </Text>
+            </Space>
+        }
         width={1200}
         styles={{
             header: { paddingBottom: 20, textAlign: 'center' },
             footer: { paddingTop: 20, textAlign: 'center' },
         }}
     >
+        <Flex justify="end">
+            <Button icon={<PlusCircleFilled />} onClick={onClick} shape="round" type="primary">
+                Hình ảnh
+            </Button>
+        </Flex>
         <List
-            dataSource={Array.from({
-                length: 23,
-            }).map((_, i) => ({
-                href: 'https://ant.design',
-                title: `ant design part ${i}`,
-                avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
-                content: 'We supply a series of design princi and efficiently.',
-            }))}
+            dataSource={dataSource}
             itemLayout="vertical"
             renderItem={item => (
                 <List.Item
-                    key={item.title}
+                    key={item.id}
                     actions={[
                         <Space>
                             <Button
@@ -51,22 +58,17 @@ const ModalShowImage = ({ onCancel, open }) => (
                         </Space>,
                     ]}
                     extra={
-                        <img
-                            width={272}
-                            alt="logo"
-                            src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+                        <Image
+                            src={require('../../../assets/images/logo/logoHeader.png')}
+                            width={200}
                         />
                     }
                 >
-                    <List.Item.Meta
-                        avatar={<Avatar src={item.avatar} />}
-                        title={<a href={item.href}>{item.title}</a>}
-                    />
-                    {item.content}
+                    {item.note}
                 </List.Item>
             )}
             size="large"
-        ></List>
+        />
     </Modal>
 );
 

@@ -17,9 +17,11 @@ import {
 import {
     ClassifyPage,
     ContentPage,
-    EvaluatePage,
-    EvaluateSectionPage,
+    ContentEvaluatePage,
     EvaluateOfficePage,
+    EvaluateBottlingPage,
+    EvaluateShirozakePage,
+    EvaluateToyoPage,
     HomePage as EnvironmentHomePage,
     LoginPage as EnvironmentLoginPage,
     PrivatePage as EnvironmentPrivatePage,
@@ -108,22 +110,6 @@ const App = () => (
                     }
                 />
                 <Route
-                    path="/vesinh/evaluate"
-                    element={
-                        <EnvironmentPrivatePage roles={[1, 2]}>
-                            <EvaluatePage />
-                        </EnvironmentPrivatePage>
-                    }
-                />
-                <Route
-                    path="/vesinh/evaluate-section"
-                    element={
-                        <EnvironmentPrivatePage roles={[1]}>
-                            <EvaluateSectionPage />
-                        </EnvironmentPrivatePage>
-                    }
-                />
-                <Route
                     path="/vesinh/evaluate-office"
                     element={
                         <EnvironmentPrivatePage roles={[1, 2, 3, 5]}>
@@ -132,10 +118,34 @@ const App = () => (
                     }
                 />
                 <Route
-                    path="/vesinh/classify"
+                    path="/vesinh/evaluate-shirozake"
                     element={
-                        <EnvironmentPrivatePage roles={[1]}>
-                            <ClassifyPage />
+                        <EnvironmentPrivatePage roles={[1, 2, 3, 5]}>
+                            <EvaluateShirozakePage />
+                        </EnvironmentPrivatePage>
+                    }
+                />
+                <Route
+                    path="/vesinh/evaluate-bottling"
+                    element={
+                        <EnvironmentPrivatePage roles={[1, 2, 3, 5]}>
+                            <EvaluateBottlingPage />
+                        </EnvironmentPrivatePage>
+                    }
+                />
+                <Route
+                    path="/vesinh/evaluate-toyo"
+                    element={
+                        <EnvironmentPrivatePage roles={[1, 2, 3, 5]}>
+                            <EvaluateToyoPage />
+                        </EnvironmentPrivatePage>
+                    }
+                />
+                <Route
+                    path="/vesinh/content-evaluate"
+                    element={
+                        <EnvironmentPrivatePage roles={[1, 2]}>
+                            <ContentEvaluatePage />
                         </EnvironmentPrivatePage>
                     }
                 />
@@ -144,6 +154,14 @@ const App = () => (
                     element={
                         <EnvironmentPrivatePage roles={[1]}>
                             <ContentPage />
+                        </EnvironmentPrivatePage>
+                    }
+                />
+                <Route
+                    path="/vesinh/classify"
+                    element={
+                        <EnvironmentPrivatePage roles={[1]}>
+                            <ClassifyPage />
                         </EnvironmentPrivatePage>
                     }
                 />

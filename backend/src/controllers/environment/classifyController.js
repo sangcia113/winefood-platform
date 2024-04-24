@@ -33,7 +33,6 @@ const classifyController = {
 
             res.status(200).json({ error: 0, message: 'Cập nhật dữ liệu thành công!' });
         } catch (error) {
-            console.log(error);
             res.status(500).json({
                 error: -1000,
                 message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',

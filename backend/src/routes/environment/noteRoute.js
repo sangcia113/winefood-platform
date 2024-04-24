@@ -3,7 +3,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 
-const { created, readed } = require('../../controllers/environment/noteController');
+const { created, readed, deleted } = require('../../controllers/environment/noteController');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -26,5 +26,7 @@ const upload = multer({ storage: storage });
 router.post('/:departmentId', upload.array('fileList'), created);
 
 router.get('/:departmentId', readed);
+
+router.delete('/:id', deleted);
 
 module.exports = router;

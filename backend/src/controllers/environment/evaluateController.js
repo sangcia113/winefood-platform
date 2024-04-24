@@ -1,4 +1,9 @@
-const { created, readed } = require('../../services/environment/evaluateService');
+const {
+    created,
+    readed,
+    readedAccumulator,
+    readedDetailAccumulator,
+} = require('../../services/environment/evaluateService');
 
 const evaluateController = {
     created: async (req, res) => {
@@ -17,6 +22,32 @@ const evaluateController = {
     readed: async (req, res) => {
         try {
             const results = await readed({ ...req.decoded, ...req.params });
+
+            res.status(200).json(results);
+        } catch (error) {
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
+        }
+    },
+
+    readedAccumulator: async (req, res) => {
+        try {
+            const results = await readedAccumulator();
+
+            res.status(200).json(results);
+        } catch (error) {
+            res.status(500).json({
+                error: -1001,
+                message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
+        }
+    },
+
+    readedDetailAccumulator: async (req, res) => {
+        try {
+            const results = await readedDetailAccumulator();
 
             res.status(200).json(results);
         } catch (error) {

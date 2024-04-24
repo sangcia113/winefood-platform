@@ -22,6 +22,8 @@ const noteService = {
                     FROM 
                         note 
                     WHERE 
+                        deleted IS NULL
+                    AND
                         userId = ? 
                     AND 
                         departmentId = ? 
@@ -31,6 +33,18 @@ const noteService = {
         const [results] = await db.query(sql, [userId, departmentId]);
 
         return results;
+    },
+
+    deleted: async ({ id }) => {
+        const sql = `UPDATE 
+                        note 
+                    SET
+                        deleted = ?,
+                        deletedDate = ?
+                    WHERE 
+                        id = ?`;
+
+        await db.query(sql, [1, new Date(), id]);
     },
 };
 

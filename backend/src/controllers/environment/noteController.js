@@ -1,4 +1,4 @@
-const { created, readed } = require('../../services/environment/noteService');
+const { created, readed, deleted } = require('../../services/environment/noteService');
 
 const noteController = {
     created: async (req, res) => {
@@ -28,6 +28,19 @@ const noteController = {
             res.status(500).json({
                 error: -1001,
                 message: 'Lỗi truy vấn cơ sở dữ liệu!',
+            });
+        }
+    },
+
+    deleted: async (req, res) => {
+        try {
+            await deleted(req.params);
+
+            res.status(200).json({ error: 0, message: 'Xóa dữ liệu thành công!' });
+        } catch (error) {
+            res.status(500).json({
+                error: -1000,
+                message: 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
             });
         }
     },

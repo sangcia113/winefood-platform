@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { Button, DatePicker, Flex, Form, Radio, Table, Typography } from 'antd';
+import { Button, DatePicker, Flex, Radio, Table, Typography } from 'antd';
 import { PlusCircleFilled, SaveFilled } from '@ant-design/icons';
 
 import {
     EnvironmentContentComponent,
-    ModalAddImage,
     ModalErrorComponent,
     ModalErrorOtherComponent,
     ModalShowImage,
-    ModalSuccessComponent,
 } from '../../components';
+
 import { createConnection } from '../../utils';
 
 const { Text } = Typography;
@@ -26,11 +25,7 @@ const EvaluateOfficePage = () => {
     const [loading, setLoading] = useState(false);
     const [evaluate, setEvaluate] = useState([]);
     const [evaluateValue, setEvaluateValue] = useState({});
-    const [note, setNote] = useState([]);
-
     const [modalShowImage, setModalShowImage] = useState(false);
-
-    const [modalAddImage, setModalAddImage] = useState(false);
 
     const [modalError, setModalError] = useState({
         open: false,
@@ -43,15 +38,12 @@ const EvaluateOfficePage = () => {
         message: '',
     });
 
-    const [modalSuccess, setModalSuccess] = useState({
-        open: false,
-        message: '',
-    });
-
-    const [formAddImage] = Form.useForm();
+    const navigate = useNavigate();
 
     const accessToken =
         localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+
+    const departmentId = 1;
 
     const handleSetEvaluateValue = data => {
         const newEvaluateValue = {};
@@ -66,49 +58,10 @@ const EvaluateOfficePage = () => {
             setLoading(true);
 
             const response = await createConnection(accessToken).get(
-                `/environment/content-department/department/1`
+                `/environment/content-department/department/${departmentId}`
             );
 
             setEvaluate(response.data.map(item => ({ ...item, key: item.id })));
-        } catch (error) {
-            setModalError({ error, open: true });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const getNote = async () => {
-        try {
-            setLoading(true);
-
-            const response = await createConnection(accessToken).get(`/environment/note/1`);
-
-            setNote(response.data.map(item => ({ ...item, key: item.id })));
-        } catch (error) {
-            setModalError({ error, open: true });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const insertNote = async ({ note, fileList }) => {
-        try {
-            setLoading(true);
-
-            const formData = new FormData();
-
-            formData.append('note', note);
-            fileList.fileList.forEach(file => {
-                formData.append('fileList', file.originFileObj);
-            });
-
-            await createConnection(accessToken).post(`/environment/note/1`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            setModalAddImage(false);
         } catch (error) {
             setModalError({ error, open: true });
         } finally {
@@ -120,7 +73,9 @@ const EvaluateOfficePage = () => {
         try {
             setLoading(true);
 
-            const response = await createConnection(accessToken).get(`/environment/evaluate/1`);
+            const response = await createConnection(accessToken).get(
+                `/environment/evaluate/${departmentId}`
+            );
 
             handleSetEvaluateValue(response.data);
         } catch (error) {
@@ -133,15 +88,9 @@ const EvaluateOfficePage = () => {
     const insertEvaluate = async () => {
         if (Object.values(evaluateValue).length === evaluate.length) {
             try {
-                const response = await createConnection(accessToken).post(
-                    `/environment/evaluate`,
-                    evaluateValue
-                );
+                await createConnection(accessToken).post(`/environment/evaluate`, evaluateValue);
 
-                setModalSuccess({
-                    message: response.data.message,
-                    open: true,
-                });
+                navigate('/vesinh/evaluate-shirozake');
             } catch (error) {
                 setModalError({ error, open: true });
             } finally {
@@ -159,7 +108,6 @@ const EvaluateOfficePage = () => {
     useEffect(() => {
         getContentDepartment();
         getEvaluate();
-        getNote();
     }, []);
 
     const columns = [
@@ -322,13 +270,6 @@ const EvaluateOfficePage = () => {
                     )}
                 />
             </Flex>
-            <ModalAddImage
-                loading={loading}
-                onCancel={() => setModalAddImage(false)}
-                open={modalAddImage}
-                form={formAddImage}
-                onFinish={values => insertNote(values)}
-            />
             <ModalErrorComponent
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
@@ -340,15 +281,9 @@ const EvaluateOfficePage = () => {
                 title={modalErrorOther.title}
                 message={modalErrorOther.message}
             />
-            <ModalSuccessComponent
-                onOk={() => setModalSuccess({ open: false })}
-                open={modalSuccess.open}
-                message={modalSuccess.message}
-            />
             <ModalShowImage
-                dataSource={note}
+                departmentId={departmentId}
                 onCancel={() => setModalShowImage(false)}
-                onClick={() => setModalAddImage(true)}
                 open={modalShowImage}
             />
         </EnvironmentContentComponent>

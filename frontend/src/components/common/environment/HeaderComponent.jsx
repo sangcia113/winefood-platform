@@ -66,7 +66,7 @@ const items = [
         ),
         children: [
             {
-                key: 'evaluate',
+                key: 'content-evaluate',
                 label: 'Nội dung đánh giá',
                 icon: <HddFilled size={20} />,
             },

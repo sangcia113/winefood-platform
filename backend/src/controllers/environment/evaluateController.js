@@ -34,7 +34,7 @@ const evaluateController = {
 
     readedAccumulator: async (req, res) => {
         try {
-            const results = await readedAccumulator();
+            const results = await readedAccumulator(req.query);
 
             res.status(200).json(results);
         } catch (error) {
@@ -47,7 +47,7 @@ const evaluateController = {
 
     readedDetailAccumulator: async (req, res) => {
         try {
-            const results = await readedDetailAccumulator();
+            const results = await readedDetailAccumulator(req.query);
 
             res.status(200).json(results);
         } catch (error) {

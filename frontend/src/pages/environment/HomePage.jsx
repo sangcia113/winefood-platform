@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReactApexChart from 'react-apexcharts';
 
-import { Card, Flex, Table, Typography } from 'antd';
+import { DatePicker, Flex, Table, Typography } from 'antd';
 
 import { EnvironmentContentComponent, ModalErrorComponent } from '../../components';
 
 import { createConnection } from '../../utils';
+import dayjs from 'dayjs';
 
+const { RangePicker } = DatePicker;
 const { Text } = Typography;
 
 const itemsBreadcrumb = [{ title: <Link to={'/vesinh'}>Home</Link> }];
@@ -16,6 +18,12 @@ const HomePage = () => {
     const [loading, setLoading] = useState(false);
     const [accumulator, setAccumulator] = useState([]);
     const [detailAccumulator, setDetailAccumulator] = useState([]);
+    const [filterAccumulator, setFilterAccumulator] = useState({
+        startMonth: dayjs().month() + 1 <= 6 ? 1 : 7,
+        startYear: dayjs().year(),
+        toMonth: dayjs().month() + 1 <= 6 ? 6 : 12,
+        toYear: dayjs().year(),
+    });
 
     const [modalError, setModalError] = useState({
         open: false,
@@ -250,7 +258,7 @@ const HomePage = () => {
             setLoading(true);
 
             const response = await createConnection(accessToken).get(
-                `/environment/evaluate/accumulator`
+                `/environment/evaluate/accumulator?startMonth=${filterAccumulator.startMonth}&startYear=${filterAccumulator.startYear}&toMonth=${filterAccumulator.toMonth}&toYear=${filterAccumulator.toYear}`
             );
 
             setAccumulator(response.data.map(item => ({ ...item, key: item.id })));
@@ -266,7 +274,7 @@ const HomePage = () => {
             setLoading(true);
 
             const response = await createConnection(accessToken).get(
-                `/environment/evaluate/accumulator/detail`
+                `/environment/evaluate/accumulator/detail?startMonth=${filterAccumulator.startMonth}&startYear=${filterAccumulator.startYear}&toMonth=${filterAccumulator.toMonth}&toYear=${filterAccumulator.toYear}`
             );
 
             setDetailAccumulator(response.data.map(item => ({ ...item, key: item.month })));
@@ -280,13 +288,47 @@ const HomePage = () => {
     useEffect(() => {
         getAccumulator();
         getDetailAccumulator();
-    }, []);
+    }, [filterAccumulator]);
 
     return (
         <EnvironmentContentComponent items={itemsBreadcrumb} loading={loading}>
-            <div style={{ marginBottom: 50, textAlign: 'center' }}>
-                <Text strong style={{ fontSize: 30, textAlign: 'center' }}>
-                    LŨY KẾ ĐIỂM VỆ SINH MÔI TRƯỜNG CỦA CÁC TỔ NĂM 2024
+            <Flex align="center" justify="end" style={{ margin: '20px 0 30px 0' }}>
+                <RangePicker
+                    allowClear={false}
+                    defaultValue={() => {
+                        // Nếu tháng hiện tại nhỏ hơn hoặc bằng 6
+                        if (filterAccumulator.startMonth <= 6)
+                            return [
+                                dayjs().set('month', 0).set('year', filterAccumulator.startYear),
+                                dayjs().set('month', 5).set('year', filterAccumulator.startYear),
+                            ];
+
+                        // Nếu tháng hiện tại lớn hơn 6
+                        return [
+                            dayjs().set('month', 6).set('year', filterAccumulator.startYear),
+                            dayjs().set('month', 11).set('year', filterAccumulator.startYear),
+                        ];
+                    }}
+                    format="MM/YYYY"
+                    onCalendarChange={dates => {
+                        const [startDate, endDate] = dates || [];
+
+                        setFilterAccumulator({
+                            startMonth: dayjs(startDate).format('MM'),
+                            startYear: dayjs(startDate).format('YYYY'),
+                            toMonth: dayjs(endDate).format('MM'),
+                            toYear: dayjs(endDate).format('YYYY'),
+                        });
+                    }}
+                    picker="month"
+                />
+            </Flex>
+            <div style={{ textAlign: 'center' }}>
+                <Text strong style={{ fontSize: 30 }}>
+                    LŨY KẾ ĐIỂM VỆ SINH MÔI TRƯỜNG CỦA CÁC TỔ
+                    <br />
+                    TỪ {filterAccumulator.startMonth}/{filterAccumulator.startYear} ĐẾN{' '}
+                    {filterAccumulator.toMonth}/{filterAccumulator.toYear}
                 </Text>
             </div>
             <div style={{ margin: 'auto', marginBottom: 50, maxWidth: 800 }}>
@@ -300,7 +342,7 @@ const HomePage = () => {
                         },
                         plotOptions: {
                             bar: {
-                                columnWidth: 100,
+                                // columnWidth: 100,
                             },
                         },
                         xaxis: {
@@ -339,23 +381,23 @@ const HomePage = () => {
                     height={400}
                 />
             </div>
-
-            <Card
-                title={
-                    <Text strong style={{ fontSize: 30, textAlign: 'center' }}>
-                        BẢNG ĐÁNH GIÁ VỆ SINH CHUNG 6 THÁNG ĐẦU NĂM 2024
-                    </Text>
-                }
-            >
-                <Table
-                    bordered
-                    columns={columns}
-                    dataSource={detailAccumulator}
-                    pagination={false}
-                    scroll={{ x: true }}
-                    showSorterTooltip={false}
-                />
-            </Card>
+            <div style={{ marginBottom: 20, textAlign: 'center' }}>
+                <Text strong style={{ fontSize: 30, textWrap: 'wrap' }}>
+                    BẢNG ĐÁNH GIÁ VỆ SINH CHUNG
+                    <br />
+                    TỪ {filterAccumulator.startMonth}/{filterAccumulator.startYear} ĐẾN{' '}
+                    {filterAccumulator.toMonth}/{filterAccumulator.toYear}
+                </Text>
+            </div>
+            <Table
+                bordered
+                className="table-detail-accumulator"
+                columns={columns}
+                dataSource={detailAccumulator}
+                pagination={false}
+                scroll={{ x: true }}
+                showSorterTooltip={false}
+            />
             <ModalErrorComponent
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}

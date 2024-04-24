@@ -43,3 +43,7 @@ input::placeholder, textarea::placeholder, .ant-select-selection-placeholder {
         padding-left: 20px;
     }
 }
+
+.table-detail-accumulator .ant-table-thead .ant-table-cell {
+    background-color: #d7ebda !important;
+  }

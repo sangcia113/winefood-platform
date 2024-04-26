@@ -269,6 +269,8 @@ const leaveListService = {
                         d.id = u.departmentId
                     WHERE
                         l.deleted IS NULL 
+                    AND 
+                        deleteRequest IS NULL
                     AND
                         CURDATE() BETWEEN DATE(bookFromDate) AND DATE(bookToDate)
                     AND (

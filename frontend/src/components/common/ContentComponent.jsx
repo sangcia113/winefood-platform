@@ -13,15 +13,25 @@ const ContentComponent = ({ loading, items, children }) => (
             }}
         >
             <Breadcrumb items={items} style={{ margin: 22 }} />
-            <Card
+            {/* <Card
                 bordered={false}
                 style={{
                     backgroundColor: 'rgba(255, 255, 255, 0.4)',
                     backdropFilter: 'blur(4px)',
                 }}
+            > */}
+            <div
+                style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                    backdropFilter: 'blur(4px)',
+                    borderRadius: 12,
+                    padding: '24px 4px',
+                }}
             >
                 {children}
-            </Card>
+            </div>
+
+            {/* </Card> */}
         </Content>
     </Spin>
 );

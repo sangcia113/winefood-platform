@@ -3,6 +3,8 @@ import React from 'react';
 import { Alert, Modal, Space, Typography } from 'antd';
 import { CloseCircleFilled } from '@ant-design/icons';
 
+import { getErrorCode } from '../../../utils';
+
 const { Link, Text } = Typography;
 
 const renderMessage = error => {
@@ -133,7 +135,7 @@ const renderMessage = error => {
                     <Alert
                         message={
                             <>
-                                Mã lỗi: {errorCode}
+                                {getErrorCode(errorCode)}
                                 <br />
                                 Vui lòng liên hệ{' '}
                                 <Link href="https://zalo.me/0972868740" target="_blank">
@@ -173,7 +175,6 @@ const ModalErrorComponent = ({ onOk, open, error }) => {
         <Modal
             cancelButtonProps={{ style: { display: 'none' } }}
             centered
-            closeIcon={false}
             okButtonProps={{ style: { borderRadius: 20 } }}
             okText="Đồng Ý"
             okType="danger"

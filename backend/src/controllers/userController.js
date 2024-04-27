@@ -25,7 +25,7 @@ const userController = {
             roleId,
         } = req.body;
 
-        const username = `0${numberPhone.slice(2)}`;
+        const username = numberPhone;
         const hashedPassword = encodePassword(password);
 
         try {
@@ -85,7 +85,7 @@ const userController = {
             roleId,
         } = req.body;
 
-        const username = `0${numberPhone.slice(2)}`;
+        const username = numberPhone;
         const hashedPassword = encodePassword(password);
 
         try {

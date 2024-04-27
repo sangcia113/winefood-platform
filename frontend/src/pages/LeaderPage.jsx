@@ -26,6 +26,15 @@ import { createConnection, getUniqueName } from '../utils';
 
 const { Text } = Typography;
 
+const itemsBreadcrumb = [
+    {
+        title: <Link to="/nghiphep">Home</Link>,
+    },
+    {
+        title: <Link to="/nghiphep/leader">Leader</Link>,
+    },
+];
+
 const LeaderPage = () => {
     const [loading, setLoading] = useState(false);
 
@@ -93,6 +102,8 @@ const LeaderPage = () => {
         requestDate
     ) => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).put(
                 `/leave/list/leader/approved/${id}`,
                 {
@@ -127,6 +138,8 @@ const LeaderPage = () => {
             setModalConfirm({ open: false });
 
             setModalError({ open: true, error });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -144,6 +157,8 @@ const LeaderPage = () => {
         requestDate
     ) => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).put(
                 `/leave/list/leader/rejected/${id}`,
                 {
@@ -181,6 +196,8 @@ const LeaderPage = () => {
             setModalReason({ open: false });
 
             setModalError({ open: true, error });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -537,15 +554,6 @@ const LeaderPage = () => {
         },
     ];
 
-    const itemsBreadcrumb = [
-        {
-            title: <Link to="/nghiphep">Home</Link>,
-        },
-        {
-            title: <Link to="/nghiphep/leader">Leader</Link>,
-        },
-    ];
-
     return (
         <ContentComponent loading={loading} items={itemsBreadcrumb}>
             <Table
@@ -556,6 +564,7 @@ const LeaderPage = () => {
                 showSorterTooltip={false}
             />
             <ModalConfirmComponent
+                loading={loading}
                 onCancel={() => setModalConfirm({ open: false })}
                 onOk={modalConfirm.onOk}
                 open={modalConfirm.open}

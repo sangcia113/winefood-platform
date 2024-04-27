@@ -13,7 +13,6 @@ const ModalChangePassword = ({ loading, onCancel, open, form, onFinish }) => (
         cancelButtonProps={{ style: { borderRadius: 20 } }}
         cancelText="Hủy Bỏ"
         centered
-        closeIcon={false}
         okButtonProps={{ loading, style: { borderRadius: 20 } }}
         okText="Đồng Ý"
         onCancel={onCancel}

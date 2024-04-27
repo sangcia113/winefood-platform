@@ -49,6 +49,87 @@ import { createConnection, getUniqueName } from '../utils';
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
 
+const itemsBreadcrumb = [
+    {
+        title: <Link to="/nghiphep">Home</Link>,
+    },
+    {
+        title: <Link to="/nghiphep/manager">Manager</Link>,
+    },
+];
+
+const tooltipLeaveInfo = record => (
+    <div style={{ color: 'black' }}>
+        <p align={'center'} style={{ margin: 8 }}>
+            <b>THÔNG TIN NGHỈ PHÉP</b>
+        </p>
+        <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
+        <p>
+            Loại phép (Đăng ký): <b>{record.bookLeaveType}</b>
+        </p>
+        <p>
+            Loại phép (Thực tế): <b>{record.actualLeaveType}</b>
+        </p>
+        <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
+        <p>
+            Số ngày nghỉ (Đăng ký): <b>{record.bookLeaveDay}</b>
+        </p>
+        <p>
+            Số ngày nghỉ (Thực tế): <b>{record.actualLeaveDay}</b>
+        </p>
+        <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
+        <p>
+            Từ ngày: <b>{dayjs(record.bookFromDate).format('HH:mm DD/MM/YYYY')}</b>
+        </p>
+        <p>
+            Đến ngày: <b>{dayjs(record.bookToDate).format('HH:mm DD/MM/YYYY')}</b>
+        </p>
+        <p>
+            Lý do: <b>{record.reason}</b>
+        </p>
+        <p>
+            Ngày yêu cầu: <b>{dayjs(record.requestDate).format('HH:mm DD/MM/YYYY')}</b>
+        </p>
+        <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
+        <p>
+            Leader:{' '}
+            <b>
+                {record.leaderApproved === 1 && (
+                    <span>
+                        <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
+                        {dayjs(record.leaderApprovedDate).format('HH:mm DD/MM/YYYY')}
+                    </span>
+                )}
+            </b>
+        </p>
+        <p>
+            Manager:{' '}
+            <b>
+                {record.managerApproved === 1 ? (
+                    <>
+                        <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
+                        {dayjs(record.managerApprovedDate).format('HH:mm DD/MM/YYYY')}
+                    </>
+                ) : record.managerApproved === 0 ? (
+                    <>
+                        <CloseCircleFilled style={{ color: '#ff4d4f' }} />{' '}
+                        {dayjs(record.managerApprovedDate).format('HH:mm DD/MM/YYYY')}
+                    </>
+                ) : (
+                    <Tag
+                        bordered={false}
+                        color="processing"
+                        icon={<SyncOutlined spin />}
+                        style={{ paddingLeft: 0, backgroundColor: 'white' }}
+                    >
+                        Waiting...
+                    </Tag>
+                )}
+            </b>
+        </p>
+    </div>
+);
+
 const ExportExcelButton = ({ dataSource }) => {
     const exportToExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(dataSource);
@@ -240,6 +321,8 @@ const ManagerPage = () => {
         requestDate
     ) => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved/${id}`,
                 {
@@ -278,6 +361,8 @@ const ManagerPage = () => {
             setModalError({ open: true, error });
 
             getManager();
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -295,6 +380,8 @@ const ManagerPage = () => {
         requestDate
     ) => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/rejected/${id}`,
                 {
@@ -334,6 +421,8 @@ const ManagerPage = () => {
             setModalError({ open: true, error });
 
             getManager();
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -350,6 +439,8 @@ const ManagerPage = () => {
         requestDate
     ) => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved-leave-type/${id}`,
                 {
@@ -388,6 +479,8 @@ const ManagerPage = () => {
             setModalError({ open: true, error });
 
             getManager();
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -404,6 +497,8 @@ const ManagerPage = () => {
         requestDate
     ) => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved-leave-day/${id}`,
                 {
@@ -442,6 +537,8 @@ const ManagerPage = () => {
             setModalError({ open: true, error });
 
             getManager();
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -458,6 +555,8 @@ const ManagerPage = () => {
         requestDate
     ) => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).put(
                 `/leave/list/manager/approved-request-delete/${id}`,
                 {
@@ -496,6 +595,8 @@ const ManagerPage = () => {
             setModalError({ open: true, error });
 
             getManager();
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -782,86 +883,7 @@ const ManagerPage = () => {
                         minWidth: '300px',
                     }}
                     placement={'right'}
-                    title={
-                        <div style={{ color: 'black' }}>
-                            <p align={'center'} style={{ margin: 8 }}>
-                                <b>THÔNG TIN NGHỈ PHÉP</b>
-                            </p>
-                            <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
-                            <p>
-                                Loại phép (Đăng ký): <b>{record.bookLeaveType}</b>
-                            </p>
-                            <p>
-                                Loại phép (Thực tế): <b>{record.actualLeaveType}</b>
-                            </p>
-                            <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
-                            <p>
-                                Số ngày nghỉ (Đăng ký): <b>{record.bookLeaveDay}</b>
-                            </p>
-                            <p>
-                                Số ngày nghỉ (Thực tế): <b>{record.actualLeaveDay}</b>
-                            </p>
-                            <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
-                            <p>
-                                Từ ngày:{' '}
-                                <b>{dayjs(record.bookFromDate).format('HH:mm DD/MM/YYYY')}</b>
-                            </p>
-                            <p>
-                                Đến ngày:{' '}
-                                <b>{dayjs(record.bookToDate).format('HH:mm DD/MM/YYYY')}</b>
-                            </p>
-                            <p>
-                                Lý do: <b>{record.reason}</b>
-                            </p>
-                            <p>
-                                Ngày yêu cầu:{' '}
-                                <b>{dayjs(record.requestDate).format('HH:mm DD/MM/YYYY')}</b>
-                            </p>
-                            <Divider style={{ backgroundColor: '#52c41a', margin: 0 }} />
-                            <p>
-                                Leader:{' '}
-                                <b>
-                                    {record.leaderApproved === 1 && (
-                                        <span>
-                                            <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
-                                            {dayjs(record.leaderApprovedDate).format(
-                                                'HH:mm DD/MM/YYYY'
-                                            )}
-                                        </span>
-                                    )}
-                                </b>
-                            </p>
-                            <p>
-                                Manager:{' '}
-                                <b>
-                                    {record.managerApproved === 1 ? (
-                                        <>
-                                            <CheckCircleFilled style={{ color: '#52c41a' }} />{' '}
-                                            {dayjs(record.managerApprovedDate).format(
-                                                'HH:mm DD/MM/YYYY'
-                                            )}
-                                        </>
-                                    ) : record.managerApproved === 0 ? (
-                                        <>
-                                            <CloseCircleFilled style={{ color: '#ff4d4f' }} />{' '}
-                                            {dayjs(record.managerApprovedDate).format(
-                                                'HH:mm DD/MM/YYYY'
-                                            )}
-                                        </>
-                                    ) : (
-                                        <Tag
-                                            bordered={false}
-                                            color="processing"
-                                            icon={<SyncOutlined spin />}
-                                            style={{ paddingLeft: 0, backgroundColor: 'white' }}
-                                        >
-                                            Waiting...
-                                        </Tag>
-                                    )}
-                                </b>
-                            </p>
-                        </div>
-                    }
+                    title={tooltipLeaveInfo(record)}
                 >
                     <Text>{record.id}</Text>
                 </Tooltip>
@@ -1003,13 +1025,31 @@ const ManagerPage = () => {
             dataIndex: 'plan',
             key: 'plan',
             ellipsis: true,
-            render: (_, record) => (
-                <>
-                    {dayjs(record.bookFromDate).format('HH:mm DD/MM/YYYY')}
-                    <br />
-                    {dayjs(record.bookToDate).format('HH:mm DD/MM/YYYY')}
-                </>
-            ),
+            render: (_, record) => {
+                if (
+                    record.actualLeaveDay &&
+                    (record.bookLeaveDay !== record.actualLeaveDay ||
+                        record.bookFromDate !== record.actualFromDate ||
+                        record.bookToDate !== record.actualToDate) &&
+                    record.managerApprovedLeaveDay
+                ) {
+                    return (
+                        <>
+                            {dayjs(record.actualFromDate).format('HH:mm DD/MM/YYYY')}
+                            <br />
+                            {dayjs(record.actualToDate).format('HH:mm DD/MM/YYYY')}
+                        </>
+                    );
+                } else {
+                    return (
+                        <>
+                            {dayjs(record.bookFromDate).format('HH:mm DD/MM/YYYY')}
+                            <br />
+                            {dayjs(record.bookToDate).format('HH:mm DD/MM/YYYY')}
+                        </>
+                    );
+                }
+            },
         },
         // {
         //     title: 'Từ ngày',
@@ -1188,15 +1228,6 @@ const ManagerPage = () => {
             key: 'requestDate',
             ellipsis: true,
             render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
-        },
-    ];
-
-    const itemsBreadcrumb = [
-        {
-            title: <Link to="/nghiphep">Home</Link>,
-        },
-        {
-            title: <Link to="/nghiphep/manager">Manager</Link>,
         },
     ];
 
@@ -1478,6 +1509,7 @@ const ManagerPage = () => {
                 tabBarGutter={40}
             />
             <ModalConfirmComponent
+                loading={loading}
                 message={modalConfirm.message}
                 onCancel={() => setModalConfirm({ open: false })}
                 onOk={modalConfirm.onOk}
@@ -1496,6 +1528,7 @@ const ManagerPage = () => {
             />
             <ModalReasonComponent
                 form={form}
+                loading={loading}
                 onCancel={() => setModalReason({ open: false })}
                 onFinish={modalReason.onFinish}
                 open={modalReason.open}

@@ -128,7 +128,7 @@ const zaloAPIController = {
                     message: 'Người dùng chưa chia sẻ thông tin với Wine Food!',
                 });
 
-            await updatedNumberPhone(shared_info.phone);
+            await updatedNumberPhone(shared_info.phone, id);
 
             res.status(200).json({
                 error: 0,
@@ -238,7 +238,7 @@ const zaloAPIController = {
 
     // Leader từ chối gửi tin nhắn đến Member
     leaderSendMessageRejectToMember: async (req, res) => {
-        const leaderName  = req.decoded.userName;
+        const leaderName = req.decoded.userName;
 
         // Lấy thông tin từ body của yêu cầu
         const {

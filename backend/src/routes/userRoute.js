@@ -9,7 +9,12 @@ const {
     updatedPassword,
 } = require('../controllers/userController');
 
-const { checkBody, checkIsExist, checkParam } = require('../middleWares/userMiddleWare');
+const {
+    checkBody,
+    checkIsExist,
+    checkIsDuplicate,
+    checkParam,
+} = require('../middleWares/userMiddleWare');
 
 // End point POST
 router.post('/', checkBody, checkIsExist, created);
@@ -21,7 +26,7 @@ router.post('/change-password', updatedPassword);
 router.get('/', readed);
 
 // End point PUT
-router.put('/:id', checkParam, checkBody, updated);
+router.put('/:id', checkParam, checkBody, checkIsDuplicate, updated);
 
 // End point DELETE
 router.delete('/:id', checkParam, deleted);

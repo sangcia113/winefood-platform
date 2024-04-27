@@ -101,7 +101,7 @@ const ModalShowImage = ({ departmentId, onCancel, open }) => {
             cancelButtonProps={{ style: { display: 'none' } }}
             cancelText="Đóng"
             centered
-            okButtonProps={{ style: { display: 'none' } }}
+            okButtonProps={{ loading, style: { display: 'none' } }}
             onCancel={onCancel}
             open={open}
             title={

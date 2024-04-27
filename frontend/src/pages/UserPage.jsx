@@ -18,11 +18,10 @@ import {
     Tag,
     Typography,
 } from 'antd';
-import { DeleteFilled, SyncOutlined } from '@ant-design/icons';
+import { DeleteFilled, PlusCircleFilled, SyncOutlined } from '@ant-design/icons';
 import {
     HandIndexFill,
     PencilFill,
-    PlusCircleFill,
     TelephoneInboundFill,
     ThreeDotsVertical,
 } from 'react-bootstrap-icons';
@@ -39,6 +38,15 @@ import { createConnection, getUniqueName } from '../utils';
 
 const { Password } = Input;
 const { Text } = Typography;
+
+const itemsBreadcrumb = [
+    {
+        title: <Link to="/nghiphep">Home</Link>,
+    },
+    {
+        title: <Link to="/nghiphep/user">User</Link>,
+    },
+];
 
 const UserPage = () => {
     const [loading, setLoading] = useState(false);
@@ -86,31 +94,25 @@ const UserPage = () => {
 
     const getDepartment = async () => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).get(`/leave/department`);
 
             setDepartment(response.data);
         } catch (error) {
             setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
         }
     };
 
     const getRole = async () => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).get(`/leave/role`);
 
             setRole(response.data);
-        } catch (error) {
-            setModalError({ error, open: true });
-        }
-    };
-
-    const getUser = async () => {
-        try {
-            setLoading(true);
-
-            const response = await createConnection(accessToken).get(`/leave/user`);
-
-            setUser(response.data.map(item => ({ ...item, key: item.id })));
         } catch (error) {
             setModalError({ error, open: true });
         } finally {
@@ -193,8 +195,24 @@ const UserPage = () => {
         }
     };
 
+    const getUser = async () => {
+        try {
+            setLoading(true);
+
+            const response = await createConnection(accessToken).get(`/leave/user`);
+
+            setUser(response.data.map(item => ({ ...item, key: item.id })));
+        } catch (error) {
+            setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const insertUser = async values => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).post(`/leave/user`, values);
 
             setModalMain({ open: false });
@@ -207,11 +225,15 @@ const UserPage = () => {
             getUser();
         } catch (error) {
             setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
         }
     };
 
     const updateUser = async values => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).put(
                 `/leave/user/${values.id}`,
                 values
@@ -227,11 +249,15 @@ const UserPage = () => {
             getUser();
         } catch (error) {
             setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
         }
     };
 
     const deleteUser = async id => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).delete(`/leave/user/${id}`);
 
             setModalConfirm({
@@ -246,6 +272,8 @@ const UserPage = () => {
             getUser();
         } catch (error) {
             setModalError({ error, open: true });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -398,7 +426,9 @@ const UserPage = () => {
             key: 'zaloUserId',
             ellipsis: true,
             render: (_, record) =>
-                zaloAPIInfo.find(item => item.zaloNumberPhone === record.numberPhone)?.zaloUserId,
+                zaloAPIInfo.find(
+                    item => item.zaloNumberPhone === `84${record.numberPhone.slice(1)}`
+                )?.zaloUserId,
         },
         {
             title: 'Ngày tạo',
@@ -457,7 +487,11 @@ const UserPage = () => {
             render: (_, record) =>
                 record.zaloNumberPhone ? (
                     <Text strong>
-                        {user.find(item => item.numberPhone === record.zaloNumberPhone)?.name}
+                        {
+                            user.find(
+                                item => `84${item.numberPhone.slice(1)}` === record.zaloNumberPhone
+                            )?.name
+                        }
                     </Text>
                 ) : (
                     ''
@@ -593,29 +627,26 @@ const UserPage = () => {
             ),
         },
         {
+            label: 'Số điện thoại',
+            name: 'numberPhone',
+            rules: [
+                {
+                    pattern: new RegExp('^0\\d{9}$'),
+                    required: true,
+                    message: 'Vui lòng nhập số điện thoại có dạng 0xxx...',
+                },
+            ],
+            typeInput: (
+                <Input allowClear maxLength={10} placeholder="Nhập số điện thoại" showCount />
+            ),
+        },
+        {
             label: 'Mật khẩu',
             name: 'password',
             rules: [{ required: true, message: 'Vui lòng đặt mật khẩu' }],
             typeInput: (
                 <Password allowClear maxLength={100} placeholder="Nhập mật khẩu" showCount />
             ),
-        },
-        {
-            label: 'Số điện thoại',
-            name: 'numberPhone',
-            rules: [{ required: true, message: 'Vui lòng nhập số điện thoại' }],
-            typeInput: (
-                <Input allowClear maxLength={11} placeholder="Nhập số điện thoại" showCount />
-            ),
-        },
-    ];
-
-    const itemsBreadcrumb = [
-        {
-            title: <Link to="/nghiphep">Home</Link>,
-        },
-        {
-            title: <Link to="/nghiphep/user">User</Link>,
         },
     ];
 
@@ -633,7 +664,7 @@ const UserPage = () => {
                                 <Flex justify={'end'}>
                                     <Button
                                         icon={
-                                            <PlusCircleFill
+                                            <PlusCircleFilled
                                                 style={{ fontSize: 22, paddingTop: 3 }}
                                             />
                                         }
@@ -643,9 +674,11 @@ const UserPage = () => {
                                                 title: 'THÊM NHÂN VIÊN',
                                             });
                                         }}
-                                        shape={'circle'}
+                                        shape={'round'}
                                         type={'primary'}
-                                    />
+                                    >
+                                        Thêm
+                                    </Button>
                                 </Flex>
                                 <Table
                                     bordered
@@ -687,9 +720,8 @@ const UserPage = () => {
                 afterClose={() => form.resetFields()}
                 cancelButtonProps={{ style: { borderRadius: 20 } }}
                 cancelText="Hủy Bỏ"
-                closeIcon={false}
                 forceRender
-                okButtonProps={{ style: { borderRadius: 20 } }}
+                okButtonProps={{ loading: loading, style: { borderRadius: 20 } }}
                 okText="Đồng Ý"
                 onCancel={() => setModalMain({ open: false })}
                 onOk={() => form.submit()}
@@ -703,6 +735,7 @@ const UserPage = () => {
                 <FormComponent form={form} formFields={formFields} onFinish={onFinish} />
             </Modal>
             <ModalConfirmComponent
+                loading={loading}
                 onCancel={() => setModalConfirm({ open: false })}
                 onOk={modalConfirm.onOk}
                 open={modalConfirm.open}

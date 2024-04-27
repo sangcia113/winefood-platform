@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import { Alert, Button, Dropdown, Flex, Form, Input, Modal, Space, Table } from 'antd';
-import { DeleteFilled } from '@ant-design/icons';
-import { PencilFill, PlusCircleFill, ThreeDotsVertical } from 'react-bootstrap-icons';
+import { DeleteFilled, PlusCircleFilled } from '@ant-design/icons';
+import { PencilFill, ThreeDotsVertical } from 'react-bootstrap-icons';
 
 import {
     ContentComponent,
@@ -15,6 +15,15 @@ import {
 } from '../components';
 
 import { createConnection } from '../utils';
+
+const itemsBreadcrumb = [
+    {
+        title: <Link to="/nghiphep">Home</Link>,
+    },
+    {
+        title: <Link to="/nghiphep/department">Department</Link>,
+    },
+];
 
 const DepartmentPage = () => {
     const [loading, setLoading] = useState(false);
@@ -243,30 +252,23 @@ const DepartmentPage = () => {
         },
     ];
 
-    const itemsBreadcrumb = [
-        {
-            title: <Link to="/nghiphep">Home</Link>,
-        },
-        {
-            title: <Link to="/nghiphep/department">Department</Link>,
-        },
-    ];
-
     return (
         <ContentComponent loading={loading} items={itemsBreadcrumb}>
             <Flex vertical gap={'large'}>
                 <Flex justify={'end'}>
                     <Button
-                        icon={<PlusCircleFill style={{ fontSize: 22, paddingTop: 3 }} />}
+                        icon={<PlusCircleFilled style={{ fontSize: 22, paddingTop: 3 }} />}
                         onClick={() => {
                             setModalMain({
                                 open: true,
                                 title: 'THÊM BỘ PHẬN',
                             });
                         }}
-                        shape={'circle'}
+                        shape={'round'}
                         type={'primary'}
-                    />
+                    >
+                        Thêm
+                    </Button>
                 </Flex>
                 <Table
                     bordered
@@ -280,9 +282,8 @@ const DepartmentPage = () => {
                 afterClose={() => form.resetFields()}
                 cancelButtonProps={{ style: { borderRadius: 20 } }}
                 cancelText="Hủy Bỏ"
-                closeIcon={false}
                 forceRender
-                okButtonProps={{ style: { borderRadius: 20 } }}
+                okButtonProps={{ loading, style: { borderRadius: 20 } }}
                 okText="Đồng Ý"
                 onCancel={() => setModalMain({ open: false })}
                 onOk={() => form.submit()}
@@ -296,6 +297,7 @@ const DepartmentPage = () => {
                 <FormComponent form={form} formFields={formFields} onFinish={onFinish} />
             </Modal>
             <ModalConfirmComponent
+                loading={loading}
                 onCancel={() => setModalConfirm({ open: false })}
                 onOk={modalConfirm.onOk}
                 open={modalConfirm.open}

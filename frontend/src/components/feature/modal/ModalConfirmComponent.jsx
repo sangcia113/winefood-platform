@@ -5,13 +5,12 @@ import { QuestionCircleFilled } from '@ant-design/icons';
 
 const { Text } = Typography;
 
-const ModalConfirmComponent = ({ onCancel, onOk, open, message }) => (
+const ModalConfirmComponent = ({ loading, onCancel, onOk, open, message }) => (
     <Modal
         cancelButtonProps={{ style: { borderRadius: 20 } }}
         cancelText="Hủy Bỏ"
         centered
-        closeIcon={false}
-        okButtonProps={{ style: { borderRadius: 20 } }}
+        okButtonProps={{ loading, style: { borderRadius: 20 } }}
         okText="Đồng Ý"
         onCancel={onCancel}
         onOk={onOk}

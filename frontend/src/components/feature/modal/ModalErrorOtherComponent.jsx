@@ -9,7 +9,6 @@ const ModalErrorOtherComponent = ({ onOk, open, title, message }) => (
     <Modal
         cancelButtonProps={{ style: { display: 'none' } }}
         centered
-        closeIcon={false}
         okButtonProps={{ style: { borderRadius: 20 } }}
         okText="Đồng Ý"
         okType="danger"

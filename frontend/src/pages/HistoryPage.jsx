@@ -28,6 +28,15 @@ import { checkDate, createConnection } from '../utils';
 
 const { Text } = Typography;
 
+const itemsBreadcrumb = [
+    {
+        title: <Link to="/nghiphep">Home</Link>,
+    },
+    {
+        title: <Link to="/nghiphep/history">History</Link>,
+    },
+];
+
 const HistoryPage = () => {
     const [loading, setLoading] = useState(false);
 
@@ -656,15 +665,6 @@ const HistoryPage = () => {
         },
     ];
 
-    const itemsBreadcrumb = [
-        {
-            title: <Link to="/nghiphep">Home</Link>,
-        },
-        {
-            title: <Link to="/nghiphep/history">History</Link>,
-        },
-    ];
-
     return (
         <ContentComponent loading={loading} items={itemsBreadcrumb}>
             <Table
@@ -675,6 +675,7 @@ const HistoryPage = () => {
                 showSorterTooltip={false}
             />
             <ModalConfirmComponent
+                loading={loading}
                 onCancel={() => setModalConfirm({ open: false })}
                 onOk={modalConfirm.onOk}
                 open={modalConfirm.open}

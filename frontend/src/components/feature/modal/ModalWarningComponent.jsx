@@ -9,7 +9,6 @@ const ModalWarningComponent = ({ onOk, open, message }) => (
     <Modal
         cancelButtonProps={{ style: { display: 'none' } }}
         centered
-        closeIcon={false}
         okButtonProps={{ style: { borderRadius: 20 } }}
         okText="Đồng Ý"
         onOk={onOk}

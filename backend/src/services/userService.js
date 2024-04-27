@@ -78,7 +78,7 @@ const userService = {
                     LEFT JOIN
                         zalo_api.user za
                     ON
-                        za.zaloNumberPhone = l.numberPhone
+                        za.zaloNumberPhone = CONCAT('84', SUBSTRING(l.numberPhone, 2))
                     WHERE
                         l.deleted IS NULL
                     AND
@@ -107,7 +107,7 @@ const userService = {
                     LEFT JOIN
                         zalo_api.user za
                     ON
-                        za.zaloNumberPhone = l.numberPhone
+                        za.zaloNumberPhone = CONCAT('84', SUBSTRING(l.numberPhone, 2))
                     WHERE
                         l.deleted IS NULL
                     AND
@@ -131,7 +131,7 @@ const userService = {
                     LEFT JOIN
                         zalo_api.user za
                     ON
-                        za.zaloNumberPhone = l.numberPhone
+                        za.zaloNumberPhone = CONCAT('84', SUBSTRING(l.numberPhone, 2))
                     WHERE
                         l.deleted IS NULL
                     AND
@@ -171,7 +171,7 @@ const userService = {
                     ON
                         d.id = u.departmentId
                     WHERE
-                        numberPhone = (
+                        CONCAT('84', SUBSTRING(numberPhone, 2)) = (
                             SELECT
                                 zaloNumberPhone
                             FROM
@@ -284,7 +284,7 @@ const userService = {
 
         if (code && numberPhone) {
             sql += `u.code = ? 
-                    AND 
+                    OR 
                 numberPhone = ?`;
 
             params.push(code, numberPhone);
@@ -298,6 +298,20 @@ const userService = {
 
         // Thực hiện truy vấn SQL và trả về kết quả
         const [results] = await db.query(sql, params);
+
+        return results;
+    },
+
+    checkIsDuplicate: async (id, code, numberPhone) => {
+        const sql = `SELECT 
+                        * 
+                    FROM 
+                        user 
+                    WHERE 
+                        id != ? 
+                    AND (code = ? OR numberPhone = ?)`;
+
+        const [results] = await db.query(sql, [id, code, numberPhone]);
 
         return results;
     },

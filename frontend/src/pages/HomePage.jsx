@@ -17,6 +17,12 @@ const { Item } = Form;
 const { TextArea } = Input;
 const { Text } = Typography;
 
+const itemsBreadcrumb = [
+    {
+        title: <Link to="/nghiphep">Home</Link>,
+    },
+];
+
 const HomePage = () => {
     const [loading, setLoading] = useState(false);
 
@@ -48,11 +54,15 @@ const HomePage = () => {
 
     const getLeaveType = async () => {
         try {
+            setLoading(true);
+
             const response = await createConnection(accessToken).get(`/leave/type`);
 
             setLeaveType(response.data);
         } catch (error) {
             setModalError({ open: true, error });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -128,12 +138,6 @@ const HomePage = () => {
             });
         }
     };
-
-    const itemsBreadcrumb = [
-        {
-            title: <Link to="/nghiphep">Home</Link>,
-        },
-    ];
 
     return (
         <ContentComponent loading={loading} items={itemsBreadcrumb}>

@@ -29,7 +29,6 @@ import { CrownFilled, LogoutOutlined, TagsFilled } from '@ant-design/icons';
 import {
     ModalChangePassword,
     ModalErrorComponent,
-    ModalErrorOtherComponent,
     ModalFeedback,
     ModalSuccessComponent,
 } from '../../components';
@@ -60,7 +59,7 @@ const items = [
     {
         type: 'group',
         label: (
-            <Text strong style={{ color: '#dc3545' }}>
+            <Text strong style={{ color: '#00822d' }}>
                 Dành cho Manager
             </Text>
         ),
@@ -69,8 +68,8 @@ const items = [
     {
         type: 'group',
         label: (
-            <Text strong style={{ color: '#00822d' }}>
-                Dành cho Sub Manager
+            <Text strong style={{ color: '#dc3545' }}>
+                Dành cho Administrator
             </Text>
         ),
         children: [
@@ -101,12 +100,6 @@ const HeaderComponent = ({ name }) => {
     const [modalFeedback, setModalFeedback] = useState({
         onFinish: () => {},
         open: false,
-    });
-
-    const [modalErrorOther, setModalErrorOther] = useState({
-        open: false,
-        title: '',
-        message: '',
     });
 
     const [modalSuccess, setModalSuccess] = useState({
@@ -146,23 +139,7 @@ const HeaderComponent = ({ name }) => {
                 open: true,
             });
         } catch (error) {
-            const errorCode = error?.response?.data?.error;
-
-            if (errorCode === -1084) {
-                setModalErrorOther({
-                    title: 'THẤT BẠI',
-                    open: true,
-                    message: 'Mật khẩu cũ không chính xác!',
-                });
-            } else if (errorCode === -1085) {
-                setModalErrorOther({
-                    title: 'THẤT BẠI',
-                    open: true,
-                    message: 'Mật khẩu mới không trùng khớp!',
-                });
-            } else {
-                setModalError({ error, open: true });
-            }
+            setModalError({ error, open: true });
         } finally {
             setLoading(false);
         }
@@ -359,16 +336,9 @@ const HeaderComponent = ({ name }) => {
                 onFinish={modalChangePass.onFinish}
             />
             <ModalErrorComponent
-                message={modalError.message}
                 onOk={() => setModalError({ open: false })}
                 open={modalError.open}
-                title={modalError.title}
-            />
-            <ModalErrorOtherComponent
-                onOk={() => setModalErrorOther({ open: false })}
-                open={modalErrorOther.open}
-                title={modalErrorOther.title}
-                message={modalErrorOther.message}
+                error={modalError.error}
             />
             <ModalFeedback
                 form={formFeedback}

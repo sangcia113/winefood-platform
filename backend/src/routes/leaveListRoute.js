@@ -1,5 +1,8 @@
 const router = require('express').Router();
 
+// Import các hàm xử lý yêu cầu từ middleware
+const { checkPermission } = require('../middleWares/authMiddleWare');
+
 // Import các hàm xử lý yêu cầu từ controller
 const {
     created,
@@ -55,28 +58,38 @@ const {
 router.post('/', checkBody, checkIsExist, created, memberSendMessageRequestToSuperior);
 
 // End point GET
-router.get('/history', readedHistory);
+router.get('/history', checkPermission([1, 2, 3, 4, 5, 6]), readedHistory);
 
 // End point GET
-router.get('/leader', readedLeader);
+router.get('/leader', checkPermission([1, 2, 3, 4, 5]), readedLeader);
 
 // End point GET
-router.get('/manager', readedManager);
+router.get('/manager', checkPermission([1, 2, 3]), readedManager);
 
 // End point GET
-router.get('/manager/search', checkDate, readedManagerByDate);
+router.get('/manager/search', checkPermission([1, 2, 3]), checkDate, readedManagerByDate);
 
 // End point GET
-router.get('/manager/other', readedManagerOther);
+router.get('/manager/other', checkPermission([1, 2, 3]), readedManagerOther);
 
 // End point GET
-router.get('/manager/other/search', checkDate, readedManagerOtherByDate);
+router.get(
+    '/manager/other/search',
+    checkPermission([1, 2, 3]),
+    checkDate,
+    readedManagerOtherByDate
+);
 
 // End point GET
-router.get('/manager/statistics', readedManagerStatistics);
+router.get('/manager/statistics', checkPermission([1, 2, 3]), readedManagerStatistics);
 
 // End point GET
-router.get('/manager/statistics/search', checkDate, readedManagerStatisticsByDate);
+router.get(
+    '/manager/statistics/search',
+    checkPermission([1, 2, 3]),
+    checkDate,
+    readedManagerStatisticsByDate
+);
 
 // End point PUT
 router.put('/history/cancel/:id', checkParam, updateCancel);
@@ -103,6 +116,7 @@ router.put(
 // End point PUT
 router.put(
     '/leader/approved/:id',
+    checkPermission([1, 2, 3, 4, 5]),
     checkParam,
     checkLeaderApproved,
     updatedLeaderApproved,
@@ -112,6 +126,7 @@ router.put(
 // End point PUT
 router.put(
     '/leader/rejected/:id',
+    checkPermission([1, 2, 3, 4, 5]),
     checkParam,
     checkLeaderRejected,
     updatedLeaderRejected,
@@ -121,6 +136,7 @@ router.put(
 // End point PUT
 router.put(
     '/manager/approved/:id',
+    checkPermission([1, 2, 3]),
     checkParam,
     checkManagerApproved,
     updatedManagerApproved,
@@ -130,6 +146,7 @@ router.put(
 // End point PUT
 router.put(
     '/manager/rejected/:id',
+    checkPermission([1, 2, 3]),
     checkParam,
     checkManagerRejected,
     updatedManagerRejected,
@@ -139,6 +156,7 @@ router.put(
 // End point PUT
 router.put(
     '/manager/approved-leave-type/:id',
+    checkPermission([1, 2, 3]),
     checkParam,
     checkApprovedLeaveType,
     updatedApprovedLeaveType,
@@ -148,6 +166,7 @@ router.put(
 // End point PUT
 router.put(
     '/manager/approved-leave-day/:id',
+    checkPermission([1, 2, 3]),
     checkParam,
     checkApprovedLeaveDay,
     updatedApprovedLeaveDay,
@@ -157,6 +176,7 @@ router.put(
 // End point PUT
 router.put(
     '/manager/approved-request-delete/:id',
+    checkPermission([1, 2, 3]),
     checkParam,
     checkApprovedRequestDelete,
     updatedApprovedRequestDelete,

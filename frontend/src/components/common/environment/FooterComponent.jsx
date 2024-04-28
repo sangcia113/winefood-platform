@@ -6,7 +6,7 @@ const { Footer } = Layout;
 const { Link, Text } = Typography;
 
 const FooterComponent = () => (
-    <Footer style={{ textAlign: 'center' }}>
+    <Footer style={{ backgroundColor: '#d7ebda', textAlign: 'center' }}>
         <Flex align="center" justify="center" vertical>
             <Space>
                 <Text strong style={{ fontSize: 18 }}>

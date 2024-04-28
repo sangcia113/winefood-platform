@@ -2,16 +2,18 @@ import React from 'react';
 
 import { Form, Input } from 'antd';
 
+const { Item } = Form;
+
 const FormComponent = ({ form, onFinish, formFields }) => {
     return (
         <Form form={form} labelCol={{ span: 8 }} onFinish={onFinish} wrapperCol={{ span: 16 }}>
-            <Form.Item name="id" hidden>
+            <Item name="id" hidden>
                 <Input />
-            </Form.Item>
+            </Item>
             {formFields.map(({ label, name, rules, typeInput }, index) => (
-                <Form.Item key={index} label={label} name={name} rules={rules}>
+                <Item key={index} label={label} name={name} rules={rules}>
                     {typeInput}
-                </Form.Item>
+                </Item>
             ))}
         </Form>
     );

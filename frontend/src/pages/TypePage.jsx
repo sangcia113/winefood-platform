@@ -119,11 +119,11 @@ const TypePage = () => {
         }
     };
 
-    const deleteType = async id => {
+    const deleteType = async values => {
         try {
             setLoading(true);
 
-            const response = await createConnection(accessToken).delete(`/leave/type/${id}`);
+            const response = await createConnection(accessToken).delete(`/leave/type/${values.id}`);
 
             setModalConfirm({
                 open: false,
@@ -172,7 +172,7 @@ const TypePage = () => {
                                 icon: <DeleteFilled />,
                                 onClick: () =>
                                     setModalConfirm({
-                                        onOk: () => deleteType(record.id),
+                                        onOk: () => deleteType(record),
                                         open: true,
                                         message: (
                                             <Space direction="vertical" align="center">
@@ -273,7 +273,7 @@ const TypePage = () => {
             <Flex vertical gap={'large'}>
                 <Flex justify={'end'}>
                     <Button
-                        icon={<PlusCircleFilled style={{ fontSize: 22, paddingTop: 3 }} />}
+                        icon={<PlusCircleFilled />}
                         onClick={() => {
                             setModalMain({
                                 open: true,

@@ -157,6 +157,7 @@ const HomePage = () => {
                     md: { span: 16 },
                 }}
                 onFinish={onFinish}
+                style={{ padding: '28px 0 0 0' }}
             >
                 {/* <Form.Item
                     label={
@@ -217,6 +218,7 @@ const HomePage = () => {
                     ]}
                 >
                     <Select
+                        autoFocus
                         placeholder="Chọn loại phép trong danh sách..."
                         size={'large'}
                         style={{ width: '100%' }}

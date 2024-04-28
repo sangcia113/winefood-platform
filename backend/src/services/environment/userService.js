@@ -23,7 +23,7 @@ const userService = {
                     WHERE
                         deleted IS NULL
                     AND
-                        roleId <> 1
+                        roleId != 1
                     ORDER BY 
                         id 
                     DESC`;

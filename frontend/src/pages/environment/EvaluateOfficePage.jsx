@@ -226,12 +226,12 @@ const EvaluateOfficePage = () => {
                 <Flex justify="end" gap={16}>
                     <DatePicker />
                     <Button
-                        icon={<SaveFilled style={{ fontSize: 22, paddingTop: 3 }} />}
+                        icon={<SaveFilled />}
                         onClick={() => insertEvaluate()}
                         shape="round"
                         type="primary"
                     >
-                        Save
+                        Lưu kết quả
                     </Button>
                 </Flex>
                 <Table

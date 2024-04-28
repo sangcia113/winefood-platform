@@ -43,6 +43,7 @@ const App = () => (
             <Routes>
                 <Route path="*" element={<NotExistedPage />} />
                 <Route path="/" element={<MainPage />} />
+                {/* Route nghiphep */}
                 <Route path="/nghiphep/login" element={<LoginPage />} />
                 <Route
                     path="/nghiphep"
@@ -63,7 +64,7 @@ const App = () => (
                 <Route
                     path="/nghiphep/leader"
                     element={
-                        <PrivatePage roles={[1, 2, 3, 5]}>
+                        <PrivatePage roles={[1, 2, 3, 4, 5]}>
                             <LeaderPage />
                         </PrivatePage>
                     }
@@ -79,7 +80,7 @@ const App = () => (
                 <Route
                     path="/nghiphep/user"
                     element={
-                        <PrivatePage roles={[1, 2, 3, 4]}>
+                        <PrivatePage roles={[1]}>
                             <UserPage />
                         </PrivatePage>
                     }
@@ -87,7 +88,7 @@ const App = () => (
                 <Route
                     path="/nghiphep/type"
                     element={
-                        <PrivatePage roles={[1, 2, 3, 4]}>
+                        <PrivatePage roles={[1]}>
                             <TypePage />
                         </PrivatePage>
                     }
@@ -95,11 +96,12 @@ const App = () => (
                 <Route
                     path="/nghiphep/department"
                     element={
-                        <PrivatePage roles={[1, 2, 3, 4]}>
+                        <PrivatePage roles={[1]}>
                             <DepartmentPage />
                         </PrivatePage>
                     }
                 />
+                {/* Route vesinh */}
                 <Route path="/vesinh/login" element={<EnvironmentLoginPage />} />
                 <Route
                     path="/vesinh"

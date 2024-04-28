@@ -907,8 +907,8 @@ const ManagerPage = () => {
             dataIndex: 'userName',
             key: 'userName',
             ellipsis: true,
-            filters: getUniqueName(leaveList, 'userId', 'userName'),
             filterSearch: true,
+            filters: getUniqueName(leaveList, 'userId', 'userName'),
             onFilter: (value, record) => record.userName === value,
             render: (_, record) => {
                 if (!record.managerApprovedDelete) {
@@ -976,6 +976,9 @@ const ManagerPage = () => {
             dataIndex: 'department',
             key: 'department',
             ellipsis: true,
+            filterSearch: true,
+            filters: getUniqueName(leaveList, 'department', 'department'),
+            onFilter: (value, record) => record.department === value,
         },
         {
             title: 'Số ngày',
@@ -1021,7 +1024,7 @@ const ManagerPage = () => {
             ],
         },
         {
-            title: 'Kế hoạch',
+            title: 'Kế hoạch nghỉ',
             dataIndex: 'plan',
             key: 'plan',
             ellipsis: true,
@@ -1051,20 +1054,6 @@ const ManagerPage = () => {
                 }
             },
         },
-        // {
-        //     title: 'Từ ngày',
-        //     dataIndex: 'bookFromDate',
-        //     key: 'bookFromDate',
-        //     ellipsis: true,
-        //     render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
-        // },
-        // {
-        //     title: 'Đến ngày',
-        //     dataIndex: 'bookToDate',
-        //     key: 'bookToDate',
-        //     ellipsis: true,
-        //     render: record => dayjs(record).format('HH:mm DD/MM/YYYY'),
-        // },
         {
             title: 'Lý do',
             dataIndex: 'reason',
@@ -1365,7 +1354,7 @@ const ManagerPage = () => {
                                     </Col>
                                     <Col sm={12}>
                                         <Flex align="center" justify="end" gap="middle">
-                                            <Text>Select Date</Text>
+                                            <Text>Chọn ngày</Text>
                                             <RangePicker
                                                 format={'DD/MM/YYYY'}
                                                 onCalendarChange={dates => {

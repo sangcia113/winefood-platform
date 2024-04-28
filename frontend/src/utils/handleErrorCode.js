@@ -1,6 +1,20 @@
 const ERROR_CODE = {
     // ERROR_CODE ZALO
-    '-232': 'Người dùng chưa tương tác với OA hoặc lần tương tác cuối cùng đã hết hạn!',
+    '-32': 'Vượt quá giới hạn request/phút!',
+    '-201': 'Tham số không hợp lệ!',
+    '-209': 'API này không được hỗ trợ!',
+    '-210': 'Tham số vượt quá giới hạn cho phép!',
+    '-211': 'Hết quota!',
+    '-212': 'Official Account chưa đăng ký API này!',
+    '-213': 'Người dùng chưa quan tâm Official Account!',
+    '-216': 'Access Token không hợp lệ!',
+    '-224': 'Official Account chưa mua gói dịch vụ!',
+    '-230': 'Người dùng không tương tác với OA trong 7 ngày qua!',
+    '-232': 'Người dùng chưa phát sinh tương tác hoặc tương tác cuối đã quá hạn!',
+    '-233': 'Loại tin nhắn không được hỗ trợ!',
+    '-234': 'Loại tin nhắn này không được gửi vào buổi tối (từ 22 giờ - 6 giờ sáng hôm sau)!',
+    '-235': 'API không hỗ trợ cho loại OA của bạn!',
+    '-240': 'API gửi tin nhắn V2 đã không còn hoạt động, vui lòng chuyển qua API gửi tin nhắn V3!',
     // '-1001': 'Send Zalo Notification V3 failed!',
     // '-1002': 'Refresh Access Token is failed!',
     '-1003': 'Resend Zalo Notification V3 failed!',
@@ -11,8 +25,8 @@ const ERROR_CODE = {
     '-1008': 'Get Zalo API is failed!',
     '-1009': 'Maximum retry count reached!',
     '-1010': 'Người dùng chưa chia sẻ thông tin với Wine Food!',
-    // ERROR_CODE_WEBHOOK
 
+    // ERROR_CODE_WEBHOOK
     '-1200': 'Không có payload nào được cung cấp!',
     '-1201': 'Có lỗi xảy ra khi xử lý yêu cầu của bạn!',
 
@@ -58,6 +72,9 @@ const ERROR_CODE = {
 
     // ERROR CODE CONTENT: -1120 -> -1129
     '-1120': 'Nội dung đã tồn tại trong hệ thống!',
+
+    // ERROR CODE API
+    '-1199': 'Tài khoản của bạn không có quyền thực hiện chức năng này!',
 };
 
 const getErrorCode = errorCode => {

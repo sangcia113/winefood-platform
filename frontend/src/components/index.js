@@ -1,4 +1,5 @@
 import EnvironmentContentComponent from './common/environment/ContentComponent.jsx';
+import EnvironmentFooterComponent from './common/environment/FooterComponent.jsx';
 import EnvironmentHeaderComponent from './common/environment/HeaderComponent.jsx';
 import ContentComponent from './common/ContentComponent.jsx';
 import FormComponent from './feature/FormComponent';
@@ -21,6 +22,7 @@ import ModalWarningComponent from './feature/modal/ModalWarningComponent';
 export {
     ContentComponent,
     EnvironmentContentComponent,
+    EnvironmentFooterComponent,
     EnvironmentHeaderComponent,
     FormComponent,
     FooterComponent,

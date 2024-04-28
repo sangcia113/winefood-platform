@@ -1,5 +1,15 @@
 const router = require('express').Router();
 
+// Import các hàm xử lý yêu cầu từ middleware
+const { checkPermission } = require('../middleWares/authMiddleWare');
+
+const {
+    checkBody,
+    checkIsExist,
+    checkIsDuplicate,
+    checkParam,
+} = require('../middleWares/userMiddleWare');
+
 // Import các hàm xử lý yêu cầu từ controller
 const {
     created,
@@ -9,27 +19,20 @@ const {
     updatedPassword,
 } = require('../controllers/userController');
 
-const {
-    checkBody,
-    checkIsExist,
-    checkIsDuplicate,
-    checkParam,
-} = require('../middleWares/userMiddleWare');
-
 // End point POST
-router.post('/', checkBody, checkIsExist, created);
+router.post('/', checkPermission([1]), checkBody, checkIsExist, created);
 
 // End point POST
 router.post('/change-password', updatedPassword);
 
 // End point GET
-router.get('/', readed);
+router.get('/', checkPermission([1]), readed);
 
 // End point PUT
-router.put('/:id', checkParam, checkBody, checkIsDuplicate, updated);
+router.put('/:id', checkPermission([1]), checkParam, checkBody, checkIsDuplicate, updated);
 
 // End point DELETE
-router.delete('/:id', checkParam, deleted);
+router.delete('/:id', checkPermission([1]), checkParam, deleted);
 
 // Xuất router để sử dụng trong module khác index.js
 module.exports = router;

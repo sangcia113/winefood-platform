@@ -7,7 +7,7 @@ import { DeleteFilled, PlusCircleFilled } from '@ant-design/icons';
 import { ThreeDotsVertical } from 'react-bootstrap-icons';
 
 import {
-    ContentComponent,
+    EnvironmentContentComponent,
     FormComponent,
     ModalConfirmComponent,
     ModalErrorComponent,
@@ -253,17 +253,19 @@ const ContentEvaluatePage = () => {
     ];
 
     return (
-        <ContentComponent items={itemsBreadcrumb} loading={loading}>
+        <EnvironmentContentComponent items={itemsBreadcrumb} loading={loading}>
             <Flex vertical gap={'large'}>
                 <Flex justify={'end'}>
                     <Button
-                        icon={<PlusCircleFilled style={{ fontSize: 22, paddingTop: 3 }} />}
+                        icon={<PlusCircleFilled />}
                         onClick={() =>
                             setModalContent({ open: true, title: 'THÊM MỚI NỘI DUNG ĐÁNH GIÁ' })
                         }
-                        shape={'circle'}
+                        shape={'round'}
                         type={'primary'}
-                    />
+                    >
+                        Thêm
+                    </Button>
                 </Flex>
                 <Table
                     bordered
@@ -308,7 +310,7 @@ const ContentEvaluatePage = () => {
                 open={modalSuccess.open}
                 message={modalSuccess.message}
             />
-        </ContentComponent>
+        </EnvironmentContentComponent>
     );
 };
 

@@ -94,42 +94,6 @@ const renderMessage = error => {
                         style={{ textAlign: 'center' }}
                     />
                 );
-            case -1080:
-                return (
-                    <Alert
-                        message={
-                            <>
-                                Tài khoản không tồn tại trong hệ thống!
-                                <br />
-                                Vui lòng liên hệ{' '}
-                                <Link href="https://zalo.me/0972868740" target="_blank">
-                                    Mr.Sang
-                                </Link>{' '}
-                                để được hỗ trợ!
-                            </>
-                        }
-                        type="error"
-                        style={{ textAlign: 'center' }}
-                    />
-                );
-            case -1081:
-                return (
-                    <Alert
-                        message={
-                            <>
-                                Sai mật khẩu
-                                <br />
-                                Vui lòng liên hệ{' '}
-                                <Link href="https://zalo.me/0972868740" target="_blank">
-                                    Mr.Sang
-                                </Link>{' '}
-                                để được hỗ trợ!
-                            </>
-                        }
-                        type="error"
-                        style={{ textAlign: 'center' }}
-                    />
-                );
             default:
                 return (
                     <Alert

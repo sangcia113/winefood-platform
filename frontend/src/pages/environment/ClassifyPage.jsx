@@ -7,7 +7,7 @@ import { DeleteFilled, PlusCircleFilled } from '@ant-design/icons';
 import { PencilFill, ThreeDotsVertical } from 'react-bootstrap-icons';
 
 import {
-    ContentComponent,
+    EnvironmentContentComponent,
     FormComponent,
     ModalConfirmComponent,
     ModalErrorComponent,
@@ -251,17 +251,19 @@ const ClassifyPage = () => {
     ];
 
     return (
-        <ContentComponent items={itemsBreadcrumb} loading={loading}>
+        <EnvironmentContentComponent items={itemsBreadcrumb} loading={loading}>
             <Flex vertical gap={'large'}>
                 <Flex justify={'end'}>
                     <Button
-                        icon={<PlusCircleFilled style={{ fontSize: 22, paddingTop: 3 }} />}
+                        icon={<PlusCircleFilled />}
                         onClick={() =>
                             setModalClassify({ open: true, title: 'THÊM MỚI PHÂN LOẠI' })
                         }
-                        shape={'circle'}
+                        shape={'round'}
                         type={'primary'}
-                    />
+                    >
+                        Thêm
+                    </Button>
                 </Flex>
                 <Table
                     bordered
@@ -306,7 +308,7 @@ const ClassifyPage = () => {
                 open={modalSuccess.open}
                 message={modalSuccess.message}
             />
-        </ContentComponent>
+        </EnvironmentContentComponent>
     );
 };
 

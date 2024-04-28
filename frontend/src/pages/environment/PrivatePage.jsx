@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 import { Layout } from 'antd';
 
-import { FooterComponent, EnvironmentHeaderComponent } from '../../components';
+import { EnvironmentHeaderComponent, EnvironmentFooterComponent } from '../../components';
 
 import { checkToken } from '../../utils';
 
@@ -23,7 +23,7 @@ const PrivatePage = ({ roles, children }) => {
         >
             <EnvironmentHeaderComponent language={language} name={userName} />
             {children}
-            <FooterComponent />
+            <EnvironmentFooterComponent />
         </Layout>
     ) : (
         <NotAuthorizedPage />

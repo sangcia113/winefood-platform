@@ -7,7 +7,7 @@ import { DeleteFilled, EditFilled, PlusCircleFilled } from '@ant-design/icons';
 import { ThreeDotsVertical } from 'react-bootstrap-icons';
 
 import {
-    ContentComponent,
+    EnvironmentContentComponent,
     FormComponent,
     ModalConfirmComponent,
     ModalErrorComponent,
@@ -82,7 +82,6 @@ const UserPage = () => {
 
             getUser();
         } catch (error) {
-            console.log(error);
             setModalError({ error, open: true });
         } finally {
             setLoading(false);
@@ -293,15 +292,17 @@ const UserPage = () => {
     ];
 
     return (
-        <ContentComponent items={itemsBreadcrumb} loading={loading}>
+        <EnvironmentContentComponent items={itemsBreadcrumb} loading={loading}>
             <Flex vertical gap={'large'}>
                 <Flex justify={'end'}>
                     <Button
-                        icon={<PlusCircleFilled style={{ fontSize: 22, paddingTop: 3 }} />}
+                        icon={<PlusCircleFilled />}
                         onClick={() => setModalUser({ open: true, title: 'THÊM MỚI NHÂN VIÊN' })}
-                        shape={'circle'}
+                        shape={'round'}
                         type={'primary'}
-                    />
+                    >
+                        Thêm
+                    </Button>
                 </Flex>
                 <Table
                     bordered
@@ -317,7 +318,7 @@ const UserPage = () => {
                 cancelText="Hủy Bỏ"
                 closeIcon={false}
                 forceRender
-                okButtonProps={{ style: { borderRadius: 20 } }}
+                okButtonProps={{ loading: loading, style: { borderRadius: 20 } }}
                 okText="Đồng Ý"
                 onCancel={() => setModalUser({ open: false })}
                 onOk={() => formUser.submit()}
@@ -346,7 +347,7 @@ const UserPage = () => {
                 open={modalSuccess.open}
                 message={modalSuccess.message}
             />
-        </ContentComponent>
+        </EnvironmentContentComponent>
     );
 };
 

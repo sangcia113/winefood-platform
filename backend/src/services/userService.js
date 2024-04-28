@@ -55,6 +55,8 @@ const userService = {
                         user 
                     WHERE
                         deleted IS NULL
+                    AND
+                        roleId != 1
                     ORDER BY 
                         id 
                     ASC`;

@@ -254,11 +254,11 @@ const UserPage = () => {
         }
     };
 
-    const deleteUser = async id => {
+    const deleteUser = async values => {
         try {
             setLoading(true);
 
-            const response = await createConnection(accessToken).delete(`/leave/user/${id}`);
+            const response = await createConnection(accessToken).delete(`/leave/user/${values.id}`);
 
             setModalConfirm({
                 open: false,
@@ -320,7 +320,7 @@ const UserPage = () => {
                                 icon: <DeleteFilled />,
                                 onClick: () =>
                                     setModalConfirm({
-                                        onOk: () => deleteUser(record.id),
+                                        onOk: () => deleteUser(record),
                                         open: true,
                                         message: (
                                             <Space direction="vertical" align="center">
@@ -663,11 +663,7 @@ const UserPage = () => {
                             <Flex vertical gap={'large'}>
                                 <Flex justify={'end'}>
                                     <Button
-                                        icon={
-                                            <PlusCircleFilled
-                                                style={{ fontSize: 22, paddingTop: 3 }}
-                                            />
-                                        }
+                                        icon={<PlusCircleFilled />}
                                         onClick={() => {
                                             setModalMain({
                                                 open: true,

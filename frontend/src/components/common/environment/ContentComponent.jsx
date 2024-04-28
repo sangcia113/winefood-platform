@@ -1,5 +1,7 @@
 import React from 'react';
-import { Breadcrumb, Card, Layout, Spin } from 'antd';
+
+import { Breadcrumb, Layout, Spin } from 'antd';
+
 const { Content } = Layout;
 
 const ContentComponent = ({ loading, items, children }) => (
@@ -11,15 +13,16 @@ const ContentComponent = ({ loading, items, children }) => (
             }}
         >
             <Breadcrumb items={items} style={{ margin: 22 }} />
-            <Card
-                bordered={false}
+            <div
                 style={{
                     backgroundColor: 'rgba(255, 255, 255, 0.4)',
                     backdropFilter: 'blur(4px)',
+                    borderRadius: 12,
+                    padding: 8,
                 }}
             >
                 {children}
-            </Card>
+            </div>
         </Content>
     </Spin>
 );

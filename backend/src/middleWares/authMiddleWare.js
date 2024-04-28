@@ -18,6 +18,18 @@ const authMiddleWare = {
             next();
         });
     },
+
+    checkPermission: roleId => (req, res, next) => {
+        const userRoleId = req.decoded.roleId;
+
+        if (!roleId.includes(userRoleId))
+            return res.status(403).json({
+                error: -1199,
+                message: 'Tài khoản của bạn không có quyền thực hiện chức năng này!',
+            });
+
+        next();
+    },
 };
 
 module.exports = authMiddleWare;

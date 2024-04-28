@@ -84,25 +84,27 @@ const LoginPage = () => {
             >
                 <Spin spinning={loading} tip="Vui lòng đợi...">
                     <Flex justify="center">
-                        <Text strong style={{ fontSize: 42, padding: '16px 0 32px 0' }}>
-                            Đ Ă N G N H Ậ P
+                        <Text strong style={{ fontSize: 48, padding: '16px 0 32px 0' }}>
+                            ĐĂNG NHẬP
                         </Text>
                     </Flex>
 
-                    <Form form={form} onFinish={onFinish}>
+                    <Form form={form} layout="vertical" onFinish={onFinish}>
                         <Item
+                            label="Tài khoản"
                             name="username"
                             rules={[{ required: true, message: 'Bạn chưa nhập tài khoản!' }]}
                         >
                             <Input
                                 allowClear
                                 prefix={<UserOutlined />}
-                                placeholder="Nhập số điện thoại"
+                                placeholder="Nhập tài khoản"
                                 style={{ borderRadius: 24, height: 48 }}
                             />
                         </Item>
 
                         <Item
+                            label="Mật khẩu"
                             name="password"
                             rules={[{ required: true, message: 'Bạn chưa nhập mật khẩu!' }]}
                         >

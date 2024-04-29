@@ -195,6 +195,7 @@ const TypePage = () => {
                         ],
                     }}
                     placement={'bottomLeft'}
+                    trigger={'click'}
                 >
                     <ThreeDotsVertical />
                 </Dropdown>

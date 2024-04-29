@@ -55,10 +55,17 @@ const {
 } = require('../middleWares/leaveListMiddleWare');
 
 // End point POST
-router.post('/', checkBody, checkIsExist, created, memberSendMessageRequestToSuperior);
+router.post(
+    '/',
+    checkPermission([3, 4, 5, 6]),
+    checkBody,
+    checkIsExist,
+    created,
+    memberSendMessageRequestToSuperior
+);
 
 // End point GET
-router.get('/history', checkPermission([1, 2, 3, 4, 5, 6]), readedHistory);
+router.get('/history', readedHistory);
 
 // End point GET
 router.get('/leader', checkPermission([1, 2, 3, 4, 5]), readedLeader);

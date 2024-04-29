@@ -275,6 +275,7 @@ const ContentPage = () => {
                         ],
                     }}
                     placement={'bottomLeft'}
+                    trigger={'click'}
                 >
                     <ThreeDotsVertical />
                 </Dropdown>

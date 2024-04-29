@@ -210,6 +210,7 @@ const ClassifyPage = () => {
                         ],
                     }}
                     placement={'bottomLeft'}
+                    trigger={'click'}
                 >
                     <ThreeDotsVertical />
                 </Dropdown>

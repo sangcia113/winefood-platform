@@ -319,6 +319,7 @@ const LeaderPage = () => {
                         ],
                     }}
                     placement={'bottomLeft'}
+                    trigger={'click'}
                 >
                     <ThreeDotsVertical />
                 </Dropdown>

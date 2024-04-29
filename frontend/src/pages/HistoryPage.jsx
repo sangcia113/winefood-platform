@@ -425,6 +425,7 @@ const HistoryPage = () => {
                         ],
                     }}
                     placement={'bottomLeft'}
+                    trigger={'click'}
                 >
                     <ThreeDotsVertical />
                 </Dropdown>

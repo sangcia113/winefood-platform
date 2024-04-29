@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import ReactApexChart from 'react-apexcharts';
 import * as XLSX from 'xlsx';
 
@@ -46,6 +48,8 @@ import {
 
 import { createConnection, getUniqueName } from '../utils';
 
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
 
@@ -153,8 +157,9 @@ const ManagerPage = () => {
     const [leaveList, setLeaveList] = useState([]);
     const [leaveListOther, setLeaveListOther] = useState([]);
     const [leaveListStatistics, setLeaveListStatistics] = useState([]);
-    const [totalWaiting, setTotalWaiting] = useState(0);
     const [filteredLeaveList, setFilteredLeaveList] = useState([]);
+    const [filteredLeaveListOther, setFilteredLeaveListOther] = useState([]);
+    const [totalWaiting, setTotalWaiting] = useState(0);
 
     const [modalConfirm, setModalConfirm] = useState({
         message: '',
@@ -231,30 +236,64 @@ const ManagerPage = () => {
         await getDataSource(`/leave/list/manager`, {}, setLeaveList);
     };
 
+    // const getManagerByDate = async (startDate, endDate) => {
+    //     await getDataSource(
+    //         `/leave/list/manager/search`,
+    //         {
+    //             startDate: dayjs(startDate).format('YYYY-MM-DD'),
+    //             endDate: dayjs(endDate).format('YYYY-MM-DD'),
+    //         },
+    //         setLeaveList
+    //     );
+    // };
     const getManagerByDate = async (startDate, endDate) => {
-        await getDataSource(
-            `/leave/list/manager/search`,
-            {
-                startDate: dayjs(startDate).format('YYYY-MM-DD'),
-                endDate: dayjs(endDate).format('YYYY-MM-DD'),
-            },
-            setLeaveList
-        );
+        const filtered = leaveList.filter(item => {
+            if (dayjs(startDate).isSame(endDate, 'day')) {
+                return (
+                    dayjs(startDate).isSameOrAfter(dayjs(item.bookFromDate), 'day') &&
+                    dayjs(startDate).isSameOrBefore(dayjs(item.bookToDate), 'day')
+                );
+            } else {
+                return (
+                    dayjs(startDate).isSameOrBefore(dayjs(item.bookToDate), 'day') &&
+                    dayjs(endDate).isSameOrAfter(dayjs(item.bookFromDate), 'day')
+                );
+            }
+        });
+
+        setFilteredLeaveList(filtered);
     };
 
     const getManagerOther = async () => {
         await getDataSource(`/leave/list/manager/other`, {}, setLeaveListOther);
     };
 
+    // const getManagerOtherByDate = async (startDate, endDate) => {
+    //     await getDataSource(
+    //         `/leave/list/manager/other/search`,
+    //         {
+    //             startDate: dayjs(startDate).format('YYYY-MM-DD'),
+    //             endDate: dayjs(endDate).format('YYYY-MM-DD'),
+    //         },
+    //         setLeaveListOther
+    //     );
+    // };
     const getManagerOtherByDate = async (startDate, endDate) => {
-        await getDataSource(
-            `/leave/list/manager/other/search`,
-            {
-                startDate: dayjs(startDate).format('YYYY-MM-DD'),
-                endDate: dayjs(endDate).format('YYYY-MM-DD'),
-            },
-            setLeaveListOther
-        );
+        const filtered = leaveListOther.filter(item => {
+            if (dayjs(startDate).isSame(endDate, 'day')) {
+                return (
+                    dayjs(startDate).isSameOrAfter(dayjs(item.bookFromDate), 'day') &&
+                    dayjs(startDate).isSameOrBefore(dayjs(item.bookToDate), 'day')
+                );
+            } else {
+                return (
+                    dayjs(startDate).isSameOrBefore(dayjs(item.bookToDate), 'day') &&
+                    dayjs(endDate).isSameOrAfter(dayjs(item.bookFromDate), 'day')
+                );
+            }
+        });
+
+        setFilteredLeaveListOther(filtered);
     };
 
     const getManagerStatistics = async () => {
@@ -285,7 +324,7 @@ const ManagerPage = () => {
                 item.actualLeaveDay &&
                 !item.managerApprovedLeaveDay &&
                 item.actualLeaveDay !== item.bookLeaveDay &&
-                item.actualFromDate !== item.bookFromDat &&
+                item.actualFromDate !== item.bookFromDate &&
                 item.actualToDate !== item.bookToDate
         );
         setFilteredLeaveList(filtered);
@@ -861,6 +900,7 @@ const ManagerPage = () => {
                         ],
                     }}
                     placement={'bottomLeft'}
+                    trigger={'click'}
                 >
                     <ThreeDotsVertical />
                 </Dropdown>
@@ -1244,7 +1284,7 @@ const ManagerPage = () => {
                         ),
                         children: (
                             <Flex vertical gap={'large'}>
-                                <Row>
+                                <Row gutter={[16, 16]}>
                                     <Col sm={12}>
                                         <Flex gap="middle">
                                             <Dropdown
@@ -1357,13 +1397,14 @@ const ManagerPage = () => {
                                             <Text>Chọn ngày</Text>
                                             <RangePicker
                                                 format={'DD/MM/YYYY'}
+                                                inputReadOnly
                                                 onCalendarChange={dates => {
                                                     const [startDate, endDate] = dates || [];
 
                                                     if (startDate && endDate) {
                                                         getManagerByDate(startDate, endDate);
                                                     } else if (!startDate && !endDate) {
-                                                        getManager();
+                                                        setFilteredLeaveList([]);
                                                     }
                                                 }}
                                             />
@@ -1391,13 +1432,14 @@ const ManagerPage = () => {
                                     <Text>Select Date</Text>
                                     <RangePicker
                                         format={'DD/MM/YYYY'}
+                                        inputReadOnly
                                         onCalendarChange={dates => {
                                             const [startDate, endDate] = dates || [];
 
                                             if (startDate && endDate) {
                                                 getManagerOtherByDate(startDate, endDate);
                                             } else if (!startDate && !endDate) {
-                                                getManagerOther();
+                                                setFilteredLeaveListOther([]);
                                             }
                                         }}
                                     />
@@ -1405,7 +1447,11 @@ const ManagerPage = () => {
                                 <Table
                                     bordered
                                     columns={columnsLeaveListOther}
-                                    dataSource={leaveListOther}
+                                    dataSource={
+                                        filteredLeaveListOther.length > 0
+                                            ? filteredLeaveListOther
+                                            : leaveListOther
+                                    }
                                     scroll={{ x: true }}
                                     showSorterTooltip={false}
                                 />
@@ -1421,6 +1467,7 @@ const ManagerPage = () => {
                                     <Text>Select Date</Text>
                                     <RangePicker
                                         format={'DD/MM/YYYY'}
+                                        inputReadOnly
                                         onCalendarChange={dates => {
                                             const [startDate, endDate] = dates || [];
 

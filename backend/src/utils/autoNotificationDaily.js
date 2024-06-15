@@ -27,6 +27,11 @@ cron.schedule('0 8 * * 1-6', async () => {
                 '637017525950997790',
                 'Không có nhân viên nào nghỉ phép ngày hôm nay'
             );
+            // Gửi tin nhắn thông báo không có nhân viên nghỉ phép cho Zalo ID 3
+            await sendZaloAPIV3(
+                '8851502365121811999',
+                'Không có nhân viên nào nghỉ phép ngày hôm nay'
+            );
         } else {
             // Khởi tạo biến đếm
             let index = 0;
@@ -76,8 +81,8 @@ cron.schedule('0 8 * * 1-6', async () => {
                 await sendZaloAPIV3('1337604619804588121', messageJP);
                 // Gửi thông điệp tiếng Nhật qua Zalo API
                 await sendZaloAPIV3('637017525950997790', messageVN);
-                // Reset lại thông điệp tiếng Nhật
-                console.log(messageJP);
+                // Gửi thông điệp tiếng Nhật qua Zalo API
+                await sendZaloAPIV3('8851502365121811999', messageVN);
                 // Tăng biến đếm lên mỗi lần lặp
                 index++;
                 // Reset lại thông điệp tiếng Nhật
